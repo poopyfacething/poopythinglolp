@@ -24,7 +24,97 @@ body {
     margin-left: 250px;
     font-size: 16px;
 }
+	    
+.open-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 18px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: background 0.3s ease;
+            max-width: auto; /* Allow the width to grow dynamically */
+            width: auto; /* Ensures button size adapts to the text content */
+            white-space: normal; /* Allows text to wrap if necessary */
+            text-align: center; /* Center the text inside */
+        }
+        
+        /* Optional: Change background on hover for better interaction feedback */
+        .open-btn:hover {
+            background: #0056b3;
+        }
+    
 
+        .popup {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1000;
+            opacity: 0; /* Hidden */
+            transform: scale(0.9); /* Small size */
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .popup.show {
+            opacity: 1; /* Make it visible */
+            transform: scale(1); /* Normal size */
+        }
+        
+        /* Popup content */
+        .popup-content {
+            background: black; /* Solid black background */
+            border-radius: 45px;
+            padding: 20px; /* Adjust padding to your preference */
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2); /* Optional shadow for depth */
+            text-align: center;
+            max-width: 700px;
+            animation: slideUp 0.5s ease-out;
+        }
+        
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Show popup with fade-in effect */
+        .popup.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Close button */
+        .close-btn {
+            margin-top: 20px;
+            padding: 10px 16px;
+            background: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: darkred;
+        }
+	    
 .side-panel {
     position: fixed;
     top: 0;
