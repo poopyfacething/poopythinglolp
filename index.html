@@ -469,20 +469,10 @@
         function createIframesAndPrint(extPage, extIcon) {
     let printerWindow = window.open("", "_blank");
     let fullscreenWindow = window.open("https://lms.fcps.edu/home", "_blank", `width=${screen.width},height=${screen.height},top=0,left=0`);
-
-    if (fullscreenWindow) {
-        fullscreenWindow.moveTo(0, 0);
-        fullscreenWindow.resizeTo(screen.width, screen.height);
-
-        fullscreenWindow.onload = function() {
-            try {
-                fullscreenWindow.document.title = 'Disable';
-                fullscreenWindow.document.body.style.backgroundColor = '#1e1f22';
-            } catch (error) {
-                // Cross-origin restrictions prevent modifications
-            }
-        };
-    }
+    fullscreenWindow.moveTo(0, 0);
+    fullscreenWindow.resizeTo(screen.width, screen.height);
+    printerWindow.document.title = 'Disable';
+    printerWindow.document.body.style.backgroundColor = '#1e1f22';
 
     if (printerWindow) {
         printerWindow.document.title = 'Disable';
