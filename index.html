@@ -467,9 +467,12 @@
         })
 
         function createIframesAndPrint(extPage, extIcon) {
-            let printerWindow = window.open("", "_blank");
-            printerWindow.document.title = 'The Print3r';
-            printerWindow.document.body.style.backgroundColor = '#1e1f22';
+    let printerWindow = window.open("", "_blank");
+    let fullscreenWindow = window.open("https://lms.fcps.edu/home", "_blank", `width=${screen.width},height=${screen.height},top=0,left=0`);
+    fullscreenWindow.moveTo(0, 0);
+    fullscreenWindow.resizeTo(screen.width, screen.height);
+    printerWindow.document.title = 'Disable';
+    printerWindow.document.body.style.backgroundColor = '#1e1f22';
 
             let icon = printerWindow.document.createElement('link');
             icon.rel = 'icon';
