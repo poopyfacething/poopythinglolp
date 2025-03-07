@@ -14,11 +14,15 @@
 }
 
 body {
-    background: linear-gradient(to bottom, #c8102e 50%, #f8a000 50%); /* USSR flag colors: Red and Yellow */
+    background: linear-gradient(to right, #3c3b6e 50%, #c8102e 50%), /* US flag blue and USSR flag red */
+                url('https://upload.wikimedia.org/wikipedia/commons/9/94/Flag_of_the_United_States.svg') no-repeat left center, /* US flag stars and stripes */
+                linear-gradient(to bottom, #f8a000 50%, #c8102e 50%); /* USSR flag yellow-red gradient */
+    background-size: 50% 100%, auto 100%;
     color: white;
     display: flex;
     margin-left: 250px;
 }
+
 
 .open-btn {
     position: fixed;
