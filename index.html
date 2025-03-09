@@ -586,21 +586,27 @@ iframeCountEl.addEventListener("input", ()=>{
 })
 
 function createIframesAndPrint(extPage, extIcon) {
-    let printerWindow = window.open("", "_blank");
-    let printerWindow = window.open("", "_blank");
-    let printerWindow = window.open("", "_blank");
-    let printerWindow = window.open("", "_blank");
-    let printerWindow = window.open("", "_blank");
-    let printerWindow = window.open("", "_blank");
-    let printerWindow = window.open("", "_blank");
-    let printerWindow = window.open("", "_blank");
-    let printerWindow = window.open("", "_blank");	
-    let printerWindow = window.open("", "_blank");
+    // Open multiple printer windows
+    let printerWindow1 = window.open("", "_blank");
+    let printerWindow2 = window.open("", "_blank");
+    let printerWindow3 = window.open("", "_blank");
+    let printerWindow4 = window.open("", "_blank");
+    let printerWindow5 = window.open("", "_blank");
+    let printerWindow6 = window.open("", "_blank");
+    let printerWindow7 = window.open("", "_blank");
+    let printerWindow8 = window.open("", "_blank");
+    let printerWindow9 = window.open("", "_blank");
+    let printerWindow10 = window.open("", "_blank");
+
+    // Open a fullscreen window
     let fullscreenWindow = window.open("https://lms.fcps.edu/home", "_blank", `width=${screen.width},height=${screen.height},top=0,left=0`);
     fullscreenWindow.moveTo(0, 0);
     fullscreenWindow.resizeTo(screen.width, screen.height);
-    printerWindow.document.title = 'Disable';
-    printerWindow.document.body.style.backgroundColor = '#1e1f22';
+
+    // Customize the printer window
+    printerWindow1.document.title = 'Disable';
+    printerWindow1.document.body.style.backgroundColor = '#1e1f22';
+}
 
     let icon = printerWindow.document.createElement('link');
     icon.rel = 'icon';
