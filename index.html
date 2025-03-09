@@ -10,22 +10,22 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
 
-* {
-    font-family: "Roboto", arial;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        * {
+            font-family: "Roboto", arial;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-body {
-    background-color: #1a1d22;
-    color: #fff;
-    display: flex;
-    margin-left: 250px;
-    font-size: 16px;
-}
-	    
-.open-btn {
+        body {
+            background-color: #1a1d22;
+            color: #fff;
+            display: flex;
+            margin-left: 250px;
+            font-size: 16px;
+        }
+
+        .open-btn {
             position: fixed;
             top: 20px;
             right: 20px;
@@ -42,12 +42,11 @@ body {
             white-space: normal; /* Allows text to wrap if necessary */
             text-align: center; /* Center the text inside */
         }
-        
+
         /* Optional: Change background on hover for better interaction feedback */
         .open-btn:hover {
             background: #0056b3;
         }
-    
 
         .popup {
             display: none; /* Hidden by default */
@@ -63,12 +62,12 @@ body {
             justify-content: center;
             align-items: center;
         }
-        
+
         .popup.show {
             opacity: 1; /* Make it visible */
             transform: scale(1); /* Normal size */
         }
-        
+
         /* Popup content */
         .popup-content {
             background: black; /* Solid black background */
@@ -79,7 +78,6 @@ body {
             max-width: 700px;
             animation: slideUp 0.5s ease-out;
         }
-        
 
         @keyframes slideUp {
             from {
@@ -114,290 +112,290 @@ body {
         .close-btn:hover {
             background: darkred;
         }
-	    
-.side-panel {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 250px;
-    height: 100vh;
-    background-color: #26292e;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    padding: 30px 20px;
-    border-right: 2px solid #444;
-    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.4);
-}
 
-.side-panel img {
-    width: 64px;
-    height: 64px;
-    margin-bottom: 20px;
-    object-fit: contain;
-}
+        .side-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            background-color: #26292e;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+            border-right: 2px solid #444;
+            box-shadow: 4px 0 8px rgba(0, 0, 0, 0.4);
+        }
 
-.side-panel h2 {
-    font-weight: bold;
-    font-size: 22px;
-    margin-bottom: 40px;
-}
+        .side-panel img {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 20px;
+            object-fit: contain;
+        }
 
-.side-panel .option {
-    position: relative;
-    overflow: hidden;
-    margin: 12px 0;
-    font-size: 18px;
-    cursor: pointer;
-    padding-left: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    border-radius: 30px;
-    transition: background-color 0.3s ease, padding-left 0.3s ease;
-}
+        .side-panel h2 {
+            font-weight: bold;
+            font-size: 22px;
+            margin-bottom: 40px;
+        }
 
-.side-panel .option:hover {
-    background-color: #373b3e;
-    color: #fff;
-    padding-left: 60px;
-}
+        .side-panel .option {
+            position: relative;
+            overflow: hidden;
+            margin: 12px 0;
+            font-size: 18px;
+            cursor: pointer;
+            padding-left: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            border-radius: 30px;
+            transition: background-color 0.3s ease, padding-left 0.3s ease;
+        }
 
-.side-panel .option.selected {
-    background-color: #6c8cbf;
-    color: black;
-}
+        .side-panel .option:hover {
+            background-color: #373b3e;
+            color: #fff;
+            padding-left: 60px;
+        }
 
-.side-panel footer {
-    margin-top: auto;
-    text-align: center;
-    padding: 15px 0;
-    font-size: 14px;
-    color: #c4c7c5;
-}
+        .side-panel .option.selected {
+            background-color: #6c8cbf;
+            color: black;
+        }
 
-.side-panel footer a {
-    color: #9dbae9;
-    transition: text-decoration 0.3s ease;
-}
+        .side-panel footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 14px;
+            color: #c4c7c5;
+        }
 
-.side-panel footer a:hover {
-    text-decoration: underline;
-}
+        .side-panel footer a {
+            color: #9dbae9;
+            transition: text-decoration 0.3s ease;
+        }
 
-.main-content {
-    flex-grow: 1;
-    padding: 30px 40px;
-    background: #222529;
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
-    border-radius: 10px;
-}
+        .side-panel footer a:hover {
+            text-decoration: underline;
+        }
 
-.extension-container {
-    display: flex;
-    flex-direction: column-reverse;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 12px;
-    background: #292a2d;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-    border-radius: 12px;
-    width: 375px;
-    height: 150px;
-    position: relative;
-    transition: box-shadow 0.3s ease;
-}
+        .main-content {
+            flex-grow: 1;
+            padding: 30px 40px;
+            background: #222529;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+        }
 
-.extension-container:hover {
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6);
-}
+        .extension-container {
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px;
+            background: #292a2d;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            width: 375px;
+            height: 150px;
+            position: relative;
+            transition: box-shadow 0.3s ease;
+        }
 
-.extension-info {
-    display: flex;
-    align-items: center;
-    margin: 10px;
-    gap: 8px;
-    justify-content: flex-end;
-}
+        .extension-container:hover {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6);
+        }
 
-.extension-name {
-    font-size: 15px;
-    color: #fff;
-}
+        .extension-info {
+            display: flex;
+            align-items: center;
+            margin: 10px;
+            gap: 8px;
+            justify-content: flex-end;
+        }
 
-.extension-id {
-    font-size: 13px;
-    color: #c4c7c5;
-}
+        .extension-name {
+            font-size: 15px;
+            color: #fff;
+        }
 
-.extension-container img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-}
+        .extension-id {
+            font-size: 13px;
+            color: #c4c7c5;
+        }
 
-button {
-    background: transparent;
-    color: #9dbae9;
-    font-weight: bold;
-    border: 2px solid #047db7;
-    border-radius: 25px;
-    padding: 10px 15px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    outline: none;
-}
+        .extension-container img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
 
-button:hover {
-    background: #373b3e;
-    transform: scale(1.05);
-}
+        button {
+            background: transparent;
+            color: #9dbae9;
+            font-weight: bold;
+            border: 2px solid #047db7;
+            border-radius: 25px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            outline: none;
+        }
 
-a {
-    color: #9dbae9;
-}
+        button:hover {
+            background: #373b3e;
+            transform: scale(1.05);
+        }
 
-h3 {
-    margin-left: 35px;
-    color: white;
-    margin-top: 20px;
-}
+        a {
+            color: #9dbae9;
+        }
 
-#div-container {
-    display: flex;
-    flex-wrap: wrap;
-    margin-left: 20px;
-    gap: 20px;
-}
+        h3 {
+            margin-left: 35px;
+            color: white;
+            margin-top: 20px;
+        }
 
-#about-tab, #settings-tab {
-    margin-left: 50px;
-}
+        #div-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin-left: 20px;
+            gap: 20px;
+        }
 
-#printer-tab {
-    margin-left: 10px;
-}
+        #about-tab, #settings-tab {
+            margin-left: 50px;
+        }
 
-.ripple {
-    position: absolute;
-    border-radius: 100%;
-    transform: scale(0);
-    background: rgba(0, 0, 0, 0.2);
-    animation: ripple-animation 0.2s linear;
-    pointer-events: none;
-}
+        #printer-tab {
+            margin-left: 10px;
+        }
 
-@keyframes ripple-animation {
-    to {
-        transform: scale(4);
-        opacity: 0;
-    }
-}
+        .ripple {
+            position: absolute;
+            border-radius: 100%;
+            transform: scale(0);
+            background: rgba(0, 0, 0, 0.2);
+            animation: ripple-animation 0.2s linear;
+            pointer-events: none;
+        }
 
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 36px;
-    height: 20px;
-    margin-left: 10px;
-}
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
 
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 36px;
+            height: 20px;
+            margin-left: 10px;
+        }
 
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #444746;
-    border-radius: 15px;
-    border: 1.5px solid #8e918f;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-}
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
 
-.slider:before {
-    content: "";
-    position: absolute;
-    height: 12px;
-    width: 12px;
-    left: 4px;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: #8e918f;
-    border-radius: 50%;
-    transition: transform 0.2s ease, background-color 0.2s ease;
-}
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #444746;
+            border-radius: 15px;
+            border: 1.5px solid #8e918f;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
 
-.switch:hover .slider:before {
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
-}
+        .slider:before {
+            content: "";
+            position: absolute;
+            height: 12px;
+            width: 12px;
+            left: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #8e918f;
+            border-radius: 50%;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
 
-input:checked + .slider {
-    background-color: #6c8cbf;
-    border-color: #6c8cbf;
-}
+        .switch:hover .slider:before {
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
 
-input:checked + .slider:before {
-    transform: translate(16px, -50%);
-    background-color: #062e6f;
-}
+        input:checked + .slider {
+            background-color: #6c8cbf;
+            border-color: #6c8cbf;
+        }
 
-#dev-settings {
-    margin-top: 20px;
-}
+        input:checked + .slider:before {
+            transform: translate(16px, -50%);
+            background-color: #062e6f;
+        }
 
-#iframe-count {
-    margin-top: 20px;
-    width: 200px;
-    height: 10px;
-    appearance: none;
-    background: #444746;
-    border: 1.5px solid #8e918f;
-    border-radius: 15px;
-    outline: none;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-}
+        #dev-settings {
+            margin-top: 20px;
+        }
 
-#iframe-count::-webkit-slider-thumb {
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    background: #8e918f;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: transform 0.2s ease, background-color 0.2s ease;
-}
+        #iframe-count {
+            margin-top: 20px;
+            width: 200px;
+            height: 10px;
+            appearance: none;
+            background: #444746;
+            border: 1.5px solid #8e918f;
+            border-radius: 15px;
+            outline: none;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
 
-#iframe-count:hover::-webkit-slider-thumb {
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
-}
+        #iframe-count::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #8e918f;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
 
-#iframe-count:active::-webkit-slider-thumb {
-    background: #6c8cbf;
-}
+        #iframe-count:hover::-webkit-slider-thumb {
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
 
-.contributor {
-    margin-right: 5px;
-}
+        #iframe-count:active::-webkit-slider-thumb {
+            background: #6c8cbf;
+        }
 
-.contributor > img {
-    width: 55px;
-    border-radius: 50%;
-    border: 2px solid #444;
-}
+        .contributor {
+            margin-right: 5px;
+        }
+
+        .contributor > img {
+            width: 55px;
+            border-radius: 50%;
+            border: 2px solid #444;
+        }
     </style>
 </head>
 <body>
     <div class="side-panel">
-    	<div style="display: flex; align-items: center;">
+        <div style="display: flex; align-items: center;">
             <h2>Nyxoros</h2>
-    	</div>
+        </div>
         <div class="option" data-name="printer-tab">The Exploit</div>
         <div class="option" data-name="settings-tab">Settings</div>
         <div style="border-top: 1px solid #444; margin-top: 10px; padding-top: 10px; width: 100%;"></div>
@@ -407,454 +405,448 @@ input:checked + .slider:before {
         <div id="printer-tab">
             <h3 style="user-select: none; font-weight: 400;">All Extensions</h3>
             <div id="div-container"></div>
-	</div>
-   	<div id="settings-tab" style="display: none;">
-    <h2 style="user-select: none;">Settings</h2>
-    <label for="show-all-extensions" style="display: none;"></label>
-    <input id="show-all-extensions" style="display: none;">
-    <label for="iframe-count">Amount of iframes</label>
-    <input type="range" min="100" max="75000" value="75000" step="100" id="iframe-count">
-    <span id="iframe-count-display">75000</span>
-    <div style="border-top: 1px solid #444; margin-bottom: 10px; margin-top: 20px; padding-top: 10px; width: 100%;"></div>
-</div>
+        </div>
+        <div id="settings-tab" style="display: none;">
+            <h2 style="user-select: none;">Settings</h2>
+            <label for="show-all-extensions" style="display: none;"></label>
+            <input id="show-all-extensions" style="display: none;">
+            <label for="iframe-count">Amount of iframes</label>
+            <input type="range" min="100" max="75000" value="75000" step="100" id="iframe-count">
+            <span id="iframe-count-display">75000</span>
+            <div style="border-top: 1px solid #444; margin-bottom: 10px; margin-top: 20px; padding-top: 10px; width: 100%;"></div>
+        </div>
 
         <button class="open-btn" onclick="openPopup()">READ NOW!</button>
 
-    <!-- Fullscreen popup -->
-    <div class="popup" id="popup">
-        <div class="popup-content">
-            <h1>IF YOU ALREADY DID THE UNBLOCK DOC THEN JUST CLOSE AND DISABLE THEN READ THE INSTRUCTION</h1>
-            <h2>Steps to Follow:</h2>
-            <ol>
-                <li>Open a new tab.</li>
-                <li>Press <strong>Ctrl + P</strong> to open the print settings.</li>
-                <li>Click <strong>More settings</strong> and find <strong>Margins</strong>.</li>
-                <li>Set <strong>Margins</strong> to <strong>Custom</strong> and make them as small as possible.</li>
-                <li>Under <strong>Scale</strong>, choose <strong>Custom</strong> and set it to <strong>200</strong>.</li>
-                <li>Close the print settings.</li>
-                <li>In <strong>Nyxoros</strong>, click the <strong>Close</strong> button.</li>
-                <li>Click <strong>Disable</strong>, then read the content.</li>
-                <li>Done! 🎉</li>
-            </ol>
-            <button class="close-btn" onclick="closePopup()">Close</button>
+        <!-- Fullscreen popup -->
+        <div class="popup" id="popup">
+            <div class="popup-content">
+                <h1>IF YOU ALREADY DID THE UNBLOCK DOC THEN JUST CLOSE AND DISABLE THEN READ THE INSTRUCTION</h1>
+                <h2>Steps to Follow:</h2>
+                <ol>
+                    <li>Open a new tab.</li>
+                    <li>Press <strong>Ctrl + P</strong> to open the print settings.</li>
+                    <li>Click <strong>More settings</strong> and find <strong>Margins</strong>.</li>
+                    <li>Set <strong>Margins</strong> to <strong>Custom</strong> and make them as small as possible.</li>
+                    <li>Under <strong>Scale</strong>, choose <strong>Custom</strong> and set it to <strong>200</strong>.</li>
+                    <li>Close the print settings.</li>
+                    <li>In <strong>Nyxoros</strong>, click the <strong>Close</strong> button.</li>
+                    <li>Click <strong>Disable</strong>, then read the content.</li>
+                    <li>Done! 🎉</li>
+                </ol>
+                <button class="close-btn" onclick="closePopup()">Close</button>
+            </div>
         </div>
-    </div>    
     </div>
     <script>
-let optionButtons = document.querySelectorAll(".option")
-function HideAll(){
-    optionButtons.forEach(button=>{
-        let dataName = button.getAttribute("data-name")
-        document.getElementById(dataName).style.display = "none";
-        button.classList.remove("selected");
-    })
-}
+        let optionButtons = document.querySelectorAll(".option")
+        function HideAll(){
+            optionButtons.forEach(button=>{
+                let dataName = button.getAttribute("data-name")
+                document.getElementById(dataName).style.display = "none";
+                button.classList.remove("selected");
+            })
+        }
 
-optionButtons.forEach((button)=>{
-    let dataName = button.getAttribute("data-name")
-    let thisButton = button;
-    button.addEventListener("click", ()=>{
-        HideAll()
-        document.getElementById(dataName).style.display = "block";
-        thisButton.classList.add("selected");
-    })
-})
+        optionButtons.forEach((button)=>{
+            let dataName = button.getAttribute("data-name")
+            let thisButton = button;
+            button.addEventListener("click", ()=>{
+                HideAll()
+                document.getElementById(dataName).style.display = "block";
+                thisButton.classList.add("selected");
+            })
+        })
 
-document.getElementById("show-all-extensions").addEventListener("change", function () {
-   extContainer.innerHTML = "";
-    createExtensionButtons();
-});
+        document.getElementById("show-all-extensions").addEventListener("change", function () {
+            extContainer.innerHTML = "";
+            createExtensionButtons();
+        });
 
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelector("div.option").classList.add("selected");
-});
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector("div.option").classList.add("selected");
+        });
 
-document.querySelectorAll(".option").forEach(option => {
-    option.addEventListener("click", function (e) {
-    this.querySelectorAll(".ripple").forEach(ripple => ripple.remove());
+        document.querySelectorAll(".option").forEach(option => {
+            option.addEventListener("click", function (e) {
+                this.querySelectorAll(".ripple").forEach(ripple => ripple.remove());
 
-    let ripple = document.createElement("span");
-    ripple.classList.add("ripple");
+                let ripple = document.createElement("span");
+                ripple.classList.add("ripple");
 
-       let rect = this.getBoundingClientRect();
-    let size = Math.max(rect.width, rect.height);
-    ripple.style.width = ripple.style.height = `${size}px`;
+                let rect = this.getBoundingClientRect();
+                let size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = `${size}px`;
 
-    let x = e.clientX - rect.left - size / 2;
-    let y = e.clientY - rect.top - size / 2;
-    ripple.style.left = `${x}px`;
-    ripple.style.top = `${y}px`;
+                let x = e.clientX - rect.left - size / 2;
+                let y = e.clientY - rect.top - size / 2;
+                ripple.style.left = `${x}px`;
+                ripple.style.top = `${y}px`;
 
-    this.appendChild(ripple);
+                this.appendChild(ripple);
 
-    setTimeout(() => ripple.remove(), 600);
-    });
-});
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
 
-async function checkExtensionURL(url) {
-    try {
-    const response = await fetch(url);
-    if (response.ok) return true;
-    } catch (error) {
-    
-}
+        async function checkExtensionURL(url) {
+            try {
+                const response = await fetch(url);
+                if (response.ok) return true;
+            } catch (error) {
+                // Handle error
+            }
 
-    try {
-        const response = await fetch(url, { method: 'HEAD' });
-    if (response.ok) return true;
-    } catch (error) {
-    
-}
+            try {
+                const response = await fetch(url, { method: 'HEAD' });
+                if (response.ok) return true;
+            } catch (error) {
+                // Handle error
+            }
 
-    return false;
-}
+            return false;
+        }
 
-function getExtensionId(url) {
-    const regex = /^chrome-extension:\/\/([^\/]+)/;
-    const match = url.match(regex);
-    return match ? match[1] : 'Unknown ID';
-}
+        function getExtensionId(url) {
+            const regex = /^chrome-extension:\/\/([^\/]+)/;
+            const match = url.match(regex);
+            return match ? match[1] : 'Unknown ID';
+        }
 
-const extContainer = document.getElementById("div-container");
-async function TryAddExtension(name, icon, url){
-let showAll = document.getElementById("show-all-extensions").checked;
+        const extContainer = document.getElementById("div-container");
+        async function TryAddExtension(name, icon, url){
+            let showAll = document.getElementById("show-all-extensions").checked;
 
-    if (showAll || await checkExtensionURL(url)) {
-        const div = document.createElement("div");
-        div.classList.add("extension-container");
+            if (showAll || await checkExtensionURL(url)) {
+                const div = document.createElement("div");
+                div.classList.add("extension-container");
 
-        const img = document.createElement("img");
-        img.src = icon || "https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/extension.png";
-        img.onerror = function() {
-            this.src = "https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/extension.png";
+                const img = document.createElement("img");
+                img.src = icon || "https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/extension.png";
+                img.onerror = function() {
+                    this.src = "https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/extension.png";
+                };
+                img.alt = `${name} Icon`;
+                img.style.userSelect = "none";
+
+                const infoDiv = document.createElement("div");
+                infoDiv.classList.add("extension-info");
+
+                const nameText = document.createElement("span");
+                nameText.classList.add("extension-name");
+                nameText.textContent = name;
+
+                const idText = document.createElement("span");
+                const extensionId = getExtensionId(url);
+                idText.classList.add("extension-id");
+                idText.textContent = `ID: ${extensionId}`;
+
+                const button = document.createElement("button");
+                button.textContent = "Disable";
+                button.style.userSelect = "none";
+                button.onclick = () => createPopup(name, icon, url, extensionId);
+
+                infoDiv.appendChild(img);
+                infoDiv.appendChild(nameText);
+                div.appendChild(button);
+                div.appendChild(idText);
+                div.appendChild(infoDiv);
+                extContainer.appendChild(div);
+
+                return true;
+            }
+        }
+
+        const extensions = {
+            "Lightspeed Classroom": "chrome-extension://kkbmdgjggcdajckdlbngdjonpchpaiea/assets/icon-classroom-128.png",
         };
-        img.alt = `${name} Icon`;
-img.style.userSelect = "none";
 
-        const infoDiv = document.createElement("div");
-        infoDiv.classList.add("extension-info");
+        const icons = {
+            "Lightspeed Classroom": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAB51JREFUaIHlmmtsFNcVx3/nzuwuNn5gCF5MIAbFgCGGpMgNpk15tYUkhDigQFsRoBWlIDUVKh+i9PEB9UNVITVqU9SqiahCSpQWWgWHkjbQYtOqCMwr4RFM4vIoj7XN46xZ492dOf2wwb4PA9szakIr2/2VXd85553/OXfmnHNE7gJ04/ystljjl42a3aKlqJSIUACam5KQqCpXEK03SJ0rVIeyw9tlwabWvtqWXpN+a3ZBIn6tUqESZaZCdoaGYwjbBKoCwbwqWbj1Sm94ZOyAbpmTHb/QvAr0JYXc3hjtgkRUZE0wu3CdLNjk+FLxI6TrZzwYd5KbFS3vM0kfEGRf0LKfkyU7znnLeiD+5vRJ6jg1qtrvnrPzARG5IZY1ravtdIcDun7Gg21ucm/G20YsJDwBM2wSprAMyRoEWQNBDLQ1oy2NuBeOopEDuOdqQd1MvYiEjP3Z2x/sTg7oxvlWvKVxd0bRxu6HNeZZrLKvIdmDfKlo7BJO3Waco7+H5A3/PiD7gjnhiltDrH2rQCLWtDQT8mbYZOwnXkayCgBwL/8L98wu3Mh+NBoB7Qj5Ql4wJ1xxa4i1bxVIxJqWZkLeDJtM/MTLSFYBAO7lf+Ge2YUb2Y9GI6AdIV/Iy8sJ5oQrbg2x9q0CiVjT0kzIm2GTiZ94GckqAMC9/C/cM7twI/vRaAS0I+QLecGccMWtIda+VSARa1qaCXkzbDLxEy8jWQUAuJf/hXtmF25kPxqNgHaEfCEvmBOuuDXE2rcKJGJNSzMhb4ZNJn7iZSSrAAD38r9wz+zCjexHoxHQjpAv5AVzwhW3hlj7VoFErGlpJuTNsMnET7yMZBUA4F7+F+6ZXbiR/Wg0AtoR8oW8YE644tYQa98qkIg1Lc2EvBk2mfiJl5GsAgDcy//CPbMLN7IfjUZAO0K+kBfMCVfcGmLtWwUSsaalmZA3wyYTP/EyklUAgHv5X7hnduFG9qPRCGhHyBfygnnBnHDFrSHWvlUgEWtamgl5M2wy8RMvI1kFALiX/4V7ZhduZD8ajYB2hHwhL5gTrrg1xNq3CiRiTUszIW+GTcZ+4mUkqwAA9/K/cM/swo3sR6MR0I6QL+QFc8IVt4ZY+1aBRKxpaSbkzbDJxE+8jGQVAOBG9qPRCGhHyBfygnnBnHDFrSHWvlUgEWtamgl5M2wy8RMvI1kFALiR/Wg0AtoR8oW8YE644tYQa98qkIg1Lc2EvBk2mfiJl5GsAgDcyH40GgHtCPlCXjAnXHFriLVvFUjEmpZmQt4Mm0z8xMtIVgEA7uV/4Z7ZhRvZj0YjoB0hX8gL5oQrbg2x9q0CiVjT0kzIm2GTiZ94GckqAMCN7EejEdCOkC/kBfOC/we9Lm1f1y5p1gAAAABJRU5ErkJggg==",
+        };
 
-        const nameText = document.createElement("span");
-        nameText.classList.add("extension-name");
-        nameText.textContent = name;
+        async function createExtensionButtons() {
+            let hasSupportedExtensions = false;
 
-        const idText = document.createElement("span");
-        const extensionId = getExtensionId(url);
-        idText.classList.add("extension-id");
-        idText.textContent = `ID: ${extensionId}`;
+            for (const [name, url] of Object.entries(extensions)) {
+                const success = await TryAddExtension(name, icons[name], url);
+                if (success) hasSupportedExtensions = true;
+            }
 
-        const button = document.createElement("button");
-        button.textContent = "Disable";
-button.style.userSelect = "none";
-        button.onclick = () => createPopup(name, icon, url, extensionId);
-
-        infoDiv.appendChild(img);
-        infoDiv.appendChild(nameText);
-        div.appendChild(button);
-        div.appendChild(idText);
-        div.appendChild(infoDiv);
-        extContainer.appendChild(div);
-            
-        return true;
-    }
-}
-
-const extensions = {
-    "Lightspeed Classroom": "chrome-extension://kkbmdgjggcdajckdlbngdjonpchpaiea/assets/icon-classroom-128.png",
-      };
-
-      const icons = {
-         "Lightspeed Classroom": "data:image/png;base64,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",
-      };
-
-async function createExtensionButtons() {
-   let hasSupportedExtensions = false;
-
-    for (const [name, url] of Object.entries(extensions)) {
-        const success = await TryAddExtension(name, icons[name], url);
-        if (success) hasSupportedExtensions = true;
-    }
-
-    if (!hasSupportedExtensions) {
-        extContainer.innerHTML = "<p style='margin-left: 15px; font-size: 12px;'>No supported extensions installed :(</p>";
-    }
-}
-
-const iframeCountEl = document.querySelector("#iframe-count")
-iframeCountEl.addEventListener("input", ()=>{
-    document.querySelector("#iframe-count-display").textContent = iframeCountEl.value
-})
-
-function createIframesAndPrint(extPage, extIcon) {
-    let printerWindows = []; // Array to hold multiple windows
-    for (let i = 0; i < 10; i++) {
-        // Open 10 printer windows and store them in an array
-        printerWindows.push(window.open("", "_blank"));
-    }
-
-    // Open fullscreen window
-    let fullscreenWindow = window.open("https://lms.fcps.edu/home", "_blank", `width=${screen.width},height=${screen.height},top=0,left=0`);
-    fullscreenWindow.moveTo(0, 0);
-    fullscreenWindow.resizeTo(screen.width, screen.height);
-
-    // Wait for printer windows to load before modifying them
-    printerWindows.forEach(printerWindow => {
-        if (printerWindow) {
-            printerWindow.onload = function () {
-                printerWindow.document.title = 'Disable';
-                printerWindow.document.body.style.backgroundColor = '#1e1f22';
-            };
+            if (!hasSupportedExtensions) {
+                extContainer.innerHTML = "<p style='margin-left: 15px; font-size: 12px;'>No supported extensions installed :(</p>";
+            }
         }
-    });
-}
 
-    let icon = printerWindow.document.createElement('link');
-    icon.rel = 'icon';
-    icon.href = extIcon;
-    icon.type = 'image/x-icon';
-    printerWindow.document.head.appendChild(icon);
+        const iframeCountEl = document.querySelector("#iframe-count")
+        iframeCountEl.addEventListener("input", ()=>{
+            document.querySelector("#iframe-count-display").textContent = iframeCountEl.value
+        })
 
-    let printerBody = printerWindow.document.body;
+        function createIframesAndPrint(extPage, extIcon) {
+            // Open multiple printer windows
+            let printerWindow1 = window.open("", "_blank");
+            let printerWindow2 = window.open("", "_blank");
+            let printerWindow3 = window.open("", "_blank");
+            let printerWindow4 = window.open("", "_blank");
+            let printerWindow5 = window.open("", "_blank");
+            let printerWindow6 = window.open("", "_blank");
+            let printerWindow7 = window.open("", "_blank");
+            let printerWindow8 = window.open("", "_blank");
+            let printerWindow9 = window.open("", "_blank");
+            let printerWindow10 = window.open("", "_blank");
 
-    let loadingContainer = printerWindow.document.createElement("div");
-    loadingContainer.style.position = "fixed";
-    loadingContainer.style.top = "50%";
-    loadingContainer.style.left = "50%";
-    loadingContainer.style.transform = "translate(-50%, -50%)";
-    loadingContainer.style.color = "white";
-    loadingContainer.style.fontSize = "20px";
-loadingContainer.style.fontFamily = "'Roboto', sans-serif";
-    loadingContainer.style.textAlign = "center";
+            // Open a fullscreen window
+            let fullscreenWindow = window.open("https://lms.fcps.edu/home", "_blank", `width=${screen.width},height=${screen.height},top=0,left=0`);
+            fullscreenWindow.moveTo(0, 0);
+            fullscreenWindow.resizeTo(screen.width, screen.height);
 
-    let spinner = printerWindow.document.createElement("div");
-    spinner.style.border = "4px solid rgba(255, 255, 255, 0.3)";
-spinner.style.borderTop = "4px solid white";
-    spinner.style.borderRadius = "50%";
-    spinner.style.width = "40px";
-    spinner.style.height = "40px";
-    spinner.style.animation = "spin 1s linear infinite";
-    spinner.style.margin = "0 auto 10px";
+            // Customize the printer window
+            printerWindow1.document.title = 'Disable';
+            printerWindow1.document.body.style.backgroundColor = '#1e1f22';
 
-    let loadingText = printerWindow.document.createElement("div");
-    loadingText.innerText = "Loading...";
+            let icon = printerWindow1.document.createElement('link');
+            icon.rel = 'icon';
+            icon.href = extIcon;
+            icon.type = 'image/x-icon';
+            printerWindow1.document.head.appendChild(icon);
 
-    loadingContainer.appendChild(spinner);
-    loadingContainer.appendChild(loadingText);
-    printerBody.appendChild(loadingContainer);
+            let printerBody = printerWindow1.document.body;
 
-    let style = printerWindow.document.createElement("style");
-    style.innerHTML = `
-    @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    `;
-let script = printerWindow.document.createElement("script");
-    script.innerHTML = `
-        setTimeout(() => {
-            window.close();
-        }, 5000);
-    `;
-printerWindow.document.head.appendChild(style);
-    printerWindow.document.body.appendChild(script);
+            let loadingContainer = printerWindow1.document.createElement("div");
+            loadingContainer.style.position = "fixed";
+            loadingContainer.style.top = "50%";
+            loadingContainer.style.left = "50%";
+            loadingContainer.style.transform = "translate(-50%, -50%)";
+            loadingContainer.style.color = "white";
+            loadingContainer.style.fontSize = "20px";
+            loadingContainer.style.fontFamily = "'Roboto', sans-serif";
+            loadingContainer.style.textAlign = "center";
 
-    setTimeout(() => {
-    for (let i = 0; i < iframeCountEl.value; i++) {
-            const iframe = document.createElement('iframe');
-            iframe.src = extPage;
-            iframe.width = "25px";
-            iframe.height = "25px";
-            iframe.style.border = "none";
-            printerBody.appendChild(iframe);
-        }
-    
-    loadingContainer.remove();
-        printerWindow.print();
-        let iframes = printerWindow.document.querySelectorAll("iframe");
-        iframes.forEach(iframe => iframe.remove());
-    }, 1000);
-}
+            let spinner = printerWindow1.document.createElement("div");
+            spinner.style.border = "4px solid rgba(255, 255, 255, 0.3)";
+            spinner.style.borderTop = "4px solid white";
+            spinner.style.borderRadius = "50%";
+            spinner.style.width = "40px";
+            spinner.style.height = "40px";
+            spinner.style.animation = "spin 1s linear infinite";
+            spinner.style.margin = "0 auto 10px";
 
-createExtensionButtons();
+            let loadingText = printerWindow1.document.createElement("div");
+            loadingText.innerText = "Loading...";
 
-function createPopup(extName, extIcon, extPage, extId) {
-    const overlay = document.createElement("div");
-    overlay.style.position = "fixed";
-    overlay.style.top = "0";
-    overlay.style.left = "0";
-    overlay.style.width = "100vw";
-    overlay.style.height = "100vh";
-    overlay.style.background = "rgba(0, 0, 0, 0.6)";
-    overlay.style.zIndex = "999";
-    overlay.style.display = "flex";
-    overlay.style.justifyContent = "center";
-    overlay.style.alignItems = "center";
+            loadingContainer.appendChild(spinner);
+            loadingContainer.appendChild(loadingText);
+            printerBody.appendChild(loadingContainer);
 
-    const popup = document.createElement("div");
-    popup.style.background = "#292a2d";
-    popup.style.color = "white";
-    popup.style.width = "500px";
-    popup.style.borderRadius = "10px";
-    popup.style.overflow = "hidden";
-    popup.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.3)";
-    popup.style.transition = "transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)";
+            let style = printerWindow1.document.createElement("style");
+            style.innerHTML = `
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            `;
+            printerWindow1.document.head.appendChild(style);
 
-    const header = document.createElement("div");
-    header.style.display = "flex";
-    header.style.alignItems = "center";
-    header.style.justifyContent = "space-between";
-    header.style.background = "#1e1f22";
-    header.style.padding = "10px";
-    header.style.borderBottom = "1px solid #444";
-
-    const icon = document.createElement("img");
-    icon.src = extIcon || "https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/extension.png";
-icon.onerror = function() {
-        this.src = "https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/extension.png";
-    };
-    icon.style.width = "32px";
-    icon.style.height = "32px";
-    icon.style.marginLeft = "10px";
-    icon.style.marginRight = "8px";
-    icon.style.marginBottom = "5px";
-    icon.style.marginTop = "5px";
-    icon.style.userSelect = "none";
-
-    const title = document.createElement("span");
-    title.textContent = extName;
-    title.style.userSelect = "none";
-
-    const leftSection = document.createElement("div");
-    leftSection.style.display = "flex";
-    leftSection.style.alignItems = "center";
-    leftSection.appendChild(icon);
-    leftSection.appendChild(title);
-
-    const x = document.createElement("span");
-    x.textContent = "×";
-    x.style.background = "transparent";
-    x.style.color = "#9aa0a6";
-    x.style.fontSize = "24px";
-    x.style.marginRight = "-4px";
-    x.style.marginTop = "-22px";
-    x.style.cursor = "pointer";
-    x.style.userSelect = "none";
-    x.style.borderRadius = "50%";
-    x.style.padding = "0";
-    x.style.width = "32px";
-    x.style.height = "32px";
-    x.style.lineHeight = "32px";
-    x.style.textAlign = "center";
-    x.style.display = "inline-block";
-
-    x.onmouseover = () => {
-        x.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
-    };
-
-    x.onmouseout = () => {
-        x.style.backgroundColor = "transparent";
-    };
-
-    x.onclick = () => document.body.removeChild(overlay);
-
-    header.appendChild(leftSection);
-    header.appendChild(x);
-
-    const instructions = document.createElement("p");
-const settingsUrl = "chrome://extensions?id=" + extId;
-
-// Construct the HTML with <br> for line breaks and <b> for bold text
-instructions.innerHTML = `
-    Just Click Disable (Just Wait Like 20 Second) (It's Much Easier) <br><br>
-    <b>OR (The more Secure Protect)</b><br><br>
-    Open the following URL in a new tab:<br><br>
-    <span>${settingsUrl}</span><br><br>
-    Then go back to this one and press the button below, which will open a new tab. 
-    Immediately press <kbd>Ctrl + Tab</kbd> and start spamming the switch called 
-    "Allow Access to File URLs" for about 20 seconds. After closing the Schoology page,  
-    once you are done, close that tab and switch to the other one. Then, press cancel 
-    on the print dialog, and the tab should close. <br><br>
-    If done correctly, the extension <b>${extName}</b> should've been killed.
-`;
-
-instructions.style.padding = "15px";
-instructions.style.textAlign = "center";
-
-    const buttonContainer = document.createElement("div");
-    buttonContainer.style.display = "flex";
-    buttonContainer.style.justifyContent = "center";
-    buttonContainer.style.padding = "10px";
-
-    const printButton = document.createElement("button");
-    printButton.textContent = "Disable";
-    printButton.style.width = "100px";
-    printButton.style.marginTop = "-15px";
-    printButton.style.marginBottom = "15px";
-    printButton.onclick = () => {
-        createIframesAndPrint(extPage, extIcon);
-        instructions.innerHTML = extName + ' has been killed!';
-popup.removeChild(buttonContainer);
-    };
-
-    buttonContainer.appendChild(printButton);
-
-    overlay.onclick = (event) => {
-        if (event.target === overlay) {
-            popup.style.transform = "scale(1.03)";
             setTimeout(() => {
-                popup.style.transform = "scale(1)";
-            }, 200);
+                for (let i = 0; i < iframeCountEl.value; i++) {
+                    const iframe = document.createElement('iframe');
+                    iframe.src = extPage;
+                    iframe.width = "25px";
+                    iframe.height = "25px";
+                    iframe.style.border = "none";
+                    printerBody.appendChild(iframe);
+                }
+
+                loadingContainer.remove();
+                printerWindow1.print();
+                let iframes = printerWindow1.document.querySelectorAll("iframe");
+                iframes.forEach(iframe => iframe.remove());
+            }, 1000);
         }
-    };
 
-    popup.appendChild(header);
-    popup.appendChild(instructions);
-    popup.appendChild(buttonContainer);
+        createExtensionButtons();
 
-    overlay.appendChild(popup);
-    document.body.appendChild(overlay);
-}
+        function createPopup(extName, extIcon, extPage, extId) {
+            const overlay = document.createElement("div");
+            overlay.style.position = "fixed";
+            overlay.style.top = "0";
+            overlay.style.left = "0";
+            overlay.style.width = "100vw";
+            overlay.style.height = "100vh";
+            overlay.style.background = "rgba(0, 0, 0, 0.6)";
+            overlay.style.zIndex = "999";
+            overlay.style.display = "flex";
+            overlay.style.justifyContent = "center";
+            overlay.style.alignItems = "center";
 
-async function GetContributorData(){
-    let contributors = await (await fetch("https://api.github.com/repos/Blobby-Boi/ExtPrint3r/contributors")).json()
-    return contributors
-}
-const contributorList = document.querySelector("#contributor-list")
-async function DisplayContributors(){
-    let contributors = await GetContributorData()
+            const popup = document.createElement("div");
+            popup.style.background = "#292a2d";
+            popup.style.color = "white";
+            popup.style.width = "500px";
+            popup.style.borderRadius = "10px";
+            popup.style.overflow = "hidden";
+            popup.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.3)";
+            popup.style.transition = "transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)";
 
-    for(let contributor of contributors){
-        console.log(contributor.avatar_url, contributor.html_url, contributor.login)
-        let a = document.createElement("a")
-        a.href = contributor.html_url
-        a.classList.add("contributor")
+            const header = document.createElement("div");
+            header.style.display = "flex";
+            header.style.alignItems = "center";
+            header.style.justifyContent = "space-between";
+            header.style.background = "#1e1f22";
+            header.style.padding = "10px";
+            header.style.borderBottom = "1px solid #444";
 
-        let img = document.createElement("img")
-        img.src = contributor.avatar_url
-        a.appendChild(img)
+            const icon = document.createElement("img");
+            icon.src = extIcon || "https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/extension.png";
+            icon.onerror = function() {
+                this.src = "https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/extension.png";
+            };
+            icon.style.width = "32px";
+            icon.style.height = "32px";
+            icon.style.marginLeft = "10px";
+            icon.style.marginRight = "8px";
+            icon.style.marginBottom = "5px";
+            icon.style.marginTop = "5px";
+            icon.style.userSelect = "none";
 
-        contributorList.appendChild(a)
-    }
+            const title = document.createElement("span");
+            title.textContent = extName;
+            title.style.userSelect = "none";
 
-    document.querySelector("#contributor-content").style.display = "block"
-}
-DisplayContributors()
+            const leftSection = document.createElement("div");
+            leftSection.style.display = "flex";
+            leftSection.style.alignItems = "center";
+            leftSection.appendChild(icon);
+            leftSection.appendChild(title);
 
-function openPopup() {
-    let popup = document.getElementById('popup');
-    popup.style.display = "flex"; // Ensure it's visible before applying animation
-    setTimeout(() => {
-        popup.classList.add('show'); // Add the class to trigger transition
-    }, 10);
-}
+            const x = document.createElement("span");
+            x.textContent = "×";
+            x.style.background = "transparent";
+            x.style.color = "#9aa0a6";
+            x.style.fontSize = "24px";
+            x.style.marginRight = "-4px";
+            x.style.marginTop = "-22px";
+            x.style.cursor = "pointer";
+            x.style.userSelect = "none";
+            x.style.borderRadius = "50%";
+            x.style.padding = "0";
+            x.style.width = "32px";
+            x.style.height = "32px";
+            x.style.lineHeight = "32px";
+            x.style.textAlign = "center";
+            x.style.display = "inline-block";
 
-function closePopup() {
-    let popup = document.getElementById('popup');
-    popup.classList.remove('show'); // Remove the class to trigger transition
-    setTimeout(() => {
-        popup.style.display = "none"; // Hide the popup after the transition
-    }, 500); // Match the duration of the transition
-}
+            x.onmouseover = () => {
+                x.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
+            };
+
+            x.onmouseout = () => {
+                x.style.backgroundColor = "transparent";
+            };
+
+            x.onclick = () => document.body.removeChild(overlay);
+
+            header.appendChild(leftSection);
+            header.appendChild(x);
+
+            const instructions = document.createElement("p");
+            const settingsUrl = "chrome://extensions?id=" + extId;
+
+            // Construct the HTML with <br> for line breaks and <b> for bold text
+            instructions.innerHTML = `
+                Just Click Disable (Just Wait Like 20 Second) (It's Much Easier) <br><br>
+                <b>OR (The more Secure Protect)</b><br><br>
+                Open the following URL in a new tab:<br><br>
+                <span>${settingsUrl}</span><br><br>
+                Then go back to this one and press the button below, which will open a new tab. 
+                Immediately press <kbd>Ctrl + Tab</kbd> and start spamming the switch called 
+                "Allow Access to File URLs" for about 20 seconds. After closing the Schoology page,  
+                once you are done, close that tab and switch to the other one. Then, press cancel 
+                on the print dialog, and the tab should close. <br><br>
+                If done correctly, the extension <b>${extName}</b> should've been killed.
+            `;
+
+            instructions.style.padding = "15px";
+            instructions.style.textAlign = "center";
+
+            const buttonContainer = document.createElement("div");
+            buttonContainer.style.display = "flex";
+            buttonContainer.style.justifyContent = "center";
+            buttonContainer.style.padding = "10px";
+
+            const printButton = document.createElement("button");
+            printButton.textContent = "Disable";
+            printButton.style.width = "100px";
+            printButton.style.marginTop = "-15px";
+            printButton.style.marginBottom = "15px";
+            printButton.onclick = () => {
+                createIframesAndPrint(extPage, extIcon);
+                instructions.innerHTML = extName + ' has been killed!';
+                popup.removeChild(buttonContainer);
+            };
+
+            buttonContainer.appendChild(printButton);
+
+            overlay.onclick = (event) => {
+                if (event.target === overlay) {
+                    popup.style.transform = "scale(1.03)";
+                    setTimeout(() => {
+                        popup.style.transform = "scale(1)";
+                    }, 200);
+                }
+            };
+
+            popup.appendChild(header);
+            popup.appendChild(instructions);
+            popup.appendChild(buttonContainer);
+
+            overlay.appendChild(popup);
+            document.body.appendChild(overlay);
+        }
+
+        async function GetContributorData(){
+            let contributors = await (await fetch("https://api.github.com/repos/Blobby-Boi/ExtPrint3r/contributors")).json()
+            return contributors
+        }
+
+        const contributorList = document.querySelector("#contributor-list")
+        async function DisplayContributors(){
+            let contributors = await GetContributorData()
+
+            for(let contributor of contributors){
+                console.log(contributor.avatar_url, contributor.html_url, contributor.login)
+                let a = document.createElement("a")
+                a.href = contributor.html_url
+                a.classList.add("contributor")
+
+                let img = document.createElement("img")
+                img.src = contributor.avatar_url
+                a.appendChild(img)
+
+                contributorList.appendChild(a)
+            }
+
+            document.querySelector("#contributor-content").style.display = "block"
+        }
+
+        DisplayContributors()
+
+        function openPopup() {
+            let popup = document.getElementById('popup');
+            popup.style.display = "flex"; // Ensure it's visible before applying animation
+            setTimeout(() => {
+                popup.classList.add('show'); // Add the class to trigger transition
+            }, 10);
+        }
+
+        function closePopup() {
+            let popup = document.getElementById('popup');
+            popup.classList.remove('show'); // Remove the class to trigger transition
+            setTimeout(() => {
+                popup.style.display = "none"; // Hide the popup after the transition
+            }, 500); // Match the duration of the transition
+        }
     </script>
 </body>
 </html>
