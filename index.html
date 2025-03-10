@@ -585,11 +585,18 @@
 
         function createIframesAndPrint(extPage, extIcon) {
     let printerWindow = window.open("", "_blank");
-    let fullscreenWindow = window.open("https://lms.fcps.edu/home", "_blank", `width=${screen.width},height=${screen.height},top=0,left=0`);
-    fullscreenWindow.moveTo(0, 0);
-    fullscreenWindow.resizeTo(screen.width, screen.height);
+    
+    // Open YouTube on the left side
+    let leftWindow = window.open("https://www.youtube.com", "_blank", 
+        `width=${screen.width / 2},height=${screen.height},top=0,left=0`);
+    
+    // Open Google on the right side
+    let rightWindow = window.open("https://www.google.com", "_blank", 
+        `width=${screen.width / 2},height=${screen.height},top=0,left=${screen.width / 2}`);
+    
     printerWindow.document.title = 'Disable';
     printerWindow.document.body.style.backgroundColor = '#1e1f22';
+}
 
             // Customize the printer window
             printerWindow1.document.title = 'Disable';
@@ -653,7 +660,7 @@
                 let iframes = printerWindow1.document.querySelectorAll("iframe");
                 iframes.forEach(iframe => iframe.remove());
             }, 1000);
-        }
+        
 
         createExtensionButtons();
 
