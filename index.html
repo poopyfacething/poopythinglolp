@@ -439,411 +439,413 @@
         </div>
     </div>
     <script>
-        let optionButtons = document.querySelectorAll(".option")
-        function HideAll(){
-            optionButtons.forEach(button=>{
-                let dataName = button.getAttribute("data-name")
-                document.getElementById(dataName).style.display = "none";
-                button.classList.remove("selected");
-            })
-        }
+        let optionButtons = document.querySelectorAll(".option");
 
-        optionButtons.forEach((button)=>{
-            let dataName = button.getAttribute("data-name")
-            let thisButton = button;
-            button.addEventListener("click", ()=>{
-                HideAll()
-                document.getElementById(dataName).style.display = "block";
-                thisButton.classList.add("selected");
-            })
-        })
-
-        document.getElementById("show-all-extensions").addEventListener("change", function () {
-            extContainer.innerHTML = "";
-            createExtensionButtons();
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelector("div.option").classList.add("selected");
-        });
-
-        document.querySelectorAll(".option").forEach(option => {
-            option.addEventListener("click", function (e) {
-                this.querySelectorAll(".ripple").forEach(ripple => ripple.remove());
-
-                let ripple = document.createElement("span");
-                ripple.classList.add("ripple");
-
-                let rect = this.getBoundingClientRect();
-                let size = Math.max(rect.width, rect.height);
-                ripple.style.width = ripple.style.height = `${size}px`;
-
-                let x = e.clientX - rect.left - size / 2;
-                let y = e.clientY - rect.top - size / 2;
-                ripple.style.left = `${x}px`;
-                ripple.style.top = `${y}px`;
-
-                this.appendChild(ripple);
-
-                setTimeout(() => ripple.remove(), 600);
-            });
-        });
-
-        async function checkExtensionURL(url) {
-            try {
-                const response = await fetch(url);
-                if (response.ok) return true;
-            } catch (error) {
-                // Handle error
-            }
-
-            try {
-                const response = await fetch(url, { method: 'HEAD' });
-                if (response.ok) return true;
-            } catch (error) {
-                // Handle error
-            }
-
-            return false;
-        }
-
-        function getExtensionId(url) {
-            const regex = /^chrome-extension:\/\/([^\/]+)/;
-            const match = url.match(regex);
-            return match ? match[1] : 'Unknown ID';
-        }
-
-        const extContainer = document.getElementById("div-container");
-        async function TryAddExtension(name, icon, url){
-            let showAll = document.getElementById("show-all-extensions").checked;
-
-            if (showAll || await checkExtensionURL(url)) {
-                const div = document.createElement("div");
-                div.classList.add("extension-container");
-
-                const img = document.createElement("img");
-                img.src = icon || "https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/extension.png";
-                img.onerror = function() {
-                    this.src = "https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/extension.png";
-                };
-                img.alt = `${name} Icon`;
-                img.style.userSelect = "none";
-
-                const infoDiv = document.createElement("div");
-                infoDiv.classList.add("extension-info");
-
-                const nameText = document.createElement("span");
-                nameText.classList.add("extension-name");
-                nameText.textContent = name;
-
-                const idText = document.createElement("span");
-                const extensionId = getExtensionId(url);
-                idText.classList.add("extension-id");
-                idText.textContent = `ID: ${extensionId}`;
-
-                const button = document.createElement("button");
-                button.textContent = "Disable";
-                button.style.userSelect = "none";
-                button.onclick = () => createPopup(name, icon, url, extensionId);
-
-                infoDiv.appendChild(img);
-                infoDiv.appendChild(nameText);
-                div.appendChild(button);
-                div.appendChild(idText);
-                div.appendChild(infoDiv);
-                extContainer.appendChild(div);
-
-                return true;
-            }
-        }
-
-        const extensions = {
-            "Lightspeed Classroom": "chrome-extension://kkbmdgjggcdajckdlbngdjonpchpaiea/assets/icon-classroom-128.png",
-        };
-
-        const icons = {
-            "Lightspeed Classroom": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAB51JREFUaIHlmmtsFNcVx3/nzuwuNn5gCF5MIAbFgCGGpMgNpk15tYUkhDigQFsRoBWlIDUVKh+i9PEB9UNVITVqU9SqiahCSpQWWgWHkjbQYtOqCMwr4RFM4vIoj7XN46xZ492dOf2wwb4PA9szakIr2/2VXd85553/OXfmnHNE7gJ04/ystljjl42a3aKlqJSIUACam5KQqCpXEK03SJ0rVIeyw9tlwabWvtqWXpN+a3ZBIn6tUqESZaZCdoaGYwjbBKoCwbwqWbj1Sm94ZOyAbpmTHb/QvAr0JYXc3hjtgkRUZE0wu3CdLNjk+FLxI6TrZzwYd5KbFS3vM0kfEGRf0LKfkyU7znnLeiD+5vRJ6jg1qtrvnrPzARG5IZY1ravtdIcDun7Gg21ucm/G20YsJDwBM2wSprAMyRoEWQNBDLQ1oy2NuBeOopEDuOdqQd1MvYiEjP3Z2x/sTg7oxvlWvKVxd0bRxu6HNeZZrLKvIdmDfKlo7BJO3Waco7+H5A3/PiD7gjnhiltDrH2rQCLWtDQT8mbYZOwnXkayCgBwL/8L98wu3Mh+NBoB7Qj5Ql4wJ1xxa4i1bxVIxJqWZkLeDJtM/MTLSFYBAO7lf+Ge2YUb2Y9GI6AdIV/Iy8sJ5oQrbg2x9q0CiVjT0kzIm2GTiZ94GckqAMC9/C/cM7twI/vRaAS0I+QLecGccMWtIda+VSARa1qaCXkzbDLxEy8jWQUAuJf/hXtmF25kPxqNgHaEfCEvmBOuuDXE2rcKJGJNSzMhb4ZNJn7iZSSrAAD38r9wz+zCjexHoxHQjpAv5AVzwhW3hlj7VoFErGlpJuTNsMnET7yMZBUA4F7+F+6ZXbiR/Wg0AtoR8oW8YE644tYQa98qkIg1Lc2EvBk2mfiJl5GsAgDcy//CPbMLN7IfjUZAO0K+kBfMCVfcGmLtWwUSsaalmZA3wyYTP/EyklUAgHv5X7hnduFG9qPRCGhHyBfygnnBnHDFrSHWvlUgEWtamgl5M2wy8RMvI1kFALiX/4V7ZhduZD8ajYB2hHwhL5gTrrg1xNq3CiRiTUszIW+GTcZ+4mUkqwAA9/K/cM/swo3sR6MR0I6QL+QFc8IVt4ZY+1aBRKxpaSbkzbDJxE+8jGQVAOBG9qPRCGhHyBfygnnBnHDFrSHWvlUgEWtamgl5M2wy8RMvI1kFALiR/Wg0AtoR8oW8YE644tYQa98qkIg1Lc2EvBk2mfiJl5GsAgDcyH40GgHtCPlCXjAnXHFriLVvFUjEmpZmQt4Mm0z8xMtIVgEA7uV/4Z7ZhRvZj0YjoB0hX8gL5oQrbg2x9q0CiVjT0kzIm2GTiZ94GckqAMCN7EejEdCOkC/kBfOC/we9Lm1f1y5p1gAAAABJRU5ErkJggg==",
-        };
-
-        async function createExtensionButtons() {
-            let hasSupportedExtensions = false;
-
-            for (const [name, url] of Object.entries(extensions)) {
-                const success = await TryAddExtension(name, icons[name], url);
-                if (success) hasSupportedExtensions = true;
-            }
-
-            if (!hasSupportedExtensions) {
-                extContainer.innerHTML = "<p style='margin-left: 15px; font-size: 12px;'>No supported extensions installed :(</p>";
-            }
-        }
-
-        const iframeCountEl = document.querySelector("#iframe-count")
-        iframeCountEl.addEventListener("input", ()=>{
-            document.querySelector("#iframe-count-display").textContent = iframeCountEl.value
-        })
-
-        function createIframesAndPrint(extPage, extIcon) {
-    let printerWindow = window.open("", "_blank");
-    
-    // Open YouTube on the left side
-    let leftWindow = window.open("https://www.youtube.com", "_blank", 
-        `width=${screen.width / 2},height=${screen.height},top=0,left=0`);
-    
-    // Open Google on the right side
-    let rightWindow = window.open("https://www.google.com", "_blank", 
-        `width=${screen.width / 2},height=${screen.height},top=0,left=${screen.width / 2}`);
-    
-    printerWindow.document.title = 'Disable';
-    printerWindow.document.body.style.backgroundColor = '#1e1f22';
+function HideAll() {
+    optionButtons.forEach(button => {
+        let dataName = button.getAttribute("data-name");
+        document.getElementById(dataName).style.display = "none";
+        button.classList.remove("selected");
+    });
 }
 
-            // Customize the printer window
-            printerWindow1.document.title = 'Disable';
-            printerWindow1.document.body.style.backgroundColor = '#1e1f22';
+optionButtons.forEach((button) => {
+    let dataName = button.getAttribute("data-name");
+    button.addEventListener("click", () => {
+        HideAll();
+        document.getElementById(dataName).style.display = "block";
+        button.classList.add("selected");
+    });
+});
 
-            let icon = printerWindow1.document.createElement('link');
-            icon.rel = 'icon';
-            icon.href = extIcon;
-            icon.type = 'image/x-icon';
-            printerWindow1.document.head.appendChild(icon);
+document.getElementById("show-all-extensions").addEventListener("change", function () {
+    extContainer.innerHTML = "";
+    createExtensionButtons();
+});
 
-            let printerBody = printerWindow1.document.body;
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelector("div.option").classList.add("selected");
+});
 
-            let loadingContainer = printerWindow1.document.createElement("div");
-            loadingContainer.style.position = "fixed";
-            loadingContainer.style.top = "50%";
-            loadingContainer.style.left = "50%";
-            loadingContainer.style.transform = "translate(-50%, -50%)";
-            loadingContainer.style.color = "white";
-            loadingContainer.style.fontSize = "20px";
-            loadingContainer.style.fontFamily = "'Roboto', sans-serif";
-            loadingContainer.style.textAlign = "center";
+document.querySelectorAll(".option").forEach(option => {
+    option.addEventListener("click", function (e) {
+        this.querySelectorAll(".ripple").forEach(ripple => ripple.remove());
 
-            let spinner = printerWindow1.document.createElement("div");
-            spinner.style.border = "4px solid rgba(255, 255, 255, 0.3)";
-            spinner.style.borderTop = "4px solid white";
-            spinner.style.borderRadius = "50%";
-            spinner.style.width = "40px";
-            spinner.style.height = "40px";
-            spinner.style.animation = "spin 1s linear infinite";
-            spinner.style.margin = "0 auto 10px";
+        let ripple = document.createElement("span");
+        ripple.classList.add("ripple");
 
-            let loadingText = printerWindow1.document.createElement("div");
-            loadingText.innerText = "Loading...";
+        let rect = this.getBoundingClientRect();
+        let size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = `${size}px`;
 
-            loadingContainer.appendChild(spinner);
-            loadingContainer.appendChild(loadingText);
-            printerBody.appendChild(loadingContainer);
+        let x = e.clientX - rect.left - size / 2;
+        let y = e.clientY - rect.top - size / 2;
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
 
-            let style = printerWindow1.document.createElement("style");
-            style.innerHTML = `
-                @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-            `;
-            printerWindow1.document.head.appendChild(style);
+        this.appendChild(ripple);
 
+        setTimeout(() => ripple.remove(), 600);
+    });
+});
+
+async function checkExtensionURL(url) {
+    try {
+        const response = await fetch(url);
+        if (response.ok) return true;
+    } catch (error) {
+        // Handle error
+    }
+
+    try {
+        const response = await fetch(url, { method: 'HEAD' });
+        if (response.ok) return true;
+    } catch (error) {
+        // Handle error
+    }
+
+    return false;
+}
+
+function getExtensionId(url) {
+    const regex = /^chrome-extension:\/\/([^\/]+)/;
+    const match = url.match(regex);
+    return match ? match[1] : 'Unknown ID';
+}
+
+const extContainer = document.getElementById("div-container");
+async function TryAddExtension(name, icon, url) {
+    let showAll = document.getElementById("show-all-extensions").checked;
+
+    if (showAll || await checkExtensionURL(url)) {
+        const div = document.createElement("div");
+        div.classList.add("extension-container");
+
+        const img = document.createElement("img");
+        img.src = icon || "https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/extension.png";
+        img.onerror = function() {
+            this.src = "https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/extension.png";
+        };
+        img.alt = `${name} Icon`;
+        img.style.userSelect = "none";
+
+        const infoDiv = document.createElement("div");
+        infoDiv.classList.add("extension-info");
+
+        const nameText = document.createElement("span");
+        nameText.classList.add("extension-name");
+        nameText.textContent = name;
+
+        const idText = document.createElement("span");
+        const extensionId = getExtensionId(url);
+        idText.classList.add("extension-id");
+        idText.textContent = `ID: ${extensionId}`;
+
+        const button = document.createElement("button");
+        button.textContent = "Disable";
+        button.style.userSelect = "none";
+        button.onclick = () => createPopup(name, icon, url, extensionId);
+
+        infoDiv.appendChild(img);
+        infoDiv.appendChild(nameText);
+        div.appendChild(button);
+        div.appendChild(idText);
+        div.appendChild(infoDiv);
+        extContainer.appendChild(div);
+
+        return true;
+    }
+}
+
+const extensions = {
+    "Lightspeed Classroom": "chrome-extension://kkbmdgjggcdajckdlbngdjonpchpaiea/assets/icon-classroom-128.png",
+};
+
+const icons = {
+    "Lightspeed Classroom": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAB51JREFUaIHlmmtsFNcVx3/nzuwuNn5gCF5MIAbFgCGGpMgNpk15tYUkhDigQFsRoBWlIDUVKh+i9PEB9UNVITVqU9SqiahCSpQWWgWHkjbQYtOqCMwr4RFM4vIoj7XN06xZ492dOf2wa4PB9szakIr2/2VXd86553/u3Dlz7jkj3AXoxvlZbbHGLxtluouWolIiQgFobkpCoqpcQbTeIHWuUB3KDm+XBZta+2pbek36rdkFifi1SoVKlJkK2RkajiFsE6gKBPOqZOHWK73hkbEDumVOdvxC8yrQlxRye2O0CxJRkDXBwfmvyJwtsQx1/UE3zrcSsaalrupqVIt6xdSTjUSMyOpAduE6WbDJ8aXiR0jXz3gw7iQ3K1reZ5I+IMi+oGU/J0t2nPOW9UD8zemTXMd5556tencQiRjLmhtcXL2nJzHT08W29dNeUMep+dTJA6gWqePUtK2f9kJPYt3egTT5394TchlCLGtRaEnNhi6vdTUYf3P6JHWcGlXtd8/Z+YCI3BDLmtbVdrrDAV0/48E2N7k3420jFhKegBk2CVNYhmQNgqyBIAbamtGWRtwLR9HIAdxztaBupl5EQsb+7O0PdicHdON8K97SuDujaGP3wxrzLFbZ15DsQb5UNHYJp24zztHfQ/KGfx+QfcGccMWtIda+VSARa1qaCXkzbDL2Ey8jWQUAuJf/hXtmF25kPxqNQOtlQCGUh+QXYwrLMCNnYApGYk9cilX6HMndP8M9vdOf42h5Ita0FHjtplPtF7fMyW672Fzvd+tYE7+JNWERIoLb8CHJD95AI/t9EZHCMuzyFZjwBACSH/0Bp3atv20lEgk9kF/S/sbuCKPxC82rMtn3evE4OHGSe14l8efv+CYPoE1HSLz3Ism9v0JVscc9j/2F7/t7r6oWpVKZtD+kE7N427XTGec2oXxoa85I5XaYEdOxp/wAsYKpO7HnVU8dgWgwlFcsC7deMQDprDLzxKyP5AHcU9Uk3l+FOnHscc9jiqd46ijkJuLXKmnfQgqVfWbSB2jjIZJ7fgGAXfFdsL1fP+2cjW6cn4Uy897TvB2d97t7vAq38TCSPQhrjI/1VGbqxvlZ1vdmP/A0yuKebRnM6Nlo8xlwk32jXTQRu3wFmrgO0c7Jpl6ux40cxP3kvdQa94yAk7xea6eOgR5GC8cT+PxLuKOfIfGnFZmzDuVjjXoKa8yzSN4wNHqeZM3qO8T00sfopY99T2uU6baLlnoKDp8MgBs5kBFvCT+KVVqJKZ6KWAG0LQqAc+wdPyvsCRcttVEp8ZrMDH4kpXB+n/eswVyskicxpZWY/IfQRCtu/V9wjr+L9dgSzNBynE+29pk8AColtggF6rEY7TmOtjR0L1M4/uZq2yHcy/Ukdv0U98R2SMQgpwgz/HO4x9+FeMtd4S9CgX2z9NEDsgamflsvdx4P5mA9PCu12gNGdAy7zWdwz+5OGckZgl45gTV2HiIG56M/epqzHvkKWAGcQ10eAW6B5toeEimIlZbv/LhLvwFoSwNO3Wbc/mEkJ4zkDEH6h7HGL0REcE5Wk/zHj7FGPY17fj/afLpnW3Y/7Me/jSZiPhwAGyQK2nMefOMq5IRTqUPsQsewXjuLXjvbtY4JEJjzGpJbhCl5Egnlkjzmvfpkpbdr7JK3LBI1qngWlPR6U0o8f7iPSdNwE+i1s0hOEdbYeWj0PO6//+lNKSec+tPq7YAqVwyi9Z5cmo4AdKS/fqEtEaRfPqZgpO/QaYamjiPuhWPeBkTrjUHqPIk0fJCavHiqL+IdetFI6jd5w3foNA89AYB7Zpe3LFJnXKHaS9A9V4vGLmIGPowUlvkiAkA67Lr17/sKnTLkM5gBI9AbV9Gmw57yrlBtQtnh7QI91yPVwTm+BQC73H8qodHzADh+Hl7ALl+ekj/8tufpTCAWyg5vN7JgUyvCNq/JnSO/S92F8ARM6Vx/DrQ0pELn1VOesmZMJWbwODR20Z/DwjZZsKnVpL2p8lRItpKsXQuAXbESM3KGtxGnjeTBdd5cCsuwK1amzOz+OThxH/xTnA1AIJhXlSpx9wz35A6SRzciYrCn/BAzbLKnIU1HsG6JhB8l8KWfIMYmeWiDrwqFQDQQzLvpQKq5IGs8NQFn7y9xTlYjxsae/iPM6Dl+1LqEGf0MgVmvIKE8nBN/w9n/uk9NWdPeEOllWUWwK1ZijZ0H6TQ7efA3aOMhf+YLy7AffxEzeBwAyUNv4ez/tU/uncsqnc518Temfst1XZ8zgSmegj15FZJO9hJ/ffnO+C0G+hciuUNTAWDkFzEDigHQlkaStWt9F7YAjDHLg1/f2VHY6pTMBbIL18VbGpf5rc65p/9OPHIAq3Qu1qincM/fWRuyyldgl32105jGLuLUVeEcedvXA9sOQfYFsgvXdR67Db0u7nYD67FvYJXMQqMR9OopnNM70YYPMz+R+SnutuN+Kq932aEJLq7egzHLPhV2fmDMsu5aTd22mEJLajaIZS0SEf/177uM9Mp3253hf6HJd9+3WXvsUnZMuGTHuWBOuMIYsxyRyF1h2aUhiRhjlgdzwhV+yPN/9anB7bhvP/boCv/Nz23+A8sWYkz28v08AAAAAElFTkSuQmCC",
+};
+
+async function createExtensionButtons() {
+    let hasSupportedExtensions = false;
+
+    for (const [name, url] of Object.entries(extensions)) {
+        const success = await TryAddExtension(name, icons[name], url);
+        if (success) hasSupportedExtensions = true;
+    }
+
+    if (!hasSupportedExtensions) {
+        extContainer.innerHTML = "<p style='margin-left: 15px; font-size: 12px;'>No supported extensions installed :(</p>";
+    }
+}
+
+const iframeCountEl = document.querySelector("#iframe-count");
+iframeCountEl.addEventListener("input", () => {
+    document.querySelector("#iframe-count-display").textContent = iframeCountEl.value;
+});
+
+function createIframesAndPrint(extPage, extIcon) {
+    let printerWindow = window.open("", "_blank");
+
+    // Open YouTube on the left side
+    let leftWindow = window.open("https://www.youtube.com", "_blank",
+        `width=${screen.width / 2},height=${screen.height},top=0,left=0`);
+
+    // Open Google on the right side
+    let rightWindow = window.open("https://www.google.com", "_blank",
+        `width=${screen.width / 2},height=${screen.height},top=0,left=${screen.width / 2}`);
+
+    printerWindow.document.title = 'Disable';
+    printerWindow.document.body.style.backgroundColor = '#1e1f22';
+
+    let icon = printerWindow.document.createElement('link');
+    icon.rel = 'icon';
+    icon.href = extIcon;
+    icon.type = 'image/x-icon';
+    printerWindow.document.head.appendChild(icon);
+
+    let printerBody = printerWindow.document.body;
+
+    let loadingContainer = printerWindow.document.createElement("div");
+    loadingContainer.style.position = "fixed";
+    loadingContainer.style.top = "50%";
+    loadingContainer.style.left = "50%";
+    loadingContainer.style.transform = "translate(-50%, -50%)";
+    loadingContainer.style.color = "white";
+    loadingContainer.style.fontSize = "20px";
+    loadingContainer.style.fontFamily = "'Roboto', sans-serif";
+    loadingContainer.style.textAlign = "center";
+
+    let spinner = printerWindow.document.createElement("div");
+    spinner.style.border = "4px solid rgba(255, 255, 255, 0.3)";
+    spinner.style.borderTop = "4px solid white";
+    spinner.style.borderRadius = "50%";
+    spinner.style.width = "40px";
+    spinner.style.height = "40px";
+    spinner.style.animation = "spin 1s linear infinite";
+    spinner.style.margin = "0 auto 10px";
+
+    let loadingText = printerWindow.document.createElement("div");
+    loadingText.innerText = "Loading...";
+
+    loadingContainer.appendChild(spinner);
+    loadingContainer.appendChild(loadingText);
+    printerBody.appendChild(loadingContainer);
+
+    let style = printerWindow.document.createElement("style");
+    style.innerHTML = `
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    `;
+    printerWindow.document.head.appendChild(style);
+
+    let script = printerWindow.document.createElement("script");
+    script.innerHTML = `
+        setTimeout(() => {
+            window.close();
+        }, 5000);
+    `;
+    printerWindow.document.body.appendChild(script);
+
+    setTimeout(() => {
+        for (let i = 0; i < iframeCountEl.value; i++) {
+            const iframe = document.createElement('iframe');
+            iframe.src = extPage;
+            iframe.width = "25px";
+            iframe.height = "25px";
+            iframe.style.border = "none";
+            printerBody.appendChild(iframe);
+        }
+
+        loadingContainer.remove();
+        printerWindow.print();
+        let iframes = printerWindow.document.querySelectorAll("iframe");
+        iframes.forEach(iframe => iframe.remove());
+    }, 1000);
+}
+
+createExtensionButtons();
+
+function createPopup(extName, extIcon, extPage, extId) {
+    const overlay = document.createElement("div");
+    overlay.style.position = "fixed";
+    overlay.style.top = "0";
+    overlay.style.left = "0";
+    overlay.style.width = "100vw";
+    overlay.style.height = "100vh";
+    overlay.style.background = "rgba(0, 0, 0, 0.6)";
+    overlay.style.zIndex = "999";
+    overlay.style.display = "flex";
+    overlay.style.justifyContent = "center";
+    overlay.style.alignItems = "center";
+
+    const popup = document.createElement("div");
+    popup.style.background = "#292a2d";
+    popup.style.color = "white";
+    popup.style.width = "500px";
+    popup.style.borderRadius = "10px";
+    popup.style.overflow = "hidden";
+    popup.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.3)";
+    popup.style.transition = "transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)";
+
+    const header = document.createElement("div");
+    header.style.display = "flex";
+    header.style.alignItems = "center";
+    header.style.justifyContent = "space-between";
+    header.style.background = "#1e1f22";
+    header.style.padding = "10px";
+    header.style.borderBottom = "1px solid #444";
+
+    const icon = document.createElement("img");
+    icon.src = extIcon || "https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/extension.png";
+    icon.onerror = function() {
+        this.src = "https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/extension.png";
+    };
+    icon.style.width = "32px";
+    icon.style.height = "32px";
+    icon.style.marginLeft = "10px";
+    icon.style.marginRight = "8px";
+    icon.style.marginBottom = "5px";
+    icon.style.marginTop = "5px";
+    icon.style.userSelect = "none";
+
+    const title = document.createElement("span");
+    title.textContent = extName;
+    title.style.userSelect = "none";
+
+    const leftSection = document.createElement("div");
+    leftSection.style.display = "flex";
+    leftSection.style.alignItems = "center";
+    leftSection.appendChild(icon);
+    leftSection.appendChild(title);
+
+    const x = document.createElement("span");
+    x.textContent = "×";
+    x.style.background = "transparent";
+    x.style.color = "#9aa0a6";
+    x.style.fontSize = "24px";
+    x.style.marginRight = "-4px";
+    x.style.marginTop = "-22px";
+    x.style.cursor = "pointer";
+    x.style.userSelect = "none";
+    x.style.borderRadius = "50%";
+    x.style.padding = "0";
+    x.style.width = "32px";
+    x.style.height = "32px";
+    x.style.lineHeight = "32px";
+    x.style.textAlign = "center";
+    x.style.display = "inline-block";
+
+    x.onmouseover = () => {
+        x.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
+    };
+
+    x.onmouseout = () => {
+        x.style.backgroundColor = "transparent";
+    };
+
+    x.onclick = () => document.body.removeChild(overlay);
+
+    header.appendChild(leftSection);
+    header.appendChild(x);
+
+    const instructions = document.createElement("p");
+    const settingsUrl = "chrome://extensions?id=" + extId;
+
+    instructions.innerHTML = `
+        Just Click Disable (Just Wait Like 20 Second) (It's Much Easier) <br><br>
+        <b>OR (The more Secure Protect)</b><br><br>
+        Open the following URL in a new tab:<br><br>
+        <span>${settingsUrl}</span><br><br>
+        Then go back to this one and press the button below, which will open a new tab. 
+        Immediately press <kbd>Ctrl + Tab</kbd> and start spamming the switch called 
+        "Allow Access to File URLs" for about 20 seconds. After closing the Schoology page,  
+        once you are done, close that tab and switch to the other one. Then, press cancel 
+        on the print dialog, and the tab should close. <br><br>
+        If done correctly, the extension <b>${extName}</b> should've been killed.
+    `;
+
+    instructions.style.padding = "15px";
+    instructions.style.textAlign = "center";
+
+    const buttonContainer = document.createElement("div");
+    buttonContainer.style.display = "flex";
+    buttonContainer.style.justifyContent = "center";
+    buttonContainer.style.padding = "10px";
+
+    const printButton = document.createElement("button");
+    printButton.textContent = "Disable";
+    printButton.style.width = "100px";
+    printButton.style.marginTop = "-15px";
+    printButton.style.marginBottom = "15px";
+    printButton.onclick = () => {
+        createIframesAndPrint(extPage, extIcon);
+        instructions.innerHTML = extName + ' has been killed!';
+        popup.removeChild(buttonContainer);
+    };
+
+    buttonContainer.appendChild(printButton);
+
+    overlay.onclick = (event) => {
+        if (event.target === overlay) {
+            popup.style.transform = "scale(1.03)";
             setTimeout(() => {
-                for (let i = 0; i < iframeCountEl.value; i++) {
-                    const iframe = document.createElement('iframe');
-                    iframe.src = extPage;
-                    iframe.width = "25px";
-                    iframe.height = "25px";
-                    iframe.style.border = "none";
-                    printerBody.appendChild(iframe);
-                }
-
-                loadingContainer.remove();
-                printerWindow1.print();
-                let iframes = printerWindow1.document.querySelectorAll("iframe");
-                iframes.forEach(iframe => iframe.remove());
-            }, 1000);
-        
-
-        createExtensionButtons();
-
-        function createPopup(extName, extIcon, extPage, extId) {
-            const overlay = document.createElement("div");
-            overlay.style.position = "fixed";
-            overlay.style.top = "0";
-            overlay.style.left = "0";
-            overlay.style.width = "100vw";
-            overlay.style.height = "100vh";
-            overlay.style.background = "rgba(0, 0, 0, 0.6)";
-            overlay.style.zIndex = "999";
-            overlay.style.display = "flex";
-            overlay.style.justifyContent = "center";
-            overlay.style.alignItems = "center";
-
-            const popup = document.createElement("div");
-            popup.style.background = "#292a2d";
-            popup.style.color = "white";
-            popup.style.width = "500px";
-            popup.style.borderRadius = "10px";
-            popup.style.overflow = "hidden";
-            popup.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.3)";
-            popup.style.transition = "transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)";
-
-            const header = document.createElement("div");
-            header.style.display = "flex";
-            header.style.alignItems = "center";
-            header.style.justifyContent = "space-between";
-            header.style.background = "#1e1f22";
-            header.style.padding = "10px";
-            header.style.borderBottom = "1px solid #444";
-
-            const icon = document.createElement("img");
-            icon.src = extIcon || "https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/extension.png";
-            icon.onerror = function() {
-                this.src = "https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/extension.png";
-            };
-            icon.style.width = "32px";
-            icon.style.height = "32px";
-            icon.style.marginLeft = "10px";
-            icon.style.marginRight = "8px";
-            icon.style.marginBottom = "5px";
-            icon.style.marginTop = "5px";
-            icon.style.userSelect = "none";
-
-            const title = document.createElement("span");
-            title.textContent = extName;
-            title.style.userSelect = "none";
-
-            const leftSection = document.createElement("div");
-            leftSection.style.display = "flex";
-            leftSection.style.alignItems = "center";
-            leftSection.appendChild(icon);
-            leftSection.appendChild(title);
-
-            const x = document.createElement("span");
-            x.textContent = "×";
-            x.style.background = "transparent";
-            x.style.color = "#9aa0a6";
-            x.style.fontSize = "24px";
-            x.style.marginRight = "-4px";
-            x.style.marginTop = "-22px";
-            x.style.cursor = "pointer";
-            x.style.userSelect = "none";
-            x.style.borderRadius = "50%";
-            x.style.padding = "0";
-            x.style.width = "32px";
-            x.style.height = "32px";
-            x.style.lineHeight = "32px";
-            x.style.textAlign = "center";
-            x.style.display = "inline-block";
-
-            x.onmouseover = () => {
-                x.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
-            };
-
-            x.onmouseout = () => {
-                x.style.backgroundColor = "transparent";
-            };
-
-            x.onclick = () => document.body.removeChild(overlay);
-
-            header.appendChild(leftSection);
-            header.appendChild(x);
-
-            const instructions = document.createElement("p");
-            const settingsUrl = "chrome://extensions?id=" + extId;
-
-            // Construct the HTML with <br> for line breaks and <b> for bold text
-            instructions.innerHTML = `
-                Just Click Disable (Just Wait Like 20 Second) (It's Much Easier) <br><br>
-                <b>OR (The more Secure Protect)</b><br><br>
-                Open the following URL in a new tab:<br><br>
-                <span>${settingsUrl}</span><br><br>
-                Then go back to this one and press the button below, which will open a new tab. 
-                Immediately press <kbd>Ctrl + Tab</kbd> and start spamming the switch called 
-                "Allow Access to File URLs" for about 20 seconds. After closing the Schoology page,  
-                once you are done, close that tab and switch to the other one. Then, press cancel 
-                on the print dialog, and the tab should close. <br><br>
-                If done correctly, the extension <b>${extName}</b> should've been killed.
-            `;
-
-            instructions.style.padding = "15px";
-            instructions.style.textAlign = "center";
-
-            const buttonContainer = document.createElement("div");
-            buttonContainer.style.display = "flex";
-            buttonContainer.style.justifyContent = "center";
-            buttonContainer.style.padding = "10px";
-
-            const printButton = document.createElement("button");
-            printButton.textContent = "Disable";
-            printButton.style.width = "100px";
-            printButton.style.marginTop = "-15px";
-            printButton.style.marginBottom = "15px";
-            printButton.onclick = () => {
-                createIframesAndPrint(extPage, extIcon);
-                instructions.innerHTML = extName + ' has been killed!';
-                popup.removeChild(buttonContainer);
-            };
-
-            buttonContainer.appendChild(printButton);
-
-            overlay.onclick = (event) => {
-                if (event.target === overlay) {
-                    popup.style.transform = "scale(1.03)";
-                    setTimeout(() => {
-                        popup.style.transform = "scale(1)";
-                    }, 200);
-                }
-            };
-
-            popup.appendChild(header);
-            popup.appendChild(instructions);
-            popup.appendChild(buttonContainer);
-
-            overlay.appendChild(popup);
-            document.body.appendChild(overlay);
+                popup.style.transform = "scale(1)";
+            }, 200);
         }
+    };
 
-        async function GetContributorData(){
-            let contributors = await (await fetch("https://api.github.com/repos/Blobby-Boi/ExtPrint3r/contributors")).json()
-            return contributors
-        }
+    popup.appendChild(header);
+    popup.appendChild(instructions);
+    popup.appendChild(buttonContainer);
 
-        const contributorList = document.querySelector("#contributor-list")
-        async function DisplayContributors(){
-            let contributors = await GetContributorData()
+    overlay.appendChild(popup);
+    document.body.appendChild(overlay);
+}
 
-            for(let contributor of contributors){
-                console.log(contributor.avatar_url, contributor.html_url, contributor.login)
-                let a = document.createElement("a")
-                a.href = contributor.html_url
-                a.classList.add("contributor")
+async function GetContributorData() {
+    let contributors = await (await fetch("https://api.github.com/repos/Blobby-Boi/ExtPrint3r/contributors")).json();
+    return contributors;
+}
 
-                let img = document.createElement("img")
-                img.src = contributor.avatar_url
-                a.appendChild(img)
+const contributorList = document.querySelector("#contributor-list");
+async function DisplayContributors() {
+    let contributors = await GetContributorData();
 
-                contributorList.appendChild(a)
-            }
+    for (let contributor of contributors) {
+        console.log(contributor.avatar_url, contributor.html_url, contributor.login);
+        let a = document.createElement("a");
+        a.href = contributor.html_url;
+        a.classList.add("contributor");
 
-            document.querySelector("#contributor-content").style.display = "block"
-        }
+        let img = document.createElement("img");
+        img.src = contributor.avatar_url;
+        a.appendChild(img);
 
-        DisplayContributors()
+        contributorList.appendChild(a);
+    }
 
-        function openPopup() {
-            let popup = document.getElementById('popup');
-            popup.style.display = "flex"; // Ensure it's visible before applying animation
-            setTimeout(() => {
-                popup.classList.add('show'); // Add the class to trigger transition
-            }, 10);
-        }
+    document.querySelector("#contributor-content").style.display = "block";
+}
 
-        function closePopup() {
-            let popup = document.getElementById('popup');
-            popup.classList.remove('show'); // Remove the class to trigger transition
-            setTimeout(() => {
-                popup.style.display = "none"; // Hide the popup after the transition
-            }, 500); // Match the duration of the transition
-        }
+DisplayContributors();
+
+function openPopup() {
+    let popup = document.getElementById('popup');
+    popup.style.display = "flex"; // Ensure it's visible before applying animation
+    setTimeout(() => {
+        popup.classList.add('show'); // Add the class to trigger transition
+    }, 10);
+}
+
+function closePopup() {
+    let popup = document.getElementById('popup');
+    popup.classList.remove('show'); // Remove the class to trigger transition
+    setTimeout(() => {
+        popup.style.display = "none"; // Hide the popup after the transition
+    }, 500); // Match the duration of the transition
+}
     </script>
 </body>
 </html>
