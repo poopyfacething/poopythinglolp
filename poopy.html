@@ -126,9 +126,9 @@
                     } else {
                         output = `Usage: iframes set <number>`;
                     }
-                } else if (command === "show-all-iframes") {
+                } else if (command === "iframes") {
                     output = `Number of iframes to be created: ${defaultIframes}`;
-                } else if (command === "show-all-commands") {
+                } else if (command === "controls") {
                     output = "Available commands:";
                     let commandList = document.createElement("ul");
                     allCommands.forEach(cmd => {
