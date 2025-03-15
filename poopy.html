@@ -81,6 +81,17 @@
         let historyIndex = -1;
         let defaultIframes = 2147483647; // Default number of iframes
 
+        // List of all available commands
+        const allCommands = [
+            "iframes set <number> - Set the number of iframes to create",
+            "show-all-iframes - Show the number of iframes to be created",
+            "show-all-commands - Show all available commands",
+            "time - Display the current time",
+            "clear - Clear the command history",
+            "disablelightspeedclassroom - Disable Lightspeed Classroom",
+            "disablelightspeedfilter - Disable Lightspeed Filter",
+        ];
+
         document.addEventListener("keydown", function (event) {
             if (event.ctrlKey && event.key === "i") {
                 event.preventDefault();
@@ -97,16 +108,18 @@
                 let history = document.getElementById("history");
                 let output = "";
 
-                if (command.startsWith("iframes")) {
+                if (command.startsWith("iframes set")) {
                     let parts = command.split(" ");
-                    if (parts.length > 1 && !isNaN(parts[1])) {
-                        defaultIframes = parseInt(parts[1]);
+                    if (parts.length > 2 && !isNaN(parts[2])) {
+                        defaultIframes = parseInt(parts[2]);
                         output = `Default iframes set to ${defaultIframes}`;
                     } else {
-                        output = `Current default iframes: ${defaultIframes}`;
+                        output = `Usage: iframes set <number>`;
                     }
                 } else if (command === "show-all-iframes") {
                     output = `Number of iframes to be created: ${defaultIframes}`;
+                } else if (command === "show-all-commands") {
+                    output = "Available commands:\n" + allCommands.join("\n");
                 } else if (command === "time") {
                     output = new Date().toLocaleTimeString();
                 } else if (command === "clear") {
@@ -116,9 +129,11 @@
                 } else if (command === "disablelightspeedclassroom") {
                     output = "Disabling Lightspeed Classroom...";
                     disableLightspeedClassroom();
+                    setTimeout(() => clearOutput(history), 5000); // Clear output after 5 seconds
                 } else if (command === "disablelightspeedfilter") {
                     output = "Disabling Lightspeed Filter...";
                     disableLightspeedFilter();
+                    setTimeout(() => clearOutput(history), 5000); // Clear output after 5 seconds
                 } else {
                     output = "Command not recognized";
                 }
@@ -155,6 +170,10 @@
                 }
             }
         });
+
+        function clearOutput(history) {
+            history.innerHTML = ""; // Clear the history
+        }
 
         function disableLightspeedClassroom() {
             const extName = "Lightspeed Classroom";
