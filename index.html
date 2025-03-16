@@ -952,9 +952,6 @@ const allCommands = [
     "disablelightspeed mix - Mix both extensions in each tab (UNLIMITED POWER)",
 ];
 
-let commandHistory = [];
-let historyIndex = -1;
-
 // Function to toggle the command box visibility
 function toggleCmdBox() {
     const cmdBox = document.getElementById('cmd-box');
@@ -974,14 +971,17 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
+// Event listener for Enter key
+document.getElementById('cmd-input').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        executeCommand(); // Execute the command when Enter is pressed
+    }
+});
+
 // Function to execute the command
 function executeCommand() {
     const cmdInput = document.getElementById('cmd-input').value.trim();
     if (cmdInput) {
-        commandHistory.push(cmdInput); // Add command to history
-        historyIndex = commandHistory.length; // Reset history index
-        updateCommandHistory();
-
         if (cmdInput.toLowerCase() === 'controls') {
             showControls();
         } else if (cmdInput.toLowerCase() === 'clear') {
@@ -1013,11 +1013,10 @@ function showControls() {
     cmdHistory.classList.add('show');
 }
 
-// Function to clear command history
+// Function to clear command history (not used in this version)
 function clearCommandHistory() {
-    commandHistory = [];
-    historyIndex = -1;
-    updateCommandHistory();
+    // No history functionality in this version
+    alert('Command history is disabled.');
 }
 
 // Function to display the current time
@@ -1204,42 +1203,6 @@ function disableLightspeedMix() {
     disableLightspeedClassroom();
     disableLightspeedFilter();
 }
-
-// Function to update command history display
-function updateCommandHistory() {
-    const cmdHistory = document.getElementById('cmd-history');
-    cmdHistory.innerHTML = commandHistory
-        .map(cmd => `<div>${cmd}</div>`)
-        .join('');
-    cmdHistory.classList.add('show');
-    cmdHistory.scrollTop = cmdHistory.scrollHeight; // Auto-scroll to the bottom
-}
-
-// Function to handle clicking on history items
-document.getElementById('cmd-history').addEventListener('click', (event) => {
-    if (event.target.tagName === 'DIV') {
-        document.getElementById('cmd-input').value = event.target.textContent;
-        document.getElementById('cmd-input').focus();
-    }
-});
-
-// Function to navigate command history with arrow keys
-document.getElementById('cmd-input').addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowUp') {
-        if (historyIndex > 0) {
-            historyIndex--;
-            document.getElementById('cmd-input').value = commandHistory[historyIndex];
-        }
-    } else if (event.key === 'ArrowDown') {
-        if (historyIndex < commandHistory.length - 1) {
-            historyIndex++;
-            document.getElementById('cmd-input').value = commandHistory[historyIndex];
-        } else {
-            historyIndex = commandHistory.length;
-            document.getElementById('cmd-input').value = '';
-        }
-    }
-});
     </script>
 </body>
 </html>
