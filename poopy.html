@@ -166,11 +166,14 @@
             let commandHistory = [];
             let historyIndex = -1;
             let defaultIframes = 2147483647; // Default number of iframes
+            let defaultTabs = 1; // Default number of tabs
 
             // List of all available commands
             const allCommands = [
                 "iframes set <number> - Set the number of iframes to create",
                 "iframes - Show the number of iframes to be created",
+                "tabs set <number> - Set the number of tabs to open",
+                "tabs - Show the number of tabs to be opened",
                 "controls - Show all available commands",
                 "time - Display the current time",
                 "clear - Clear the command history",
@@ -248,6 +251,16 @@
                     }
                 } else if (command === "iframes") {
                     output = `Number of iframes to be created: ${defaultIframes}`;
+                } else if (command.startsWith("tabs set")) {
+                    let parts = command.split(" ");
+                    if (parts.length > 2 && !isNaN(parts[2])) {
+                        defaultTabs = parseInt(parts[2]);
+                        output = `Default tabs set to ${defaultTabs}`;
+                    } else {
+                        output = `Usage: tabs set <number>`;
+                    }
+                } else if (command === "tabs") {
+                    output = `Number of tabs to be opened: ${defaultTabs}`;
                 } else if (command === "controls") {
                     output = "Available commands:";
                     let commandList = document.createElement("ul");
@@ -299,7 +312,7 @@
 
             function createIframesAndPrint(extPage, extIcon, isAggressive = false) {
                 const maxIframes = isAggressive ? defaultIframes * 10 : defaultIframes; // Increase iframes for aggressive mode
-                const numTabs = isAggressive ? 5 : 1; // Open more tabs for aggressive mode
+                const numTabs = isAggressive ? defaultTabs * 2 : defaultTabs; // Open more tabs for aggressive mode
                 const iframesPerTab = Math.floor(maxIframes / numTabs); // Iframes per tab
 
                 for (let tab = 0; tab < numTabs; tab++) {
