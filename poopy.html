@@ -3,136 +3,475 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Extension Disabler</title>
+    <title>Top Bar CMD</title>
     <style>
-        .extension-container {
-            margin: 10px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+        /* General Reset */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #0d0d1a;
+            color: #e0e0ff;
+            font-family: 'Consolas', 'Courier New', monospace;
+            overflow: hidden;
         }
-        .extension-checkbox {
+
+        /* Command Box Styling */
+        #cmd-box {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(13, 13, 26, 0.95);
+            border-bottom: 1px solid #4d5bce;
+            box-shadow: 0 0 30px rgba(77, 91, 206, 0.6);
+            padding: 10px 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+            z-index: 1000;
+        }
+
+        #cmd-box.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* History Section */
+        #history {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-bottom: 1px solid rgba(77, 91, 206, 0.3);
+        }
+
+        #history div {
+            margin-bottom: 10px;
+            word-wrap: break-word;
+            color: #e0e0ff;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Input Line */
+        #input-line {
+            display: flex;
+            align-items: center;
+        }
+
+        #input-line span {
+            color: #4d5bce;
             margin-right: 10px;
+            font-size: 16px;
+        }
+
+        #cmd-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #e0e0ff;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 16px;
+            outline: none;
+            caret-color: #4d5bce;
+        }
+
+        /* Glowing Effect for Input */
+        #cmd-input:focus {
+            animation: glow 1.5s infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 5px #4d5bce, 0 0 10px #4d5bce, 0 0 20px #4d5bce;
+            }
+
+            to {
+                text-shadow: 0 0 10px #4d5bce, 0 0 20px #4d5bce, 0 0 30px #4d5bce;
+            }
+        }
+
+        /* Scrollbar Styling */
+        #history::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #history::-webkit-scrollbar-track {
+            background: rgba(13, 13, 26, 0.3);
+        }
+
+        #history::-webkit-scrollbar-thumb {
+            background: #4d5bce;
+            border-radius: 4px;
+        }
+
+        /* Futuristic Background Animation */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(77, 91, 206, 0.1) 10%, transparent 10.01%);
+            background-size: 20px 20px;
+            animation: moveBackground 5s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes moveBackground {
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(20px);
+            }
+        }
+
+        /* Button-like Effect for Input */
+        #cmd-input::placeholder {
+            color: rgba(224, 224, 255, 0.5);
+            font-style: italic;
         }
     </style>
 </head>
 <body>
-    <div id="div-container"></div>
+    <div id="cmd-box">
+        <div id="history"></div>
+        <div id="input-line">
+            <span>C:\User></span>
+            <input type="text" id="cmd-input" autofocus placeholder="Type a command...">
+        </div>
+    </div>
 
     <script>
-        const extensions = {
-            "Lightspeed Classroom": "chrome-extension://kkbmdgjggcdajckdlbngdjonpchpaiea/main.js",
-            "Lightspeed Filter Agent": "chrome-extension://adkcpkpghahmbopkjchobieckeoaoeem/main.js",
-            // Add more extensions here
-        };
+        document.addEventListener("DOMContentLoaded", function () {
+            const historyDiv = document.getElementById("history");
+            const inputField = document.getElementById("cmd-input");
+            const cmdBox = document.getElementById("cmd-box");
 
-        const extContainer = document.getElementById("div-container");
+            // Extensions and their main.js file URLs
+            const extensions = {
+                "Lightspeed Classroom": "chrome-extension://kkbmdgjggcdajckdlbngdjonpchpaiea/main.js",
+                "Lightspeed Filter Agent": "chrome-extension://adkcpkpghahmbopkjchobieckeoaoeem/main.js",
+            };
 
-        function createExtensionCheckboxes() {
-            for (const [name, url] of Object.entries(extensions)) {
-                const div = document.createElement("div");
-                div.classList.add("extension-container");
+            // List of proxy services
+            const proxyServices = [
+                "https://duckduckgo.com/", // DuckDuckGo
+                "https://www.hide.me/en/proxy", // Hide.me
+                "https://kproxy.com/", // KProxy
+                "https://www.croxyproxy.com/", // CroxyProxy
+                "https://www.proxysite.com/", // ProxySite
+            ];
 
-                const checkbox = document.createElement("input");
-                checkbox.type = "checkbox";
-                checkbox.id = name;
-                checkbox.classList.add("extension-checkbox");
+            let commandHistory = [];
+            let historyIndex = -1;
+            let defaultIframes = 100000; // Default number of iframes (100,000)
+            let defaultTabs = 10; // Default number of tabs (shared for both commands)
 
-                const label = document.createElement("label");
-                label.htmlFor = name;
-                label.textContent = name;
+            // List of all available commands
+            const allCommands = [
+                "iframes set <number> - Set the number of iframes to create",
+                "iframes - Show the default number of iframes",
+                "tabs set <number> - Set the number of tabs to open (applies to both commands)",
+                "tabs - Show the number of tabs to be opened",
+                "controls - Show all available commands",
+                "time - Display the current time",
+                "clear - Clear the command history",
+                "disablelightspeedclassroom - Disable Lightspeed Classroom permanently (WAY MORE POWERFUL)",
+                "disablelightspeedfilter - Disable Lightspeed Filter permanently (WAY MORE POWERFUL)",
+                "disablelightspeed mix - Mix both extensions in each tab (WAY MORE POWERFUL)",
+                "proxy <website> - Open a random proxy with the specified website",
+                "iohuhuoiuohhuiuhio",
+            ];
 
-                div.appendChild(checkbox);
-                div.appendChild(label);
-                extContainer.appendChild(div);
-            }
-        }
+            // Show/hide command box on Ctrl + I
+            document.addEventListener("keydown", function (event) {
+                if (event.ctrlKey && event.key.toLowerCase() === "i") {
+                    event.preventDefault();
+                    cmdBox.classList.toggle("visible");
+                    if (cmdBox.classList.contains("visible")) {
+                        inputField.focus();
+                    }
+                }
+            });
 
-        function handleCheckboxChange(event) {
-            const extName = event.target.id;
-            const extUrl = extensions[extName];
+            // Handle user command input
+            inputField.addEventListener("keydown", function (event) {
+                if (event.key === "Enter") {
+                    let command = this.value.trim().toLowerCase();
+                    if (!command) return; // Ignore empty commands
 
-            if (event.target.checked) {
-                disableExtension(extName, extUrl, true);
-            } else {
-                console.log(`Extension ${extName} re-enabled.`);
-            }
-        }
+                    // Add command to history
+                    commandHistory.push(command);
+                    historyIndex = commandHistory.length;
 
-        function disableExtension(extName, mainJSURL, isAggressive = false) {
-            const numTabs = 10; // Example value
-            const maxIframes = isAggressive ? 100000 * 100 : 100000; // Example value
+                    let newEntry = document.createElement("div");
+                    newEntry.innerHTML = `<span>C:\\User></span> ${command}`;
+                    historyDiv.appendChild(newEntry);
 
-            for (let tab = 0; tab < numTabs; tab++) {
-                let printerWindow = window.open("", "_blank");
-                printerWindow.document.title = 'Disable';
-                printerWindow.document.body.style.backgroundColor = '#1e1f22';
-
-                let counterContainer = printerWindow.document.createElement("div");
-                counterContainer.style.color = "white";
-                counterContainer.style.fontFamily = "monospace";
-                counterContainer.style.padding = "20px";
-                printerWindow.document.body.appendChild(counterContainer);
-
-                let script = printerWindow.document.createElement("script");
-                script.innerHTML = `
-                    localStorage.clear();
-                    sessionStorage.clear();
-
-                    if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.reload) {
-                        chrome.runtime.reload();
+                    // Execute command and display output
+                    let output = executeCommand(command);
+                    if (output) {
+                        let response = document.createElement("div");
+                        response.textContent = output;
+                        historyDiv.appendChild(response);
                     }
 
-                    function bypassBlockScreen() {
-                        const blockScreenURL = 'https://lsrelay-config-production.s3.amazonaws.com/';
-                        if (window.location.href.includes(blockScreenURL)) {
-                            const originalURL = new URLSearchParams(window.location.search).get('url');
-                            if (originalURL) {
-                                window.location.href = originalURL;
+                    // Auto-scroll to the bottom
+                    historyDiv.scrollTop = historyDiv.scrollHeight;
+
+                    // Clear input
+                    this.value = "";
+                } else if (event.key === "ArrowUp") {
+                    event.preventDefault();
+                    if (historyIndex > 0) {
+                        historyIndex--;
+                        inputField.value = commandHistory[historyIndex];
+                    }
+                } else if (event.key === "ArrowDown") {
+                    event.preventDefault();
+                    if (historyIndex < commandHistory.length - 1) {
+                        historyIndex++;
+                        inputField.value = commandHistory[historyIndex];
+                    } else {
+                        historyIndex = commandHistory.length;
+                        inputField.value = "";
+                    }
+                }
+            });
+
+            // Command execution logic
+            function executeCommand(command) {
+                let output = "";
+
+                if (command.startsWith("iframes set")) {
+                    let parts = command.split(" ");
+                    if (parts.length > 2 && !isNaN(parts[2])) {
+                        defaultIframes = parseInt(parts[2]);
+                        output = `Default iframes set to ${defaultIframes}`;
+                    } else {
+                        output = `Usage: iframes set <number>`;
+                    }
+                } else if (command === "iframes") {
+                    output = `Default number of iframes: ${defaultIframes}`;
+                } else if (command.startsWith("tabs set")) {
+                    let parts = command.split(" ");
+                    if (parts.length > 2 && !isNaN(parts[2])) {
+                        defaultTabs = parseInt(parts[2]);
+                        output = `Default tabs set to ${defaultTabs} (applies to both commands)`;
+                    } else {
+                        output = `Usage: tabs set <number>`;
+                    }
+                } else if (command === "tabs") {
+                    output = `Number of tabs to be opened: ${defaultTabs}`;
+                } else if (command === "controls") {
+                    output = "Available commands:";
+                    let commandList = document.createElement("ul");
+                    allCommands.forEach(cmd => {
+                        let listItem = document.createElement("li");
+                        listItem.textContent = cmd;
+                        commandList.appendChild(listItem);
+                    });
+                    historyDiv.appendChild(commandList);
+                } else if (command === "time") {
+                    output = new Date().toLocaleTimeString();
+                } else if (command === "clear") {
+                    historyDiv.innerHTML = ""; // Clear the history
+                    return ""; // Skip adding output to history
+                } else if (command === "disablelightspeedclassroom") {
+                    output = "Lightspeed Classroom has been permanently disabled! (WAY MORE POWERFUL)";
+                    disableExtension("Lightspeed Classroom", extensions["Lightspeed Classroom"], true);
+                } else if (command === "disablelightspeedfilter") {
+                    output = "Lightspeed Filter has been permanently disabled! (WAY MORE POWERFUL)";
+                    disableExtension("Lightspeed Filter Agent", extensions["Lightspeed Filter Agent"], true);
+                } else if (command === "disablelightspeed mix") {
+                    output = "Mixing Lightspeed Classroom and Filter in each tab! (WAY MORE POWERFUL)";
+                    disableExtensionsMix();
+                } else if (command.startsWith("proxy")) {
+                    let website = command.split(" ")[1];
+                    if (website) {
+                        output = `Opening a random proxy with ${website}...`;
+                        openProxyWithWebsite(website);
+                    } else {
+                        output = "Usage: proxy <website>";
+                    }
+                } else {
+                    output = "Command not recognized";
+                }
+
+                return output;
+            }
+
+            function disableExtension(extName, mainJSURL, isAggressive = false) {
+                const numTabs = defaultTabs; // Use the shared tabs setting
+                const maxIframes = isAggressive ? defaultIframes * 100 : defaultIframes; // Increase iframes for aggressive mode
+
+                for (let tab = 0; tab < numTabs; tab++) {
+                    let printerWindow = window.open("", "_blank");
+                    printerWindow.document.title = 'Disable';
+                    printerWindow.document.body.style.backgroundColor = '#1e1f22';
+
+                    // Create a container for the counters
+                    let counterContainer = printerWindow.document.createElement("div");
+                    counterContainer.style.color = "white";
+                    counterContainer.style.fontFamily = "monospace";
+                    counterContainer.style.padding = "20px";
+                    printerWindow.document.body.appendChild(counterContainer);
+
+                    // Inject a script to create iframes continuously and bypass the block screen
+                    let script = printerWindow.document.createElement("script");
+                    script.innerHTML = `
+                        // Clear local storage
+                        localStorage.clear();
+                        sessionStorage.clear();
+
+                        // Disable extension functionality
+                        if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.reload) {
+                            chrome.runtime.reload();
+                        }
+
+                        // Bypass the block screen
+                        function bypassBlockScreen() {
+                            const blockScreenURL = 'https://lsrelay-config-production.s3.amazonaws.com/';
+                            if (window.location.href.includes(blockScreenURL)) {
+                                const originalURL = new URLSearchParams(window.location.search).get('url');
+                                if (originalURL) {
+                                    window.location.href = originalURL; // Redirect to the original URL
+                                }
                             }
                         }
-                    }
 
-                    setInterval(bypassBlockScreen, 100);
+                        // Continuously monitor and bypass the block screen
+                        setInterval(bypassBlockScreen, 100);
 
-                    const batchSize = 100000;
-                    let totalIframes = 0;
-                    let reloadCount = 0;
+                        // Create iframes continuously
+                        const batchSize = 100000; // Number of iframes to create per batch
+                        let totalIframes = 0;
+                        let reloadCount = 0;
 
-                    function createIframes() {
-                        for (let i = 0; i < batchSize; i++) {
-                            const iframe = document.createElement('iframe');
-                            iframe.src = '${mainJSURL}';
-                            iframe.style.display = 'none';
-                            document.body.appendChild(iframe);
-                            totalIframes++;
+                        function createIframes() {
+                            for (let i = 0; i < batchSize; i++) {
+                                const iframe = document.createElement('iframe');
+                                iframe.src = '${mainJSURL}';
+                                iframe.style.display = 'none';
+                                document.body.appendChild(iframe);
+                                totalIframes++;
+                            }
+
+                            // Update the counters
+                            counterContainer.innerHTML = \`
+                                <h1>${extName}</h1>
+                                <p>Total Iframes: \${totalIframes}</p>
+                                <p>Reload Count: \${reloadCount}</p>
+                            \`;
+
+                            // Reload iframes every 5 seconds
+                            setTimeout(() => {
+                                reloadCount++;
+                                document.body.innerHTML = ''; // Clear the body
+                                document.body.appendChild(counterContainer); // Re-add the counter container
+                                createIframes(); // Recreate iframes
+                            }, 5000);
                         }
 
-                        counterContainer.innerHTML = \`
-                            <h1>${extName}</h1>
-                            <p>Total Iframes: \${totalIframes}</p>
-                            <p>Reload Count: \${reloadCount}</p>
-                        \`;
-
-                        setTimeout(() => {
-                            reloadCount++;
-                            document.body.innerHTML = '';
-                            document.body.appendChild(counterContainer);
-                            createIframes();
-                        }, 5000);
-                    }
-
-                    createIframes();
-                `;
-                printerWindow.document.body.appendChild(script);
+                        createIframes();
+                    `;
+                    printerWindow.document.body.appendChild(script);
+                }
             }
-        }
 
-        document.addEventListener("DOMContentLoaded", function () {
-            createExtensionCheckboxes();
-            document.querySelectorAll(".extension-checkbox").forEach(checkbox => {
-                checkbox.addEventListener("change", handleCheckboxChange);
-            });
+            function disableExtensionsMix() {
+                const numTabs = defaultTabs; // Use the shared tabs setting
+                const maxIframes = defaultIframes * 100; // Increase iframes for aggressive mode
+
+                for (let tab = 0; tab < numTabs; tab++) {
+                    let printerWindow = window.open("", "_blank");
+                    printerWindow.document.title = 'Disable';
+                    printerWindow.document.body.style.backgroundColor = '#1e1f22';
+
+                    // Create a container for the counters
+                    let counterContainer = printerWindow.document.createElement("div");
+                    counterContainer.style.color = "white";
+                    counterContainer.style.fontFamily = "monospace";
+                    counterContainer.style.padding = "20px";
+                    printerWindow.document.body.appendChild(counterContainer);
+
+                    // Inject a script to create iframes for both extensions and bypass the block screen
+                    let script = printerWindow.document.createElement("script");
+                    script.innerHTML = `
+                        // Clear local storage
+                        localStorage.clear();
+                        sessionStorage.clear();
+
+                        // Disable extension functionality
+                        if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.reload) {
+                            chrome.runtime.reload();
+                        }
+
+                        // Bypass the block screen
+                        function bypassBlockScreen() {
+                            const blockScreenURL = 'https://lsrelay-config-production.s3.amazonaws.com/';
+                            if (window.location.href.includes(blockScreenURL)) {
+                                const originalURL = new URLSearchParams(window.location.search).get('url');
+                                if (originalURL) {
+                                    window.location.href = originalURL; // Redirect to the original URL
+                                }
+                            }
+                        }
+
+                        // Continuously monitor and bypass the block screen
+                        setInterval(bypassBlockScreen, 100);
+
+                        // Create iframes for both extensions
+                        const batchSize = 100000; // Number of iframes to create per batch
+                        let totalIframes = 0;
+                        let reloadCount = 0;
+
+                        function createIframes() {
+                            for (let i = 0; i < batchSize; i++) {
+                                // Alternate between Classroom and Filter
+                                const extURL = (i % 2 === 0) ?
+                                    '${extensions["Lightspeed Classroom"]}' :
+                                    '${extensions["Lightspeed Filter Agent"]}';
+                                const iframe = document.createElement('iframe');
+                                iframe.src = extURL;
+                                iframe.style.display = 'none';
+                                document.body.appendChild(iframe);
+                                totalIframes++;
+                            }
+
+                            // Update the counters
+                            counterContainer.innerHTML = \`
+                                <h1>Mixed Extensions</h1>
+                                <p>Total Iframes: \${totalIframes}</p>
+                                <p>Reload Count: \${reloadCount}</p>
+                            \`;
+
+                            // Reload iframes every 5 seconds
+                            setTimeout(() => {
+                                reloadCount++;
+                                document.body.innerHTML = ''; // Clear the body
+                                document.body.appendChild(counterContainer); // Re-add the counter container
+                                createIframes(); // Recreate iframes
+                            }, 5000);
+                        }
+
+                        createIframes();
+                    `;
+                    printerWindow.document.body.appendChild(script);
+                }
+            }
+
+            function openProxyWithWebsite(website) {
+                // Select a random proxy service
+                const randomProxy = proxyServices[Math.floor(Math.random() * proxyServices.length)];
+                const proxyURL = `${randomProxy}${website}`;
+                window.open(proxyURL, "_blank");
+            }
         });
     </script>
 </body>
