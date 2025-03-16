@@ -955,11 +955,14 @@ const allCommands = [
 // Function to toggle the command box visibility
 function toggleCmdBox() {
     const cmdBox = document.getElementById('cmd-box');
+    const cmdHistory = document.getElementById('cmd-history');
+
     if (cmdBox.style.display === 'none' || cmdBox.style.display === '') {
         cmdBox.style.display = 'flex'; // Show the command box
         document.getElementById('cmd-input').focus(); // Focus the input field
     } else {
         cmdBox.style.display = 'none'; // Hide the command box
+        cmdHistory.classList.remove('show'); // Hide the command history
     }
 }
 
