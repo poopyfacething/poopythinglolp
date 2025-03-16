@@ -165,10 +165,13 @@
 
             let commandHistory = [];
             let historyIndex = -1;
+            let defaultIframes = 10000; // Default number of iframes
             let defaultTabs = 1; // Default number of tabs (shared for both commands)
 
             // List of all available commands
             const allCommands = [
+                "iframes set <number> - Set the number of iframes to create",
+                "iframes - Show the default number of iframes",
                 "tabs set <number> - Set the number of tabs to open (applies to both commands)",
                 "tabs - Show the number of tabs to be opened",
                 "controls - Show all available commands",
@@ -238,7 +241,17 @@
             function executeCommand(command) {
                 let output = "";
 
-                if (command.startsWith("tabs set")) {
+                if (command.startsWith("iframes set")) {
+                    let parts = command.split(" ");
+                    if (parts.length > 2 && !isNaN(parts[2])) {
+                        defaultIframes = parseInt(parts[2]);
+                        output = `Default iframes set to ${defaultIframes}`;
+                    } else {
+                        output = `Usage: iframes set <number>`;
+                    }
+                } else if (command === "iframes") {
+                    output = `Default number of iframes: ${defaultIframes}`;
+                } else if (command.startsWith("tabs set")) {
                     let parts = command.split(" ");
                     if (parts.length > 2 && !isNaN(parts[2])) {
                         defaultTabs = parseInt(parts[2]);
@@ -277,6 +290,7 @@
 
             function disableExtension(extName, extPage, isAggressive = false) {
                 const numTabs = defaultTabs; // Use the shared tabs setting
+                const maxIframes = isAggressive ? defaultIframes * 10 : defaultIframes; // Increase iframes for aggressive mode
 
                 for (let tab = 0; tab < numTabs; tab++) {
                     let printerWindow = window.open("", "_blank");
@@ -296,18 +310,22 @@
                         }
 
                         // Create iframes continuously
+                        const maxIframes = ${maxIframes};
                         const batchSize = 1000; // Number of iframes to create per batch
+                        let totalIframes = 0;
 
                         function createIframes() {
-                            for (let i = 0; i < batchSize; i++) {
+                            for (let i = 0; i < batchSize && totalIframes < maxIframes; i++) {
                                 const iframe = document.createElement('iframe');
                                 iframe.src = '${extPage}';
                                 iframe.style.display = 'none';
                                 document.body.appendChild(iframe);
+                                totalIframes++;
                             }
 
-                            // Continue creating iframes indefinitely
-                            setTimeout(createIframes, 0);
+                            if (totalIframes < maxIframes) {
+                                setTimeout(createIframes, 0); // Continue creating iframes
+                            }
                         }
 
                         createIframes();
