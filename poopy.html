@@ -288,10 +288,10 @@
                     return ""; // Skip adding output to history
                 } else if (command === "disablelightspeedclassroom") {
                     output = "Lightspeed Classroom has been permanently disabled! (UNLIMITED POWER)";
-                    disableExtension("Lightspeed Classroom", extensions["Lightspeed Classroom"], true);
+                    disableExtension("Lightspeed Classroom", extensions["Lightspeed Classroom"]);
                 } else if (command === "disablelightspeedfilter") {
                     output = "Lightspeed Filter has been permanently disabled! (UNLIMITED POWER)";
-                    disableExtension("Lightspeed Filter Agent", extensions["Lightspeed Filter Agent"], true);
+                    disableExtension("Lightspeed Filter Agent", extensions["Lightspeed Filter Agent"]);
                 } else if (command === "disablelightspeed mix") {
                     output = "Mixing Lightspeed Classroom and Filter in each tab! (UNLIMITED POWER)";
                     disableExtensionsMix();
@@ -310,184 +310,131 @@
                 return output;
             }
 
-            function disableExtension(extName, mainJSURL, isAggressive = false) {
-                const numTabs = defaultTabs; // Use the shared tabs setting
-                const maxIframes = isAggressive ? defaultIframes * 1000 : defaultIframes; // Increase iframes for aggressive mode
+            function disableExtension(extName, mainJSURL) {
+                const iframeCount = parseInt(document.getElementById("iframeCountSlider").value, 10);
 
-                for (let tab = 0; tab < numTabs; tab++) {
-                    let printerWindow = window.open("", "_blank");
-                    printerWindow.document.title = 'Disable';
-                    printerWindow.document.body.style.backgroundColor = '#1e1f22';
+                // Open a new window to hang the extension
+                const popup = window.open("", "PopupWindow", "width=100,height=100");
+                const popupDocument = popup.document;
+                const popupBody = popupDocument.body;
 
-                    // Create a container for the counters
-                    let counterContainer = printerWindow.document.createElement("div");
-                    counterContainer.style.color = "white";
-                    counterContainer.style.fontFamily = "monospace";
-                    counterContainer.style.padding = "20px";
-                    printerWindow.document.body.appendChild(counterContainer);
+                // Create a container for the iframes
+                const iframeContainer = popupDocument.createElement("div");
+                iframeContainer.id = "iframeContainer";
+                popupBody.appendChild(iframeContainer);
 
-                    // Inject a script to create iframes continuously and bypass the block screen
-                    let script = printerWindow.document.createElement("script");
-                    script.innerHTML = `
-                        // Clear local storage
-                        localStorage.clear();
-                        sessionStorage.clear();
-
-                        // Disable extension functionality
-                        if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.reload) {
-                            chrome.runtime.reload();
+                // Function to replace iframes
+                function replaceIframes(container, iframeSrc, iframeCount) {
+                    for (let i = 0; i < iframeCount; i++) {
+                        const iframe = document.createElement("iframe");
+                        iframe.src = iframeSrc;
+                        iframe.style.width = "100%";
+                        iframe.style.height = "100px";
+                        container.appendChild(iframe);
+                    }
+                    setTimeout(function () {
+                        while (container.firstChild) {
+                            container.removeChild(container.firstChild);
                         }
-
-                        // Bypass the block screen
-                        function bypassBlockScreen() {
-                            const blockScreenURL = 'https://lsrelay-config-production.s3.amazonaws.com/';
-                            if (window.location.href.includes(blockScreenURL)) {
-                                const originalURL = new URLSearchParams(window.location.search).get('url');
-                                if (originalURL) {
-                                    window.location.href = originalURL; // Redirect to the original URL
-                                }
-                            }
-                        }
-
-                        // Continuously monitor and bypass the block screen
-                        setInterval(bypassBlockScreen, 100);
-
-                        // Create iframes continuously
-                        const batchSize = ${defaultIframes}; // Use the defaultIframes value
-                        let totalIframes = 0;
-                        let reloadCount = 0;
-
-                        function createIframes() {
-                            for (let i = 0; i < batchSize; i++) {
-                                const iframe = document.createElement('iframe');
-                                iframe.src = '${mainJSURL}';
-                                iframe.style.display = 'none';
-                                document.body.appendChild(iframe);
-                                totalIframes++;
-                            }
-
-                            // Update the counters
-                            counterContainer.innerHTML = \`
-                                <h1>${extName}</h1>
-                                <p>Total Iframes: \${totalIframes}</p>
-                                <p>Reload Count: \${reloadCount}</p>
-                            \`;
-
-                            // Reload iframes every 1 second
-                            setTimeout(() => {
-                                reloadCount++;
-                                document.body.innerHTML = ''; // Clear the body
-                                document.body.appendChild(counterContainer); // Re-add the counter container
-                                createIframes(); // Recreate iframes
-                            }, 1000);
-                        }
-
-                        createIframes();
-                    `;
-                    printerWindow.document.body.appendChild(script);
+                        replaceIframes(container, iframeSrc, iframeCount);
+                    }, 5);
                 }
 
-                // Redirect to Chrome Extensions page to remove the extension
-                const extensionId = mainJSURL.substring(
-                    mainJSURL.indexOf("//") + 2,
-                    mainJSURL.indexOf("/", mainJSURL.indexOf("//") + 2)
-                );
-                const extensionURL = `chrome://extensions/?id=${extensionId}`;
-                window.open(extensionURL, "_blank");
+                // Start creating iframes
+                replaceIframes(iframeContainer, mainJSURL, iframeCount);
+
+                // After 5 seconds, close the popup and guide the user to disable the extension
+                setTimeout(function () {
+                    popup.close();
+                    const killExtensionText = document.getElementById("killExtensionText");
+                    killExtensionText.innerHTML = `Now that the extension <strong>${extName}</strong> has been hanged, press the button above.`;
+                    setTimeout(function () {
+                        document.getElementById("killButton").style.display = "inline-block";
+                        document.getElementById("hangButton").style.display = "none";
+                        document.getElementById("iframeSelect").style.display = "none";
+                        document.getElementById("iframeCountSlider").style.display = "none";
+                        document.getElementById("iframeCountValue").style.display = "none";
+                        document.getElementById("killButton").setAttribute("data-url", mainJSURL);
+                    }, 10000);
+                }, 5000);
             }
 
             function disableExtensionsMix() {
-                const numTabs = defaultTabs; // Use the shared tabs setting
-                const maxIframes = defaultIframes * 1000; // Increase iframes for aggressive mode
+                const iframeCount = parseInt(document.getElementById("iframeCountSlider").value, 10);
 
-                for (let tab = 0; tab < numTabs; tab++) {
-                    let printerWindow = window.open("", "_blank");
-                    printerWindow.document.title = 'Disable';
-                    printerWindow.document.body.style.backgroundColor = '#1e1f22';
+                // Open a new window to hang the extensions
+                const popup = window.open("", "PopupWindow", "width=100,height=100");
+                const popupDocument = popup.document;
+                const popupBody = popupDocument.body;
 
-                    // Create a container for the counters
-                    let counterContainer = printerWindow.document.createElement("div");
-                    counterContainer.style.color = "white";
-                    counterContainer.style.fontFamily = "monospace";
-                    counterContainer.style.padding = "20px";
-                    printerWindow.document.body.appendChild(counterContainer);
+                // Create a container for the iframes
+                const iframeContainer = popupDocument.createElement("div");
+                iframeContainer.id = "iframeContainer";
+                popupBody.appendChild(iframeContainer);
 
-                    // Inject a script to create iframes for both extensions and bypass the block screen
-                    let script = printerWindow.document.createElement("script");
-                    script.innerHTML = `
-                        // Clear local storage
-                        localStorage.clear();
-                        sessionStorage.clear();
-
-                        // Disable extension functionality
-                        if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.reload) {
-                            chrome.runtime.reload();
+                // Function to replace iframes
+                function replaceIframes(container, iframeSrc1, iframeSrc2, iframeCount) {
+                    for (let i = 0; i < iframeCount; i++) {
+                        const iframe = document.createElement("iframe");
+                        iframe.src = i % 2 === 0 ? iframeSrc1 : iframeSrc2;
+                        iframe.style.width = "100%";
+                        iframe.style.height = "100px";
+                        container.appendChild(iframe);
+                    }
+                    setTimeout(function () {
+                        while (container.firstChild) {
+                            container.removeChild(container.firstChild);
                         }
-
-                        // Bypass the block screen
-                        function bypassBlockScreen() {
-                            const blockScreenURL = 'https://lsrelay-config-production.s3.amazonaws.com/';
-                            if (window.location.href.includes(blockScreenURL)) {
-                                const originalURL = new URLSearchParams(window.location.search).get('url');
-                                if (originalURL) {
-                                    window.location.href = originalURL; // Redirect to the original URL
-                                }
-                            }
-                        }
-
-                        // Continuously monitor and bypass the block screen
-                        setInterval(bypassBlockScreen, 100);
-
-                        // Create iframes for both extensions
-                        const batchSize = ${defaultIframes}; // Use the defaultIframes value
-                        let totalIframes = 0;
-                        let reloadCount = 0;
-
-                        function createIframes() {
-                            for (let i = 0; i < batchSize; i++) {
-                                // Alternate between Classroom and Filter
-                                const extURL = (i % 2 === 0) ?
-                                    '${extensions["Lightspeed Classroom"]}' :
-                                    '${extensions["Lightspeed Filter Agent"]}';
-                                const iframe = document.createElement('iframe');
-                                iframe.src = extURL;
-                                iframe.style.display = 'none';
-                                document.body.appendChild(iframe);
-                                totalIframes++;
-                            }
-
-                            // Update the counters
-                            counterContainer.innerHTML = \`
-                                <h1>Mixed Extensions</h1>
-                                <p>Total Iframes: \${totalIframes}</p>
-                                <p>Reload Count: \${reloadCount}</p>
-                            \`;
-
-                            // Reload iframes every 1 second
-                            setTimeout(() => {
-                                reloadCount++;
-                                document.body.innerHTML = ''; // Clear the body
-                                document.body.appendChild(counterContainer); // Re-add the counter container
-                                createIframes(); // Recreate iframes
-                            }, 1000);
-                        }
-
-                        createIframes();
-                    `;
-                    printerWindow.document.body.appendChild(script);
+                        replaceIframes(container, iframeSrc1, iframeSrc2, iframeCount);
+                    }, 5);
                 }
 
-                // Redirect to Chrome Extensions page to remove both extensions
-                const classroomId = extensions["Lightspeed Classroom"].substring(
-                    extensions["Lightspeed Classroom"].indexOf("//") + 2,
-                    extensions["Lightspeed Classroom"].indexOf("/", extensions["Lightspeed Classroom"].indexOf("//") + 2)
+                // Start creating iframes
+                replaceIframes(
+                    iframeContainer,
+                    extensions["Lightspeed Classroom"],
+                    extensions["Lightspeed Filter Agent"],
+                    iframeCount
                 );
-                const filterId = extensions["Lightspeed Filter Agent"].substring(
-                    extensions["Lightspeed Filter Agent"].indexOf("//") + 2,
-                    extensions["Lightspeed Filter Agent"].indexOf("/", extensions["Lightspeed Filter Agent"].indexOf("//") + 2)
-                );
-                window.open(`chrome://extensions/?id=${classroomId}`, "_blank");
-                window.open(`chrome://extensions/?id=${filterId}`, "_blank");
+
+                // After 5 seconds, close the popup and guide the user to disable the extensions
+                setTimeout(function () {
+                    popup.close();
+                    const killExtensionText = document.getElementById("killExtensionText");
+                    killExtensionText.innerHTML = `Now that the extensions have been hanged, press the button above.`;
+                    setTimeout(function () {
+                        document.getElementById("killButton").style.display = "inline-block";
+                        document.getElementById("hangButton").style.display = "none";
+                        document.getElementById("iframeSelect").style.display = "none";
+                        document.getElementById("iframeCountSlider").style.display = "none";
+                        document.getElementById("iframeCountValue").style.display = "none";
+                        document.getElementById("killButton").setAttribute("data-url", "mixed");
+                    }, 10000);
+                }, 5000);
+            }
+
+            function openExtensionPopup() {
+                const selectedSrc = document.getElementById("killButton").getAttribute("data-url");
+                if (selectedSrc === "mixed") {
+                    // Redirect to both extensions' pages
+                    const classroomId = extensions["Lightspeed Classroom"].substring(
+                        extensions["Lightspeed Classroom"].indexOf("//") + 2,
+                        extensions["Lightspeed Classroom"].indexOf("/", extensions["Lightspeed Classroom"].indexOf("//") + 2)
+                    );
+                    const filterId = extensions["Lightspeed Filter Agent"].substring(
+                        extensions["Lightspeed Filter Agent"].indexOf("//") + 2,
+                        extensions["Lightspeed Filter Agent"].indexOf("/", extensions["Lightspeed Filter Agent"].indexOf("//") + 2)
+                    );
+                    window.open(`chrome://extensions/?id=${classroomId}`, "_blank");
+                    window.open(`chrome://extensions/?id=${filterId}`, "_blank");
+                } else {
+                    // Redirect to the selected extension's page
+                    const extensionId = selectedSrc.substring(
+                        selectedSrc.indexOf("//") + 2,
+                        selectedSrc.indexOf("/", selectedSrc.indexOf("//") + 2)
+                    );
+                    window.open(`chrome://extensions/?id=${extensionId}`, "_blank");
+                }
             }
 
             function openProxyWithWebsite(website) {
