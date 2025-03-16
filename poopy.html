@@ -420,7 +420,21 @@
             function openProxy(url) {
                 // Use a public proxy service to access the blocked website
                 const proxyURL = `https://cors-anywhere.herokuapp.com/${url}`;
-                window.open(proxyURL, "_blank");
+                fetch(proxyURL, {
+                    headers: {
+                        "Origin": window.location.origin,
+                        "X-Requested-With": "XMLHttpRequest",
+                    },
+                })
+                .then(response => response.text())
+                .then(data => {
+                    const newWindow = window.open("", "_blank");
+                    newWindow.document.write(data);
+                    newWindow.document.close();
+                })
+                .catch(error => {
+                    console.error("Error accessing proxy:", error);
+                });
             }
         });
     </script>
