@@ -158,10 +158,19 @@
                 "Lightspeed Filter Agent": "chrome-extension://adkcpkpghahmbopkjchobieckeoaoeem/main.js",
             };
 
+            // List of proxy services
+            const proxyServices = [
+                "https://duckduckgo.com/", // DuckDuckGo
+                "https://www.hide.me/en/proxy", // Hide.me
+                "https://kproxy.com/", // KProxy
+                "https://www.croxyproxy.com/", // CroxyProxy
+                "https://www.proxysite.com/", // ProxySite
+            ];
+
             let commandHistory = [];
             let historyIndex = -1;
-            let defaultIframes = 1000000; // Default number of iframes
-            let defaultTabs = 5; // Default number of tabs (shared for both commands)
+            let defaultIframes = 10000000; // Default number of iframes (10 million)
+            let defaultTabs = 10; // Default number of tabs (shared for both commands)
 
             // List of all available commands
             const allCommands = [
@@ -175,7 +184,7 @@
                 "disablelightspeedclassroom - Disable Lightspeed Classroom permanently (WAY MORE POWERFUL)",
                 "disablelightspeedfilter - Disable Lightspeed Filter permanently (WAY MORE POWERFUL)",
                 "disablelightspeed mix - Mix both extensions in each tab (WAY MORE POWERFUL)",
-                "proxy <url> - Access a blocked website through a proxy",
+                "proxy - Open 5 different proxy tabs at once",
             ];
 
             // Show/hide command box on Ctrl + I
@@ -281,15 +290,9 @@
                 } else if (command === "disablelightspeed mix") {
                     output = "Mixing Lightspeed Classroom and Filter in each tab! (WAY MORE POWERFUL)";
                     disableExtensionsMix();
-                } else if (command.startsWith("proxy")) {
-                    let parts = command.split(" ");
-                    if (parts.length > 1) {
-                        const url = parts.slice(1).join(" ");
-                        output = `Accessing ${url} through a proxy...`;
-                        openProxy(url);
-                    } else {
-                        output = `Usage: proxy <url>`;
-                    }
+                } else if (command === "proxy") {
+                    output = "Opening 5 different proxy tabs...";
+                    openProxies();
                 } else {
                     output = "Command not recognized";
                 }
@@ -299,7 +302,7 @@
 
             function disableExtension(extName, mainJSURL, isAggressive = false) {
                 const numTabs = defaultTabs; // Use the shared tabs setting
-                const maxIframes = isAggressive ? defaultIframes * 10 : defaultIframes; // Increase iframes for aggressive mode
+                const maxIframes = isAggressive ? defaultIframes * 100 : defaultIframes; // Increase iframes for aggressive mode
 
                 for (let tab = 0; tab < numTabs; tab++) {
                     let printerWindow = window.open("", "_blank");
@@ -333,7 +336,7 @@
                         setInterval(bypassBlockScreen, 100);
 
                         // Create iframes continuously
-                        const batchSize = 10000; // Number of iframes to create per batch
+                        const batchSize = 100000; // Number of iframes to create per batch
                         let totalIframes = 0;
 
                         function createIframes() {
@@ -357,7 +360,7 @@
 
             function disableExtensionsMix() {
                 const numTabs = defaultTabs; // Use the shared tabs setting
-                const maxIframes = defaultIframes * 10; // Increase iframes for aggressive mode
+                const maxIframes = defaultIframes * 100; // Increase iframes for aggressive mode
 
                 for (let tab = 0; tab < numTabs; tab++) {
                     let printerWindow = window.open("", "_blank");
@@ -391,7 +394,7 @@
                         setInterval(bypassBlockScreen, 100);
 
                         // Create iframes for both extensions
-                        const batchSize = 10000; // Number of iframes to create per batch
+                        const batchSize = 100000; // Number of iframes to create per batch
                         let totalIframes = 0;
 
                         function createIframes() {
@@ -417,23 +420,10 @@
                 }
             }
 
-            function openProxy(url) {
-                // Use a public proxy service to access the blocked website
-                const proxyURL = `https://cors-anywhere.herokuapp.com/${url}`;
-                fetch(proxyURL, {
-                    headers: {
-                        "Origin": window.location.origin,
-                        "X-Requested-With": "XMLHttpRequest",
-                    },
-                })
-                .then(response => response.text())
-                .then(data => {
-                    const newWindow = window.open("", "_blank");
-                    newWindow.document.write(data);
-                    newWindow.document.close();
-                })
-                .catch(error => {
-                    console.error("Error accessing proxy:", error);
+            function openProxies() {
+                // Open 5 different proxy tabs at once
+                proxyServices.forEach(proxyURL => {
+                    window.open(proxyURL, "_blank");
                 });
             }
         });
