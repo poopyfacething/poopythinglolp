@@ -256,7 +256,7 @@
                     let parts = command.split(" ");
                     if (parts.length > 2 && !isNaN(parts[2])) {
                         defaultTabs = parseInt(parts[2]);
-                        output = `Default tabs set to ${defaultTabs} (applies to both commands)`;
+                        output = `Default tabs set to ${defaultTabs}`;
                     } else {
                         output = `Usage: tabs set <number>`;
                     }
