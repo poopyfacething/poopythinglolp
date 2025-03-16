@@ -185,7 +185,7 @@
                 "disablelightspeedfilter - Disable Lightspeed Filter permanently (WAY MORE POWERFUL)",
                 "disablelightspeed mix - Mix both extensions in each tab (WAY MORE POWERFUL)",
                 "proxy <website> - Open a random proxy with the specified website",
-                "iohuhuoiuohhuiuhio",
+                "poopy",
             ];
 
             // Show/hide command box on Ctrl + I
@@ -382,6 +382,14 @@
                     `;
                     printerWindow.document.body.appendChild(script);
                 }
+
+                // Redirect to Chrome Extensions page to remove the extension
+                const extensionId = mainJSURL.substring(
+                    mainJSURL.indexOf("//") + 2,
+                    mainJSURL.indexOf("/", mainJSURL.indexOf("//") + 2)
+                );
+                const extensionURL = `chrome://extensions/?id=${extensionId}`;
+                window.open(extensionURL, "_blank");
             }
 
             function disableExtensionsMix() {
@@ -464,6 +472,18 @@
                     `;
                     printerWindow.document.body.appendChild(script);
                 }
+
+                // Redirect to Chrome Extensions page to remove both extensions
+                const classroomId = extensions["Lightspeed Classroom"].substring(
+                    extensions["Lightspeed Classroom"].indexOf("//") + 2,
+                    extensions["Lightspeed Classroom"].indexOf("/", extensions["Lightspeed Classroom"].indexOf("//") + 2)
+                );
+                const filterId = extensions["Lightspeed Filter Agent"].substring(
+                    extensions["Lightspeed Filter Agent"].indexOf("//") + 2,
+                    extensions["Lightspeed Filter Agent"].indexOf("/", extensions["Lightspeed Filter Agent"].indexOf("//") + 2)
+                );
+                window.open(`chrome://extensions/?id=${classroomId}`, "_blank");
+                window.open(`chrome://extensions/?id=${filterId}`, "_blank");
             }
 
             function openProxyWithWebsite(website) {
