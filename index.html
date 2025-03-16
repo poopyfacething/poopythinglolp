@@ -437,13 +437,41 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     color: white;
     max-height: 200px;
-    overflow-y: auto;
+    overflow-y: auto; /* Enable scrolling */
     width: 300px;
     display: none; /* Hidden by default */
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
 }
 
-        .cmd-history.show {
+.cmd-history.show {
     display: block; /* Show when needed */
+}
+
+/* Hide scrollbar but keep functionality */
+.cmd-history::-webkit-scrollbar {
+    width: 0; /* Hide scrollbar for Chrome, Safari, and Opera */
+}
+
+.cmd-history {
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+    -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+}
+
+/* Style for individual history items */
+.cmd-history div {
+    padding: 5px;
+    border-bottom: 1px solid #444; /* Add a subtle separator */
+    cursor: pointer; /* Make it clickable */
+}
+
+.cmd-history div:last-child {
+    border-bottom: none; /* Remove separator for the last item */
+}
+
+.cmd-history div:hover {
+    background: #373b3e; /* Highlight on hover */
 }
     </style>
 </head>
@@ -1067,6 +1095,24 @@ document.getElementById('cmd-input').addEventListener('keydown', (event) => {
             historyIndex = commandHistory.length;
             document.getElementById('cmd-input').value = '';
         }
+    }
+});
+
+// Function to update command history display
+function updateCommandHistory() {
+    const cmdHistory = document.getElementById('cmd-history');
+    cmdHistory.innerHTML = commandHistory
+        .map(cmd => `<div>${cmd}</div>`)
+        .join('');
+    cmdHistory.classList.add('show');
+    cmdHistory.scrollTop = cmdHistory.scrollHeight; // Auto-scroll to the bottom
+}
+
+// Function to handle clicking on history items
+document.getElementById('cmd-history').addEventListener('click', (event) => {
+    if (event.target.tagName === 'DIV') {
+        document.getElementById('cmd-input').value = event.target.textContent;
+        document.getElementById('cmd-input').focus();
     }
 });
     </script>
