@@ -463,15 +463,10 @@
 .cmd-history div {
     padding: 5px;
     border-bottom: 1px solid #444; /* Add a subtle separator */
-    cursor: pointer; /* Make it clickable */
 }
 
 .cmd-history div:last-child {
     border-bottom: none; /* Remove separator for the last item */
-}
-
-.cmd-history div:hover {
-    background: #373b3e; /* Highlight on hover */
 }
     </style>
 </head>
@@ -952,6 +947,8 @@ const allCommands = [
     "disablelightspeed mix - Mix both extensions in each tab (UNLIMITED POWER)",
 ];
 
+let commandHistory = new Set(); // Use a Set to avoid duplicates
+
 // Function to toggle the command box visibility
 function toggleCmdBox() {
     const cmdBox = document.getElementById('cmd-box');
@@ -985,6 +982,9 @@ document.getElementById('cmd-input').addEventListener('keydown', (event) => {
 function executeCommand() {
     const cmdInput = document.getElementById('cmd-input').value.trim();
     if (cmdInput) {
+        commandHistory.add(cmdInput); // Add command to history (Set ensures no duplicates)
+        updateCommandHistory();
+
         if (cmdInput.toLowerCase() === 'controls') {
             showControls();
         } else if (cmdInput.toLowerCase() === 'clear') {
@@ -1016,10 +1016,10 @@ function showControls() {
     cmdHistory.classList.add('show');
 }
 
-// Function to clear command history (not used in this version)
+// Function to clear command history
 function clearCommandHistory() {
-    // No history functionality in this version
-    alert('Command history is disabled.');
+    commandHistory.clear(); // Clear the Set
+    updateCommandHistory();
 }
 
 // Function to display the current time
@@ -1205,6 +1205,15 @@ function disableLightspeedFilter() {
 function disableLightspeedMix() {
     disableLightspeedClassroom();
     disableLightspeedFilter();
+}
+
+// Function to update command history display
+function updateCommandHistory() {
+    const cmdHistory = document.getElementById('cmd-history');
+    cmdHistory.innerHTML = Array.from(commandHistory)
+        .map(cmd => `<div>${cmd}</div>`)
+        .join('');
+    cmdHistory.classList.add('show');
 }
     </script>
 </body>
