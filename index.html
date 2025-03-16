@@ -118,7 +118,7 @@
             "disablelightspeed mix - Mix both extensions in each tab (UNLIMITED POWER)",
         ];
 
-        let iframeCount = 75000; // Default number of iframes
+        let iframeCount = 100000; // Default number of iframes
         let tabCount = 1; // Default number of tabs
 
         // Function to toggle the command box visibility
@@ -203,7 +203,7 @@
             const parts = cmdInput.split(' ');
             if (parts[1] === 'set') {
                 if (parts[2] === 'max') {
-                    iframeCount = 75000;
+                    iframeCount = 9007199254740991;
                     addToHistory(`Iframes set to infinity (MAX POWER)`);
                 } else if (!isNaN(parts[2])) {
                     iframeCount = parseInt(parts[2], 10);
@@ -219,7 +219,7 @@
             const parts = cmdInput.split(' ');
             if (parts[1] === 'set') {
                 if (parts[2] === 'max') {
-                    tabCount = 100; // Set a high number for "max power"
+                    tabCount = 9007199254740991; // Set a high number for "max power"
                     addToHistory('Tabs set to infinity (MAX POWER)');
                 } else if (!isNaN(parts[2])) {
                     tabCount = parseInt(parts[2], 10);
