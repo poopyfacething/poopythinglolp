@@ -156,8 +156,8 @@
             // List of all available commands
             const allCommands = [
                 "iframes set <number> - Set the number of iframes to create",
+                "iframes set max - Set the number of iframes to infinity (MAX POWER)",
                 "iframes - Show the default number of iframes",
-                "iframes max - Set the number of iframes to infinity (MAX POWER)",
                 "tabs set <number> - Set the number of tabs to open",
                 "tabs set max - Set the number of tabs to infinity (MAX POWER)",
                 "tabs - Show the number of tabs to be opened",
@@ -231,17 +231,17 @@
 
                 if (command.startsWith("iframes set")) {
                     let parts = command.split(" ");
-                    if (parts.length > 2 && !isNaN(parts[2])) {
+                    if (parts.length > 2 && parts[2] === "max") {
+                        defaultIframes = Number.MAX_SAFE_INTEGER; // Set iframes to the maximum safe integer
+                        output = `Default iframes set to infinity (MAX POWER: ${defaultIframes})`;
+                    } else if (parts.length > 2 && !isNaN(parts[2])) {
                         defaultIframes = parseInt(parts[2]);
                         output = `Default iframes set to ${defaultIframes}`;
                     } else {
-                        output = `Usage: iframes set <number>`;
+                        output = `Usage: iframes set <number> or iframes set max`;
                     }
                 } else if (command === "iframes") {
                     output = `Default number of iframes: ${defaultIframes}`;
-                } else if (command === "iframes max") {
-                    defaultIframes = Number.MAX_SAFE_INTEGER; // Set iframes to the maximum safe integer
-                    output = `Default iframes set to infinity (MAX POWER: ${defaultIframes})`;
                 } else if (command.startsWith("tabs set")) {
                     let parts = command.split(" ");
                     if (parts.length > 2 && parts[2] === "max") {
