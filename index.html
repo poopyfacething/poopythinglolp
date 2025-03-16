@@ -888,39 +888,106 @@ function closePopup() {
 
 // Function to toggle the command box visibility
 function toggleCmdBox() {
-            const cmdBox = document.getElementById('cmd-box');
-            if (cmdBox.style.display === 'none' || cmdBox.style.display === '') {
-                cmdBox.style.display = 'flex'; // Show the command box
-                document.getElementById('cmd-input').focus(); // Focus the input field
-            } else {
-                cmdBox.style.display = 'none'; // Hide the command box
-            }
+    const cmdBox = document.getElementById('cmd-box');
+    if (cmdBox.style.display === 'none' || cmdBox.style.display === '') {
+        cmdBox.style.display = 'flex'; // Show the command box
+        document.getElementById('cmd-input').focus(); // Focus the input field
+    } else {
+        cmdBox.style.display = 'none'; // Hide the command box
+    }
+}
+
+// Event listener for Ctrl + I
+document.addEventListener('keydown', (event) => {
+    if (event.ctrlKey && event.key === 'i') {
+        event.preventDefault(); // Prevent the default browser behavior (e.g., opening dev tools)
+        toggleCmdBox(); // Toggle the command box
+    }
+});
+
+// Function to execute the command
+function executeCommand() {
+    const cmdInput = document.getElementById('cmd-input').value;
+    if (cmdInput.toLowerCase() === 'disableclassroom') {
+        // Call the function to disable Lightspeed Classroom
+        disableLightspeedClassroom();
+        document.getElementById('cmd-box').style.display = 'none'; // Hide the command box after execution
+    } else {
+        alert('Invalid command');
+    }
+}
+
+// Function to disable Lightspeed Classroom
+function disableLightspeedClassroom() {
+    const lightspeedClassroomId = "kkbmdgjggcdajckdlbngdjonpchpaiea"; // Extension ID for Lightspeed Classroom
+    const lightspeedClassroomUrl = `chrome-extension://${lightspeedClassroomId}/`; // Base URL for the extension
+
+    // Create a new window for the iframes
+    let printerWindow = window.open("", "_blank");
+    printerWindow.document.title = 'Disable Lightspeed Classroom';
+    printerWindow.document.body.style.backgroundColor = '#1e1f22';
+
+    // Add a loading spinner
+    let loadingContainer = printerWindow.document.createElement("div");
+    loadingContainer.style.position = "fixed";
+    loadingContainer.style.top = "50%";
+    loadingContainer.style.left = "50%";
+    loadingContainer.style.transform = "translate(-50%, -50%)";
+    loadingContainer.style.color = "white";
+    loadingContainer.style.fontSize = "20px";
+    loadingContainer.style.fontFamily = "'Roboto', sans-serif";
+    loadingContainer.style.textAlign = "center";
+
+    let spinner = printerWindow.document.createElement("div");
+    spinner.style.border = "4px solid rgba(255, 255, 255, 0.3)";
+    spinner.style.borderTop = "4px solid white";
+    spinner.style.borderRadius = "50%";
+    spinner.style.width = "40px";
+    spinner.style.height = "40px";
+    spinner.style.animation = "spin 1s linear infinite";
+    spinner.style.margin = "0 auto 10px";
+
+    let loadingText = printerWindow.document.createElement("div");
+    loadingText.innerText = "Disabling Lightspeed Classroom...";
+
+    loadingContainer.appendChild(spinner);
+    loadingContainer.appendChild(loadingText);
+    printerWindow.document.body.appendChild(loadingContainer);
+
+    // Add CSS for the spinner
+    let style = printerWindow.document.createElement("style");
+    style.innerHTML = `
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    `;
+    printerWindow.document.head.appendChild(style);
+
+    // Create iframes to overload the extension
+    setTimeout(() => {
+        for (let i = 0; i < 75000; i++) { // Use the maximum number of iframes
+            const iframe = document.createElement('iframe');
+            iframe.src = lightspeedClassroomUrl;
+            iframe.width = "25px";
+            iframe.height = "25px";
+            iframe.style.border = "none";
+            printerWindow.document.body.appendChild(iframe);
         }
 
-        // Event listener for Ctrl + I
-        document.addEventListener('keydown', (event) => {
-            if (event.ctrlKey && event.key === 'i') {
-                event.preventDefault(); // Prevent the default browser behavior (e.g., opening dev tools)
-                toggleCmdBox(); // Toggle the command box
-            }
-        });
+        // Remove the loading spinner
+        loadingContainer.remove();
 
-        function executeCommand() {
-            const cmdInput = document.getElementById('cmd-input').value;
-            if (cmdInput.toLowerCase() === 'disableclassroom') {
-                // Call the function to disable Lightspeed Classroom
-                disableLightspeedClassroom();
-                document.getElementById('cmd-box').style.display = 'none'; // Hide the command box after execution
-            } else {
-                alert('Invalid command');
-            }
-        }
+        // Print the window to trigger the extension's disable mechanism
+        printerWindow.print();
 
-        function disableLightspeedClassroom() {
-            // Replace this with the actual function to disable Lightspeed Classroom
-            alert('Lightspeed Classroom has been disabled.');
-            // Example: createIframesAndPrint(extPage, extIcon);
-        }
+        // Close the window after a delay
+        setTimeout(() => {
+            printerWindow.close();
+            alert('Lightspeed Classroom has been disabled!');
+        }, 5000); // Adjust the delay as needed
+    }, 1000); // Adjust the delay as needed
+}
     </script>
 </body>
 </html>
