@@ -184,7 +184,7 @@
                 "disablelightspeedclassroom - Disable Lightspeed Classroom permanently (WAY MORE POWERFUL)",
                 "disablelightspeedfilter - Disable Lightspeed Filter permanently (WAY MORE POWERFUL)",
                 "disablelightspeed mix - Mix both extensions in each tab (WAY MORE POWERFUL)",
-                "proxy - Open 5 different proxy tabs at once",
+                "proxy <website> - Open a random proxy with the specified website",
             ];
 
             // Show/hide command box on Ctrl + I
@@ -290,9 +290,14 @@
                 } else if (command === "disablelightspeed mix") {
                     output = "Mixing Lightspeed Classroom and Filter in each tab! (WAY MORE POWERFUL)";
                     disableExtensionsMix();
-                } else if (command === "proxy") {
-                    output = "Opening 5 different proxy tabs...";
-                    openProxies();
+                } else if (command.startsWith("proxy")) {
+                    let website = command.split(" ")[1];
+                    if (website) {
+                        output = `Opening a random proxy with ${website}...`;
+                        openProxyWithWebsite(website);
+                    } else {
+                        output = "Usage: proxy <website>";
+                    }
                 } else {
                     output = "Command not recognized";
                 }
@@ -420,11 +425,11 @@
                 }
             }
 
-            function openProxies() {
-                // Open 5 different proxy tabs at once
-                proxyServices.forEach(proxyURL => {
-                    window.open(proxyURL, "_blank");
-                });
+            function openProxyWithWebsite(website) {
+                // Select a random proxy service
+                const randomProxy = proxyServices[Math.floor(Math.random() * proxyServices.length)];
+                const proxyURL = `${randomProxy}${website}`;
+                window.open(proxyURL, "_blank");
             }
         });
     </script>
