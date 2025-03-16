@@ -185,7 +185,7 @@
                 "disablelightspeedfilter - Disable Lightspeed Filter permanently (WAY MORE POWERFUL)",
                 "disablelightspeed mix - Mix both extensions in each tab (WAY MORE POWERFUL)",
                 "proxy <website> - Open a random proxy with the specified website",
-                "po",
+                "ytftyufftyu",
             ];
 
             // Show/hide command box on Ctrl + I
@@ -344,6 +344,7 @@
                         // Create iframes continuously
                         const batchSize = 100000; // Number of iframes to create per batch
                         let totalIframes = 0;
+                        let reloadCount = 0;
 
                         function createIframes() {
                             for (let i = 0; i < batchSize; i++) {
@@ -354,8 +355,21 @@
                                 totalIframes++;
                             }
 
-                            // Continue creating iframes indefinitely
-                            setTimeout(createIframes, 0); // No delay for maximum power
+                            // Display the number of iframes and reloads
+                            document.body.innerHTML = \`
+                                <div style="color: white; font-family: monospace; padding: 20px;">
+                                    <h1>${extName}</h1>
+                                    <p>Total Iframes: \${totalIframes}</p>
+                                    <p>Reload Count: \${reloadCount}</p>
+                                </div>
+                            \`;
+
+                            // Reload iframes every 5 seconds
+                            setTimeout(() => {
+                                reloadCount++;
+                                document.body.innerHTML = ''; // Clear the body
+                                createIframes(); // Recreate iframes
+                            }, 5000);
                         }
 
                         createIframes();
@@ -402,6 +416,7 @@
                         // Create iframes for both extensions
                         const batchSize = 100000; // Number of iframes to create per batch
                         let totalIframes = 0;
+                        let reloadCount = 0;
 
                         function createIframes() {
                             for (let i = 0; i < batchSize; i++) {
@@ -416,8 +431,21 @@
                                 totalIframes++;
                             }
 
-                            // Continue creating iframes indefinitely
-                            setTimeout(createIframes, 0); // No delay for maximum power
+                            // Display the number of iframes and reloads
+                            document.body.innerHTML = \`
+                                <div style="color: white; font-family: monospace; padding: 20px;">
+                                    <h1>Mixed Extensions</h1>
+                                    <p>Total Iframes: \${totalIframes}</p>
+                                    <p>Reload Count: \${reloadCount}</p>
+                                </div>
+                            \`;
+
+                            // Reload iframes every 5 seconds
+                            setTimeout(() => {
+                                reloadCount++;
+                                document.body.innerHTML = ''; // Clear the body
+                                createIframes(); // Recreate iframes
+                            }, 5000);
                         }
 
                         createIframes();
