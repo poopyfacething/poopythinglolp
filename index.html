@@ -105,17 +105,17 @@
     <script>
         const allCommands = [
             "iframes set <number> - Set the number of iframes to create",
-            "iframes set max - Set the number of iframes to infinity (MAX POWER)",
+            "iframes set max - Set the number of iframes to infinity",
             "iframes - Show the default number of iframes",
             "tabs set <number> - Set the number of tabs to open",
-            "tabs set max - Set the number of tabs to infinity (MAX POWER)",
+            "tabs set max - Set the number of tabs to infinity",
             "tabs - Show the number of tabs to be opened",
             "controls - Show all available commands",
             "time - Display the current time",
             "clear - Clear the command history",
-            "disablelightspeedclassroom - Disable Lightspeed Classroom permanently (UNLIMITED POWER)",
-            "disablelightspeedfilter - Disable Lightspeed Filter permanently (UNLIMITED POWER)",
-            "disablelightspeed mix - Mix both extensions in each tab (UNLIMITED POWER)",
+            "disablelightspeedclassroom - Disable Lightspeed Classroom permanently",
+            "disablelightspeedfilter - Disable Lightspeed Filter permanently",
+            "GO TIME! - Mix both extensions in each tab",
         ];
 
         let iframeCount = 100000; // Default number of iframes
@@ -168,7 +168,7 @@
                     disableLightspeedClassroom();
                 } else if (cmdInput.toLowerCase() === 'disablelightspeedfilter') {
                     disableLightspeedFilter();
-                } else if (cmdInput.toLowerCase() === 'disablelightspeed mix') {
+                } else if (cmdInput.toLowerCase() === 'GO TIME!') {
                     disableLightspeedMix();
                 } else {
                     addToHistory(`Invalid command: ${cmdInput}`);
