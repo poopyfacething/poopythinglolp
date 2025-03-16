@@ -159,6 +159,7 @@
                 "iframes - Show the default number of iframes",
                 "iframes max - Set the number of iframes to infinity (MAX POWER)",
                 "tabs set <number> - Set the number of tabs to open",
+                "tabs set max - Set the number of tabs to infinity (MAX POWER)",
                 "tabs - Show the number of tabs to be opened",
                 "controls - Show all available commands",
                 "time - Display the current time",
@@ -243,11 +244,14 @@
                     output = `Default iframes set to infinity (MAX POWER: ${defaultIframes})`;
                 } else if (command.startsWith("tabs set")) {
                     let parts = command.split(" ");
-                    if (parts.length > 2 && !isNaN(parts[2])) {
+                    if (parts.length > 2 && parts[2] === "max") {
+                        defaultTabs = Number.MAX_SAFE_INTEGER; // Set tabs to the maximum safe integer
+                        output = `Default tabs set to infinity (MAX POWER: ${defaultTabs})`;
+                    } else if (parts.length > 2 && !isNaN(parts[2])) {
                         defaultTabs = parseInt(parts[2]);
                         output = `Default tabs set to ${defaultTabs}`;
                     } else {
-                        output = `Usage: tabs set <number>`;
+                        output = `Usage: tabs set <number> or tabs set max`;
                     }
                 } else if (command === "tabs") {
                     output = `Number of tabs to be opened: ${defaultTabs}`;
