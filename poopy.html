@@ -175,7 +175,7 @@
                 "disablelightspeedclassroom - Disable Lightspeed Classroom permanently (WAY MORE POWERFUL)",
                 "disablelightspeedfilter - Disable Lightspeed Filter permanently (WAY MORE POWERFUL)",
                 "disablelightspeed mix - Mix both extensions in each tab (WAY MORE POWERFUL)",
-                "blockscreen <url> - Open the block screen URL in a new tab",
+                "proxy <url> - Access a blocked website through a proxy",
             ];
 
             // Show/hide command box on Ctrl + I
@@ -281,14 +281,14 @@
                 } else if (command === "disablelightspeed mix") {
                     output = "Mixing Lightspeed Classroom and Filter in each tab! (WAY MORE POWERFUL)";
                     disableExtensionsMix();
-                } else if (command.startsWith("blockscreen")) {
+                } else if (command.startsWith("proxy")) {
                     let parts = command.split(" ");
                     if (parts.length > 1) {
                         const url = parts.slice(1).join(" ");
-                        output = `Opening block screen for ${url} in a new tab...`;
-                        openBlockScreen(url);
+                        output = `Accessing ${url} through a proxy...`;
+                        openProxy(url);
                     } else {
-                        output = `Usage: blockscreen <url>`;
+                        output = `Usage: proxy <url>`;
                     }
                 } else {
                     output = "Command not recognized";
@@ -417,10 +417,10 @@
                 }
             }
 
-            function openBlockScreen(url) {
-                // Open the block screen URL in a new tab
-                const blockScreenURL = `https://lsrelay-config-production.s3.amazonaws.com/93791460bd4591916fae6788dd691570096e47a0e47061cdead407edc2363560/block_screen.html?id=f614cb3f-a80e-4ad9-b341-939cfe32bca8&url=${encodeURIComponent(url)}`;
-                window.open(blockScreenURL, "_blank");
+            function openProxy(url) {
+                // Use a public proxy service to access the blocked website
+                const proxyURL = `https://cors-anywhere.herokuapp.com/${url}`;
+                window.open(proxyURL, "_blank");
             }
         });
     </script>
