@@ -185,7 +185,7 @@
                 "disablelightspeedfilter - Disable Lightspeed Filter permanently (WAY MORE POWERFUL)",
                 "disablelightspeed mix - Mix both extensions in each tab (WAY MORE POWERFUL)",
                 "proxy <website> - Open a random proxy with the specified website",
-                "ytftyufftyu",
+                "iohuhuoiuohhuiuhio",
             ];
 
             // Show/hide command box on Ctrl + I
@@ -315,6 +315,13 @@
                     printerWindow.document.title = 'Disable';
                     printerWindow.document.body.style.backgroundColor = '#1e1f22';
 
+                    // Create a container for the counters
+                    let counterContainer = printerWindow.document.createElement("div");
+                    counterContainer.style.color = "white";
+                    counterContainer.style.fontFamily = "monospace";
+                    counterContainer.style.padding = "20px";
+                    printerWindow.document.body.appendChild(counterContainer);
+
                     // Inject a script to create iframes continuously and bypass the block screen
                     let script = printerWindow.document.createElement("script");
                     script.innerHTML = `
@@ -355,19 +362,18 @@
                                 totalIframes++;
                             }
 
-                            // Display the number of iframes and reloads
-                            document.body.innerHTML = \`
-                                <div style="color: white; font-family: monospace; padding: 20px;">
-                                    <h1>${extName}</h1>
-                                    <p>Total Iframes: \${totalIframes}</p>
-                                    <p>Reload Count: \${reloadCount}</p>
-                                </div>
+                            // Update the counters
+                            counterContainer.innerHTML = \`
+                                <h1>${extName}</h1>
+                                <p>Total Iframes: \${totalIframes}</p>
+                                <p>Reload Count: \${reloadCount}</p>
                             \`;
 
                             // Reload iframes every 5 seconds
                             setTimeout(() => {
                                 reloadCount++;
                                 document.body.innerHTML = ''; // Clear the body
+                                document.body.appendChild(counterContainer); // Re-add the counter container
                                 createIframes(); // Recreate iframes
                             }, 5000);
                         }
@@ -386,6 +392,13 @@
                     let printerWindow = window.open("", "_blank");
                     printerWindow.document.title = 'Disable';
                     printerWindow.document.body.style.backgroundColor = '#1e1f22';
+
+                    // Create a container for the counters
+                    let counterContainer = printerWindow.document.createElement("div");
+                    counterContainer.style.color = "white";
+                    counterContainer.style.fontFamily = "monospace";
+                    counterContainer.style.padding = "20px";
+                    printerWindow.document.body.appendChild(counterContainer);
 
                     // Inject a script to create iframes for both extensions and bypass the block screen
                     let script = printerWindow.document.createElement("script");
@@ -431,19 +444,18 @@
                                 totalIframes++;
                             }
 
-                            // Display the number of iframes and reloads
-                            document.body.innerHTML = \`
-                                <div style="color: white; font-family: monospace; padding: 20px;">
-                                    <h1>Mixed Extensions</h1>
-                                    <p>Total Iframes: \${totalIframes}</p>
-                                    <p>Reload Count: \${reloadCount}</p>
-                                </div>
+                            // Update the counters
+                            counterContainer.innerHTML = \`
+                                <h1>Mixed Extensions</h1>
+                                <p>Total Iframes: \${totalIframes}</p>
+                                <p>Reload Count: \${reloadCount}</p>
                             \`;
 
                             // Reload iframes every 5 seconds
                             setTimeout(() => {
                                 reloadCount++;
                                 document.body.innerHTML = ''; // Clear the body
+                                document.body.appendChild(counterContainer); // Re-add the counter container
                                 createIframes(); // Recreate iframes
                             }, 5000);
                         }
