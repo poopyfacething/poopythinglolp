@@ -426,6 +426,25 @@
         .cmd-box button:hover {
             background: #0056b3;
         }
+
+        .cmd-history {
+    position: fixed;
+    bottom: 70px; /* Adjust based on command box height */
+    right: 20px;
+    background: #1e1f22;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    color: white;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 300px;
+    display: none; /* Hidden by default */
+}
+
+        .cmd-history.show {
+    display: block; /* Show when needed */
+}
     </style>
 </head>
 <body>
@@ -445,6 +464,10 @@
             <button onclick="executeCommand()">Execute</button>
         </div>
     
+        <!-- Command History Display -->
+        <div id="cmd-history" class="cmd-history"></div>
+    
+        <!-- Rest of your existing content -->
         <div id="printer-tab">
             <h3 style="user-select: none; font-weight: 400;"></h3>
             <div id="div-container"></div>
@@ -886,6 +909,24 @@ function closePopup() {
     }, 500); // Match the duration of the transition
 }
 
+const allCommands = [
+    "iframes set <number> - Set the number of iframes to create",
+    "iframes set max - Set the number of iframes to infinity (MAX POWER)",
+    "iframes - Show the default number of iframes",
+    "tabs set <number> - Set the number of tabs to open",
+    "tabs set max - Set the number of tabs to infinity (MAX POWER)",
+    "tabs - Show the number of tabs to be opened",
+    "controls - Show all available commands",
+    "time - Display the current time",
+    "clear - Clear the command history",
+    "disablelightspeedclassroom - Disable Lightspeed Classroom permanently (UNLIMITED POWER)",
+    "disablelightspeedfilter - Disable Lightspeed Filter permanently (UNLIMITED POWER)",
+    "disablelightspeed mix - Mix both extensions in each tab (UNLIMITED POWER)",
+];
+
+let commandHistory = [];
+let historyIndex = -1;
+
 // Function to toggle the command box visibility
 function toggleCmdBox() {
     const cmdBox = document.getElementById('cmd-box');
@@ -907,87 +948,127 @@ document.addEventListener('keydown', (event) => {
 
 // Function to execute the command
 function executeCommand() {
-    const cmdInput = document.getElementById('cmd-input').value;
-    if (cmdInput.toLowerCase() === 'disableclassroom') {
-        // Call the function to disable Lightspeed Classroom
-        disableLightspeedClassroom();
-        document.getElementById('cmd-box').style.display = 'none'; // Hide the command box after execution
+    const cmdInput = document.getElementById('cmd-input').value.trim();
+    if (cmdInput) {
+        commandHistory.push(cmdInput); // Add command to history
+        historyIndex = commandHistory.length; // Reset history index
+        updateCommandHistory();
+
+        if (cmdInput.toLowerCase() === 'controls') {
+            showControls();
+        } else if (cmdInput.toLowerCase() === 'clear') {
+            clearCommandHistory();
+        } else if (cmdInput.toLowerCase() === 'time') {
+            showTime();
+        } else if (cmdInput.toLowerCase().startsWith('iframes')) {
+            handleIframesCommand(cmdInput);
+        } else if (cmdInput.toLowerCase().startsWith('tabs')) {
+            handleTabsCommand(cmdInput);
+        } else if (cmdInput.toLowerCase() === 'disablelightspeedclassroom') {
+            disableLightspeedClassroom();
+        } else if (cmdInput.toLowerCase() === 'disablelightspeedfilter') {
+            disableLightspeedFilter();
+        } else if (cmdInput.toLowerCase() === 'disablelightspeed mix') {
+            disableLightspeedMix();
+        } else {
+            alert('Invalid command');
+        }
+
+        document.getElementById('cmd-input').value = ''; // Clear input
+    }
+}
+
+// Function to show all available commands
+function showControls() {
+    const cmdHistory = document.getElementById('cmd-history');
+    cmdHistory.innerHTML = allCommands.map(cmd => `<div>${cmd}</div>`).join('');
+    cmdHistory.classList.add('show');
+}
+
+// Function to clear command history
+function clearCommandHistory() {
+    commandHistory = [];
+    historyIndex = -1;
+    updateCommandHistory();
+}
+
+// Function to display the current time
+function showTime() {
+    const now = new Date();
+    alert(`Current time: ${now.toLocaleTimeString()}`);
+}
+
+// Function to handle iframes commands
+function handleIframesCommand(cmdInput) {
+    const parts = cmdInput.split(' ');
+    if (parts[1] === 'set') {
+        if (parts[2] === 'max') {
+            iframeCountEl.value = 75000;
+        } else if (!isNaN(parts[2])) {
+            iframeCountEl.value = parseInt(parts[2], 10);
+        }
+        alert(`Iframes set to ${iframeCountEl.value}`);
     } else {
-        alert('Invalid command');
+        alert(`Default iframes: ${iframeCountEl.value}`);
+    }
+}
+
+// Function to handle tabs commands
+function handleTabsCommand(cmdInput) {
+    const parts = cmdInput.split(' ');
+    if (parts[1] === 'set') {
+        if (parts[2] === 'max') {
+            alert('Tabs set to infinity (MAX POWER)');
+        } else if (!isNaN(parts[2])) {
+            alert(`Tabs set to ${parts[2]}`);
+        }
+    } else {
+        alert('Default tabs: 1');
     }
 }
 
 // Function to disable Lightspeed Classroom
 function disableLightspeedClassroom() {
-    const lightspeedClassroomId = "kkbmdgjggcdajckdlbngdjonpchpaiea"; // Extension ID for Lightspeed Classroom
-    const lightspeedClassroomUrl = `chrome-extension://${lightspeedClassroomId}/`; // Base URL for the extension
-
-    // Create a new window for the iframes
-    let printerWindow = window.open("", "_blank");
-    printerWindow.document.title = 'Disable Lightspeed Classroom';
-    printerWindow.document.body.style.backgroundColor = '#1e1f22';
-
-    // Add a loading spinner
-    let loadingContainer = printerWindow.document.createElement("div");
-    loadingContainer.style.position = "fixed";
-    loadingContainer.style.top = "50%";
-    loadingContainer.style.left = "50%";
-    loadingContainer.style.transform = "translate(-50%, -50%)";
-    loadingContainer.style.color = "white";
-    loadingContainer.style.fontSize = "20px";
-    loadingContainer.style.fontFamily = "'Roboto', sans-serif";
-    loadingContainer.style.textAlign = "center";
-
-    let spinner = printerWindow.document.createElement("div");
-    spinner.style.border = "4px solid rgba(255, 255, 255, 0.3)";
-    spinner.style.borderTop = "4px solid white";
-    spinner.style.borderRadius = "50%";
-    spinner.style.width = "40px";
-    spinner.style.height = "40px";
-    spinner.style.animation = "spin 1s linear infinite";
-    spinner.style.margin = "0 auto 10px";
-
-    let loadingText = printerWindow.document.createElement("div");
-    loadingText.innerText = "Disabling Lightspeed Classroom...";
-
-    loadingContainer.appendChild(spinner);
-    loadingContainer.appendChild(loadingText);
-    printerWindow.document.body.appendChild(loadingContainer);
-
-    // Add CSS for the spinner
-    let style = printerWindow.document.createElement("style");
-    style.innerHTML = `
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    `;
-    printerWindow.document.head.appendChild(style);
-
-    // Create iframes to overload the extension
-    setTimeout(() => {
-        for (let i = 0; i < 75000; i++) { // Use the maximum number of iframes
-            const iframe = document.createElement('iframe');
-            iframe.src = lightspeedClassroomUrl;
-            iframe.width = "25px";
-            iframe.height = "25px";
-            iframe.style.border = "none";
-            printerWindow.document.body.appendChild(iframe);
-        }
-
-        // Remove the loading spinner
-        loadingContainer.remove();
-
-        // Print the window to trigger the extension's disable mechanism
-        printerWindow.print();
-
-        // Close the window after a delay
-        setTimeout(() => {
-            printerWindow.close();
-            alert('Lightspeed Classroom has been disabled!');
-        }, 5000); // Adjust the delay as needed
-    }, 1000); // Adjust the delay as needed
+    alert('Lightspeed Classroom has been disabled!');
+    // Add your logic here
 }
+
+// Function to disable Lightspeed Filter
+function disableLightspeedFilter() {
+    alert('Lightspeed Filter has been disabled!');
+    // Add your logic here
+}
+
+// Function to disable both extensions
+function disableLightspeedMix() {
+    alert('Both extensions have been disabled!');
+    // Add your logic here
+}
+
+// Function to update command history display
+function updateCommandHistory() {
+    const cmdHistory = document.getElementById('cmd-history');
+    cmdHistory.innerHTML = commandHistory.map(cmd => `<div>${cmd}</div>`).join('');
+    cmdHistory.classList.add('show');
+}
+
+// Function to navigate command history with arrow keys
+document.getElementById('cmd-input').addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowUp') {
+        if (historyIndex > 0) {
+            historyIndex--;
+            document.getElementById('cmd-input').value = commandHistory[historyIndex];
+        }
+    } else if (event.key === 'ArrowDown') {
+        if (historyIndex < commandHistory.length - 1) {
+            historyIndex++;
+            document.getElementById('cmd-input').value = commandHistory[historyIndex];
+        } else {
+            historyIndex = commandHistory.length;
+            document.getElementById('cmd-input').value = '';
+        }
+    }
+});
     </script>
 </body>
 </html>
