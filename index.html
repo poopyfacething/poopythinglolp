@@ -168,7 +168,7 @@
                     disableLightspeedClassroom();
                 } else if (cmdInput.toLowerCase() === 'disablelightspeedfilter') {
                     disableLightspeedFilter();
-                } else if (cmdInput.toLowerCase() === 'GO TIME!') {
+                } else if (cmdInput.toUpperCase() === 'GO TIME!') {
                     disableLightspeedMix();
                 } else {
                     addToHistory(`Invalid command: ${cmdInput}`);
