@@ -947,8 +947,6 @@ const allCommands = [
     "disablelightspeed mix - Mix both extensions in each tab (UNLIMITED POWER)",
 ];
 
-let commandHistory = new Set(); // Use a Set to avoid duplicates
-
 // Function to toggle the command box visibility
 function toggleCmdBox() {
     const cmdBox = document.getElementById('cmd-box');
@@ -982,9 +980,6 @@ document.getElementById('cmd-input').addEventListener('keydown', (event) => {
 function executeCommand() {
     const cmdInput = document.getElementById('cmd-input').value.trim();
     if (cmdInput) {
-        commandHistory.add(cmdInput); // Add command to history (Set ensures no duplicates)
-        updateCommandHistory();
-
         if (cmdInput.toLowerCase() === 'controls') {
             showControls();
         } else if (cmdInput.toLowerCase() === 'clear') {
@@ -1016,16 +1011,17 @@ function showControls() {
     cmdHistory.classList.add('show');
 }
 
-// Function to clear command history
+// Function to clear command history (not used in this version)
 function clearCommandHistory() {
-    commandHistory.clear(); // Clear the Set
-    updateCommandHistory();
+    const cmdHistory = document.getElementById('cmd-history');
+    cmdHistory.innerHTML = ''; // Clear the history display
+    cmdHistory.classList.remove('show'); // Hide the history
 }
 
 // Function to display the current time
 function showTime() {
     const now = new Date();
-    updateCommandHistoryWithMessage(`Current time: ${now.toLocaleTimeString()}`);
+    alert(`Current time: ${now.toLocaleTimeString()}`);
 }
 
 // Function to handle iframes commands
@@ -1034,13 +1030,13 @@ function handleIframesCommand(cmdInput) {
     if (parts[1] === 'set') {
         if (parts[2] === 'max') {
             iframeCountEl.value = 75000;
-            updateCommandHistoryWithMessage(`Iframes set to ${iframeCountEl.value}`);
+            alert(`Iframes set to ${iframeCountEl.value}`);
         } else if (!isNaN(parts[2])) {
             iframeCountEl.value = parseInt(parts[2], 10);
-            updateCommandHistoryWithMessage(`Iframes set to ${iframeCountEl.value}`);
+            alert(`Iframes set to ${iframeCountEl.value}`);
         }
     } else {
-        updateCommandHistoryWithMessage(`Default iframes: ${iframeCountEl.value}`);
+        alert(`Default iframes: ${iframeCountEl.value}`);
     }
 }
 
@@ -1049,12 +1045,12 @@ function handleTabsCommand(cmdInput) {
     const parts = cmdInput.split(' ');
     if (parts[1] === 'set') {
         if (parts[2] === 'max') {
-            updateCommandHistoryWithMessage('Tabs set to infinity (MAX POWER)');
+            alert('Tabs set to infinity (MAX POWER)');
         } else if (!isNaN(parts[2])) {
-            updateCommandHistoryWithMessage(`Tabs set to ${parts[2]}`);
+            alert(`Tabs set to ${parts[2]}`);
         }
     } else {
-        updateCommandHistoryWithMessage('Default tabs: 1');
+        alert('Default tabs: 1');
     }
 }
 
@@ -1125,7 +1121,7 @@ function disableLightspeedClassroom() {
         // Close the window after a delay
         setTimeout(() => {
             printerWindow.close();
-            updateCommandHistoryWithMessage('Lightspeed Classroom has been disabled!');
+            alert('Lightspeed Classroom has been disabled!');
         }, 5000); // Adjust the delay as needed
     }, 1000); // Adjust the delay as needed
 }
@@ -1197,7 +1193,7 @@ function disableLightspeedFilter() {
         // Close the window after a delay
         setTimeout(() => {
             printerWindow.close();
-            updateCommandHistoryWithMessage('Lightspeed Filter has been disabled!');
+            alert('Lightspeed Filter has been disabled!');
         }, 5000); // Adjust the delay as needed
     }, 1000); // Adjust the delay as needed
 }
@@ -1206,22 +1202,6 @@ function disableLightspeedFilter() {
 function disableLightspeedMix() {
     disableLightspeedClassroom();
     disableLightspeedFilter();
-}
-
-// Function to update command history with a message
-function updateCommandHistoryWithMessage(message) {
-    const cmdHistory = document.getElementById('cmd-history');
-    cmdHistory.innerHTML = `<div>${message}</div>`;
-    cmdHistory.classList.add('show');
-}
-
-// Function to update command history display
-function updateCommandHistory() {
-    const cmdHistory = document.getElementById('cmd-history');
-    cmdHistory.innerHTML = Array.from(commandHistory)
-        .map(cmd => `<div>${cmd}</div>`)
-        .join('');
-    cmdHistory.classList.add('show');
 }
     </script>
 </body>
