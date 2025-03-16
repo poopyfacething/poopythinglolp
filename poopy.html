@@ -169,7 +169,7 @@
 
             let commandHistory = [];
             let historyIndex = -1;
-            let defaultIframes = 10000000; // Default number of iframes (10 million)
+            let defaultIframes = 100000; // Default number of iframes (100,000)
             let defaultTabs = 10; // Default number of tabs (shared for both commands)
 
             // List of all available commands
@@ -185,6 +185,7 @@
                 "disablelightspeedfilter - Disable Lightspeed Filter permanently (WAY MORE POWERFUL)",
                 "disablelightspeed mix - Mix both extensions in each tab (WAY MORE POWERFUL)",
                 "proxy <website> - Open a random proxy with the specified website",
+                "poopopoppopo",
             ];
 
             // Show/hide command box on Ctrl + I
@@ -341,7 +342,7 @@
                         setInterval(bypassBlockScreen, 100);
 
                         // Create iframes continuously
-                        const batchSize = 1000000; // Increased batch size for more power
+                        const batchSize = 100000; // Number of iframes to create per batch
                         let totalIframes = 0;
 
                         function createIframes() {
@@ -399,7 +400,7 @@
                         setInterval(bypassBlockScreen, 100);
 
                         // Create iframes for both extensions
-                        const batchSize = 1000000; // Increased batch size for more power
+                        const batchSize = 100000; // Number of iframes to create per batch
                         let totalIframes = 0;
 
                         function createIframes() {
