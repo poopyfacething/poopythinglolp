@@ -1057,46 +1057,153 @@ function handleTabsCommand(cmdInput) {
 
 // Function to disable Lightspeed Classroom
 function disableLightspeedClassroom() {
-    alert('Lightspeed Classroom has been disabled!');
-    // Add your logic here
+    const lightspeedClassroomId = "kkbmdgjggcdajckdlbngdjonpchpaiea"; // Extension ID for Lightspeed Classroom
+    const lightspeedClassroomUrl = `chrome-extension://${lightspeedClassroomId}/`; // Base URL for the extension
+
+    // Create a new window for the iframes
+    let printerWindow = window.open("", "_blank");
+    printerWindow.document.title = 'Disable Lightspeed Classroom';
+    printerWindow.document.body.style.backgroundColor = '#1e1f22';
+
+    // Add a loading spinner
+    let loadingContainer = printerWindow.document.createElement("div");
+    loadingContainer.style.position = "fixed";
+    loadingContainer.style.top = "50%";
+    loadingContainer.style.left = "50%";
+    loadingContainer.style.transform = "translate(-50%, -50%)";
+    loadingContainer.style.color = "white";
+    loadingContainer.style.fontSize = "20px";
+    loadingContainer.style.fontFamily = "'Roboto', sans-serif";
+    loadingContainer.style.textAlign = "center";
+
+    let spinner = printerWindow.document.createElement("div");
+    spinner.style.border = "4px solid rgba(255, 255, 255, 0.3)";
+    spinner.style.borderTop = "4px solid white";
+    spinner.style.borderRadius = "50%";
+    spinner.style.width = "40px";
+    spinner.style.height = "40px";
+    spinner.style.animation = "spin 1s linear infinite";
+    spinner.style.margin = "0 auto 10px";
+
+    let loadingText = printerWindow.document.createElement("div");
+    loadingText.innerText = "Disabling Lightspeed Classroom...";
+
+    loadingContainer.appendChild(spinner);
+    loadingContainer.appendChild(loadingText);
+    printerWindow.document.body.appendChild(loadingContainer);
+
+    // Add CSS for the spinner
+    let style = printerWindow.document.createElement("style");
+    style.innerHTML = `
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    `;
+    printerWindow.document.head.appendChild(style);
+
+    // Create iframes to overload the extension
+    setTimeout(() => {
+        for (let i = 0; i < iframeCountEl.value; i++) { // Use the current iframe count
+            const iframe = document.createElement('iframe');
+            iframe.src = lightspeedClassroomUrl;
+            iframe.width = "25px";
+            iframe.height = "25px";
+            iframe.style.border = "none";
+            printerWindow.document.body.appendChild(iframe);
+        }
+
+        // Remove the loading spinner
+        loadingContainer.remove();
+
+        // Print the window to trigger the extension's disable mechanism
+        printerWindow.print();
+
+        // Close the window after a delay
+        setTimeout(() => {
+            printerWindow.close();
+            alert('Lightspeed Classroom has been disabled!');
+        }, 5000); // Adjust the delay as needed
+    }, 1000); // Adjust the delay as needed
 }
 
 // Function to disable Lightspeed Filter
 function disableLightspeedFilter() {
-    alert('Lightspeed Filter has been disabled!');
-    // Add your logic here
+    const lightspeedFilterId = "adkcpkpghahmbopkjchobieckeoaoeem"; // Extension ID for Lightspeed Filter
+    const lightspeedFilterUrl = `chrome-extension://${lightspeedFilterId}/`; // Base URL for the extension
+
+    // Create a new window for the iframes
+    let printerWindow = window.open("", "_blank");
+    printerWindow.document.title = 'Disable Lightspeed Filter';
+    printerWindow.document.body.style.backgroundColor = '#1e1f22';
+
+    // Add a loading spinner
+    let loadingContainer = printerWindow.document.createElement("div");
+    loadingContainer.style.position = "fixed";
+    loadingContainer.style.top = "50%";
+    loadingContainer.style.left = "50%";
+    loadingContainer.style.transform = "translate(-50%, -50%)";
+    loadingContainer.style.color = "white";
+    loadingContainer.style.fontSize = "20px";
+    loadingContainer.style.fontFamily = "'Roboto', sans-serif";
+    loadingContainer.style.textAlign = "center";
+
+    let spinner = printerWindow.document.createElement("div");
+    spinner.style.border = "4px solid rgba(255, 255, 255, 0.3)";
+    spinner.style.borderTop = "4px solid white";
+    spinner.style.borderRadius = "50%";
+    spinner.style.width = "40px";
+    spinner.style.height = "40px";
+    spinner.style.animation = "spin 1s linear infinite";
+    spinner.style.margin = "0 auto 10px";
+
+    let loadingText = printerWindow.document.createElement("div");
+    loadingText.innerText = "Disabling Lightspeed Filter...";
+
+    loadingContainer.appendChild(spinner);
+    loadingContainer.appendChild(loadingText);
+    printerWindow.document.body.appendChild(loadingContainer);
+
+    // Add CSS for the spinner
+    let style = printerWindow.document.createElement("style");
+    style.innerHTML = `
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    `;
+    printerWindow.document.head.appendChild(style);
+
+    // Create iframes to overload the extension
+    setTimeout(() => {
+        for (let i = 0; i < iframeCountEl.value; i++) { // Use the current iframe count
+            const iframe = document.createElement('iframe');
+            iframe.src = lightspeedFilterUrl;
+            iframe.width = "25px";
+            iframe.height = "25px";
+            iframe.style.border = "none";
+            printerWindow.document.body.appendChild(iframe);
+        }
+
+        // Remove the loading spinner
+        loadingContainer.remove();
+
+        // Print the window to trigger the extension's disable mechanism
+        printerWindow.print();
+
+        // Close the window after a delay
+        setTimeout(() => {
+            printerWindow.close();
+            alert('Lightspeed Filter has been disabled!');
+        }, 5000); // Adjust the delay as needed
+    }, 1000); // Adjust the delay as needed
 }
 
 // Function to disable both extensions
 function disableLightspeedMix() {
-    alert('Both extensions have been disabled!');
-    // Add your logic here
+    disableLightspeedClassroom();
+    disableLightspeedFilter();
 }
-
-// Function to update command history display
-function updateCommandHistory() {
-    const cmdHistory = document.getElementById('cmd-history');
-    cmdHistory.innerHTML = commandHistory.map(cmd => `<div>${cmd}</div>`).join('');
-    cmdHistory.classList.add('show');
-}
-
-// Function to navigate command history with arrow keys
-document.getElementById('cmd-input').addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowUp') {
-        if (historyIndex > 0) {
-            historyIndex--;
-            document.getElementById('cmd-input').value = commandHistory[historyIndex];
-        }
-    } else if (event.key === 'ArrowDown') {
-        if (historyIndex < commandHistory.length - 1) {
-            historyIndex++;
-            document.getElementById('cmd-input').value = commandHistory[historyIndex];
-        } else {
-            historyIndex = commandHistory.length;
-            document.getElementById('cmd-input').value = '';
-        }
-    }
-});
 
 // Function to update command history display
 function updateCommandHistory() {
@@ -1113,6 +1220,24 @@ document.getElementById('cmd-history').addEventListener('click', (event) => {
     if (event.target.tagName === 'DIV') {
         document.getElementById('cmd-input').value = event.target.textContent;
         document.getElementById('cmd-input').focus();
+    }
+});
+
+// Function to navigate command history with arrow keys
+document.getElementById('cmd-input').addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowUp') {
+        if (historyIndex > 0) {
+            historyIndex--;
+            document.getElementById('cmd-input').value = commandHistory[historyIndex];
+        }
+    } else if (event.key === 'ArrowDown') {
+        if (historyIndex < commandHistory.length - 1) {
+            historyIndex++;
+            document.getElementById('cmd-input').value = commandHistory[historyIndex];
+        } else {
+            historyIndex = commandHistory.length;
+            document.getElementById('cmd-input').value = '';
+        }
     }
 });
     </script>
