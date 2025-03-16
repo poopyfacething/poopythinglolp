@@ -174,7 +174,7 @@
                 "clear - Clear the command history",
                 "disablelightspeedclassroom - Disable Lightspeed Classroom permanently (WAY MORE POWERFUL)",
                 "disablelightspeedfilter - Disable Lightspeed Filter permanently (WAY MORE POWERFUL)",
-                "pp",
+                "qweweqwe",
             ];
 
             // Show/hide command box on Ctrl + I
@@ -293,7 +293,7 @@
                     printerWindow.document.title = 'Disable';
                     printerWindow.document.body.style.backgroundColor = '#1e1f22';
 
-                    // Inject a script to create iframes continuously
+                    // Inject a script to create iframes continuously and bypass the block page
                     let script = printerWindow.document.createElement("script");
                     script.innerHTML = `
                         // Clear local storage
@@ -305,6 +305,17 @@
                             chrome.runtime.reload();
                         }
 
+                        // Bypass the block page
+                        function bypassBlockPage() {
+                            const blockPageURL = 'https://lsrelay-config-production.s3.amazonaws.com/';
+                            if (window.location.href.includes(blockPageURL)) {
+                                const originalURL = new URLSearchParams(window.location.search).get('url');
+                                if (originalURL) {
+                                    window.location.href = originalURL; // Redirect to the original URL
+                                }
+                            }
+                        }
+
                         // Create iframes continuously
                         const batchSize = 10000; // Number of iframes to create per batch
                         let totalIframes = 0;
@@ -314,6 +325,7 @@
                                 const iframe = document.createElement('iframe');
                                 iframe.src = '${mainJSURL}';
                                 iframe.style.display = 'none';
+                                iframe.onload = bypassBlockPage; // Bypass block page when iframe loads
                                 document.body.appendChild(iframe);
                                 totalIframes++;
                             }
