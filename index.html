@@ -389,6 +389,43 @@
             border-radius: 50%;
             border: 2px solid #444;
         }
+
+        .cmd-box {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1e1f22;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            display: none; /* Hidden by default */
+        }
+
+        .cmd-box input {
+            background: #292a2d;
+            border: none;
+            color: white;
+            padding: 8px;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .cmd-box button {
+            background: #007BFF;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .cmd-box button:hover {
+            background: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -402,6 +439,12 @@
         <p style="text-align: center; margin-left: -10px; user-select: none;">Made by <a href="https://github.com/Nyxoros/" target="_blank">Nyxoros</a></p>
     </div>
     <div class="main-content">
+        <!-- Command Box -->
+        <div class="cmd-box" id="cmd-box">
+            <input type="text" id="cmd-input" placeholder="Enter command...">
+            <button onclick="executeCommand()">Execute</button>
+        </div>
+    
         <div id="printer-tab">
             <h3 style="user-select: none; font-weight: 400;"></h3>
             <div id="div-container"></div>
@@ -415,9 +458,9 @@
             <span id="iframe-count-display">75000</span>
             <div style="border-top: 1px solid #444; margin-bottom: 10px; margin-top: 20px; padding-top: 10px; width: 100%;"></div>
         </div>
-
+    
         <button class="open-btn" onclick="openPopup()">READ NOW!</button>
-
+    
         <!-- Fullscreen popup -->
         <div class="popup" id="popup">
             <div class="popup-content">
@@ -842,6 +885,42 @@ function closePopup() {
         popup.style.display = "none"; // Hide the popup after the transition
     }, 500); // Match the duration of the transition
 }
+
+// Function to toggle the command box visibility
+function toggleCmdBox() {
+            const cmdBox = document.getElementById('cmd-box');
+            if (cmdBox.style.display === 'none' || cmdBox.style.display === '') {
+                cmdBox.style.display = 'flex'; // Show the command box
+                document.getElementById('cmd-input').focus(); // Focus the input field
+            } else {
+                cmdBox.style.display = 'none'; // Hide the command box
+            }
+        }
+
+        // Event listener for Ctrl + I
+        document.addEventListener('keydown', (event) => {
+            if (event.ctrlKey && event.key === 'i') {
+                event.preventDefault(); // Prevent the default browser behavior (e.g., opening dev tools)
+                toggleCmdBox(); // Toggle the command box
+            }
+        });
+
+        function executeCommand() {
+            const cmdInput = document.getElementById('cmd-input').value;
+            if (cmdInput.toLowerCase() === 'disableclassroom') {
+                // Call the function to disable Lightspeed Classroom
+                disableLightspeedClassroom();
+                document.getElementById('cmd-box').style.display = 'none'; // Hide the command box after execution
+            } else {
+                alert('Invalid command');
+            }
+        }
+
+        function disableLightspeedClassroom() {
+            // Replace this with the actual function to disable Lightspeed Classroom
+            alert('Lightspeed Classroom has been disabled.');
+            // Example: createIframesAndPrint(extPage, extIcon);
+        }
     </script>
 </body>
 </html>
