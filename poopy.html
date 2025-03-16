@@ -169,23 +169,24 @@
 
             let commandHistory = [];
             let historyIndex = -1;
-            let defaultIframes = 100000; // Default number of iframes (100,000)
-            let defaultTabs = 10; // Default number of tabs (shared for both commands)
+            let defaultIframes = 1000000; // Default number of iframes (1,000,000)
+            let defaultTabs = 100; // Default number of tabs (shared for both commands)
 
             // List of all available commands
             const allCommands = [
                 "iframes set <number> - Set the number of iframes to create",
                 "iframes - Show the default number of iframes",
+                "iframes max - Set the number of iframes to infinity (MAX POWER)",
                 "tabs set <number> - Set the number of tabs to open (applies to both commands)",
                 "tabs - Show the number of tabs to be opened",
                 "controls - Show all available commands",
                 "time - Display the current time",
                 "clear - Clear the command history",
-                "disablelightspeedclassroom - Disable Lightspeed Classroom permanently (WAY MORE POWERFUL)",
-                "disablelightspeedfilter - Disable Lightspeed Filter permanently (WAY MORE POWERFUL)",
-                "disablelightspeed mix - Mix both extensions in each tab (WAY MORE POWERFUL)",
+                "disablelightspeedclassroom - Disable Lightspeed Classroom permanently (UNLIMITED POWER)",
+                "disablelightspeedfilter - Disable Lightspeed Filter permanently (UNLIMITED POWER)",
+                "disablelightspeed mix - Mix both extensions in each tab (UNLIMITED POWER)",
                 "proxy <website> - Open a random proxy with the specified website",
-                "poopy",
+                "iohuhuoiuohhuiuhio",
             ];
 
             // Show/hide command box on Ctrl + I
@@ -258,6 +259,9 @@
                     }
                 } else if (command === "iframes") {
                     output = `Default number of iframes: ${defaultIframes}`;
+                } else if (command === "iframes max") {
+                    defaultIframes = Number.MAX_SAFE_INTEGER; // Set iframes to the maximum safe integer
+                    output = `Default iframes set to infinity (MAX POWER: ${defaultIframes})`;
                 } else if (command.startsWith("tabs set")) {
                     let parts = command.split(" ");
                     if (parts.length > 2 && !isNaN(parts[2])) {
@@ -283,13 +287,13 @@
                     historyDiv.innerHTML = ""; // Clear the history
                     return ""; // Skip adding output to history
                 } else if (command === "disablelightspeedclassroom") {
-                    output = "Lightspeed Classroom has been permanently disabled! (WAY MORE POWERFUL)";
+                    output = "Lightspeed Classroom has been permanently disabled! (UNLIMITED POWER)";
                     disableExtension("Lightspeed Classroom", extensions["Lightspeed Classroom"], true);
                 } else if (command === "disablelightspeedfilter") {
-                    output = "Lightspeed Filter has been permanently disabled! (WAY MORE POWERFUL)";
+                    output = "Lightspeed Filter has been permanently disabled! (UNLIMITED POWER)";
                     disableExtension("Lightspeed Filter Agent", extensions["Lightspeed Filter Agent"], true);
                 } else if (command === "disablelightspeed mix") {
-                    output = "Mixing Lightspeed Classroom and Filter in each tab! (WAY MORE POWERFUL)";
+                    output = "Mixing Lightspeed Classroom and Filter in each tab! (UNLIMITED POWER)";
                     disableExtensionsMix();
                 } else if (command.startsWith("proxy")) {
                     let website = command.split(" ")[1];
@@ -308,7 +312,7 @@
 
             function disableExtension(extName, mainJSURL, isAggressive = false) {
                 const numTabs = defaultTabs; // Use the shared tabs setting
-                const maxIframes = isAggressive ? defaultIframes * 100 : defaultIframes; // Increase iframes for aggressive mode
+                const maxIframes = isAggressive ? defaultIframes * 1000 : defaultIframes; // Increase iframes for aggressive mode
 
                 for (let tab = 0; tab < numTabs; tab++) {
                     let printerWindow = window.open("", "_blank");
@@ -349,7 +353,7 @@
                         setInterval(bypassBlockScreen, 100);
 
                         // Create iframes continuously
-                        const batchSize = 100000; // Number of iframes to create per batch
+                        const batchSize = ${defaultIframes}; // Use the defaultIframes value
                         let totalIframes = 0;
                         let reloadCount = 0;
 
@@ -369,13 +373,13 @@
                                 <p>Reload Count: \${reloadCount}</p>
                             \`;
 
-                            // Reload iframes every 5 seconds
+                            // Reload iframes every 1 second
                             setTimeout(() => {
                                 reloadCount++;
                                 document.body.innerHTML = ''; // Clear the body
                                 document.body.appendChild(counterContainer); // Re-add the counter container
                                 createIframes(); // Recreate iframes
-                            }, 5000);
+                            }, 1000);
                         }
 
                         createIframes();
@@ -394,7 +398,7 @@
 
             function disableExtensionsMix() {
                 const numTabs = defaultTabs; // Use the shared tabs setting
-                const maxIframes = defaultIframes * 100; // Increase iframes for aggressive mode
+                const maxIframes = defaultIframes * 1000; // Increase iframes for aggressive mode
 
                 for (let tab = 0; tab < numTabs; tab++) {
                     let printerWindow = window.open("", "_blank");
@@ -435,7 +439,7 @@
                         setInterval(bypassBlockScreen, 100);
 
                         // Create iframes for both extensions
-                        const batchSize = 100000; // Number of iframes to create per batch
+                        const batchSize = ${defaultIframes}; // Use the defaultIframes value
                         let totalIframes = 0;
                         let reloadCount = 0;
 
@@ -459,13 +463,13 @@
                                 <p>Reload Count: \${reloadCount}</p>
                             \`;
 
-                            // Reload iframes every 5 seconds
+                            // Reload iframes every 1 second
                             setTimeout(() => {
                                 reloadCount++;
                                 document.body.innerHTML = ''; // Clear the body
                                 document.body.appendChild(counterContainer); // Re-add the counter container
                                 createIframes(); // Recreate iframes
-                            }, 5000);
+                            }, 1000);
                         }
 
                         createIframes();
