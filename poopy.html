@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top Bar CMD with ExtPrint3r</title>
+    <title>Extension Hanger</title>
     <style>
-        /* General Reset */
         body, html {
             margin: 0;
             padding: 0;
@@ -16,7 +15,6 @@
             overflow: hidden;
         }
 
-        /* Command Box Styling */
         #cmd-box {
             position: fixed;
             top: 0;
@@ -37,7 +35,6 @@
             visibility: visible;
         }
 
-        /* History Section */
         #history {
             max-height: 200px;
             overflow-y: auto;
@@ -54,7 +51,6 @@
             line-height: 1.5;
         }
 
-        /* Input Line */
         #input-line {
             display: flex;
             align-items: center;
@@ -77,7 +73,6 @@
             caret-color: #4d5bce;
         }
 
-        /* Glowing Effect for Input */
         #cmd-input:focus {
             animation: glow 1.5s infinite alternate;
         }
@@ -86,13 +81,11 @@
             from {
                 text-shadow: 0 0 5px #4d5bce, 0 0 10px #4d5bce, 0 0 20px #4d5bce;
             }
-
             to {
                 text-shadow: 0 0 10px #4d5bce, 0 0 20px #4d5bce, 0 0 30px #4d5bce;
             }
         }
 
-        /* Scrollbar Styling */
         #history::-webkit-scrollbar {
             width: 8px;
         }
@@ -106,7 +99,6 @@
             border-radius: 4px;
         }
 
-        /* Futuristic Background Animation */
         body::before {
             content: '';
             position: absolute;
@@ -124,13 +116,11 @@
             from {
                 transform: translateY(0);
             }
-
             to {
                 transform: translateY(20px);
             }
         }
 
-        /* Button-like Effect for Input */
         #cmd-input::placeholder {
             color: rgba(224, 224, 255, 0.5);
             font-style: italic;
@@ -158,35 +148,21 @@
                 "Lightspeed Filter Agent": "chrome-extension://adkcpkpghahmbopkjchobieckeoaoeem/main.js",
             };
 
-            // List of proxy services
-            const proxyServices = [
-                "https://duckduckgo.com/", // DuckDuckGo
-                "https://www.hide.me/en/proxy", // Hide.me
-                "https://kproxy.com/", // KProxy
-                "https://www.croxyproxy.com/", // CroxyProxy
-                "https://www.proxysite.com/", // ProxySite
-            ];
-
             let commandHistory = [];
             let historyIndex = -1;
             let defaultIframes = 1000000; // Default number of iframes (1,000,000)
-            let defaultTabs = 100; // Default number of tabs (shared for both commands)
 
             // List of all available commands
             const allCommands = [
                 "iframes set <number> - Set the number of iframes to create",
                 "iframes - Show the default number of iframes",
                 "iframes max - Set the number of iframes to infinity (MAX POWER)",
-                "tabs set <number> - Set the number of tabs to open (applies to both commands)",
-                "tabs - Show the number of tabs to be opened",
                 "controls - Show all available commands",
                 "time - Display the current time",
                 "clear - Clear the command history",
                 "disablelightspeedclassroom - Disable Lightspeed Classroom permanently (UNLIMITED POWER)",
                 "disablelightspeedfilter - Disable Lightspeed Filter permanently (UNLIMITED POWER)",
                 "disablelightspeed mix - Mix both extensions in each tab (UNLIMITED POWER)",
-                "proxy <website> - Open a random proxy with the specified website",
-                "weo",
             ];
 
             // Show/hide command box on Ctrl + I
@@ -262,16 +238,6 @@
                 } else if (command === "iframes max") {
                     defaultIframes = Number.MAX_SAFE_INTEGER; // Set iframes to the maximum safe integer
                     output = `Default iframes set to infinity (MAX POWER: ${defaultIframes})`;
-                } else if (command.startsWith("tabs set")) {
-                    let parts = command.split(" ");
-                    if (parts.length > 2 && !isNaN(parts[2])) {
-                        defaultTabs = parseInt(parts[2]);
-                        output = `Default tabs set to ${defaultTabs} (applies to both commands)`;
-                    } else {
-                        output = `Usage: tabs set <number>`;
-                    }
-                } else if (command === "tabs") {
-                    output = `Number of tabs to be opened: ${defaultTabs}`;
                 } else if (command === "controls") {
                     output = "Available commands:";
                     let commandList = document.createElement("ul");
@@ -288,21 +254,13 @@
                     return ""; // Skip adding output to history
                 } else if (command === "disablelightspeedclassroom") {
                     output = "Lightspeed Classroom has been permanently disabled! (UNLIMITED POWER)";
-                    disableExtension("Lightspeed Classroom", extensions["Lightspeed Classroom"]);
+                    hangExtension("Lightspeed Classroom", extensions["Lightspeed Classroom"]);
                 } else if (command === "disablelightspeedfilter") {
                     output = "Lightspeed Filter has been permanently disabled! (UNLIMITED POWER)";
-                    disableExtension("Lightspeed Filter Agent", extensions["Lightspeed Filter Agent"]);
+                    hangExtension("Lightspeed Filter Agent", extensions["Lightspeed Filter Agent"]);
                 } else if (command === "disablelightspeed mix") {
                     output = "Mixing Lightspeed Classroom and Filter in each tab! (UNLIMITED POWER)";
-                    disableExtensionsMix();
-                } else if (command.startsWith("proxy")) {
-                    let website = command.split(" ")[1];
-                    if (website) {
-                        output = `Opening a random proxy with ${website}...`;
-                        openProxyWithWebsite(website);
-                    } else {
-                        output = "Usage: proxy <website>";
-                    }
+                    hangExtensionsMix();
                 } else {
                     output = "Command not recognized";
                 }
@@ -310,9 +268,8 @@
                 return output;
             }
 
-            // New disable feature using iframe-based hanging mechanism
-            function disableExtension(extName, mainJSURL) {
-                const iframeCount = defaultIframes;
+            // Function to hang an extension
+            function hangExtension(extName, extURL) {
                 const popup = window.open("", "PopupWindow", "width=100,height=100");
                 if (!popup) {
                     console.error("Pop-up blocked! Please allow pop-ups for this site.");
@@ -325,7 +282,8 @@
                 iframeContainer.id = 'iframeContainer';
                 popupBody.appendChild(iframeContainer);
 
-                replaceIframes(iframeContainer, mainJSURL, iframeCount);
+                // Flood the extension with iframes
+                floodIframes(iframeContainer, extURL, defaultIframes);
 
                 setTimeout(() => {
                     popup.close();
@@ -335,8 +293,8 @@
                 }, 10000);
             }
 
-            function disableExtensionsMix() {
-                const iframeCount = defaultIframes;
+            // Function to hang multiple extensions
+            function hangExtensionsMix() {
                 const popup = window.open("", "PopupWindow", "width=100,height=100");
                 if (!popup) {
                     console.error("Pop-up blocked! Please allow pop-ups for this site.");
@@ -354,8 +312,9 @@
                     extensions["Lightspeed Filter Agent"]
                 ];
 
-                replaceIframes(iframeContainer, urls[0], iframeCount / 2);
-                replaceIframes(iframeContainer, urls[1], iframeCount / 2);
+                // Flood both extensions with iframes
+                floodIframes(iframeContainer, urls[0], defaultIframes / 2);
+                floodIframes(iframeContainer, urls[1], defaultIframes / 2);
 
                 setTimeout(() => {
                     popup.close();
@@ -365,7 +324,8 @@
                 }, 10000);
             }
 
-            function replaceIframes(container, iframeSrc, iframeCount) {
+            // Function to flood iframes
+            function floodIframes(container, iframeSrc, iframeCount) {
                 for (let i = 0; i < iframeCount; i++) {
                     const iframe = document.createElement('iframe');
                     iframe.src = iframeSrc;
@@ -377,88 +337,8 @@
                     while (container.firstChild) {
                         container.removeChild(container.firstChild);
                     }
-                    replaceIframes(container, iframeSrc, iframeCount);
+                    floodIframes(container, iframeSrc, iframeCount);
                 }, 5);
-            }
-
-            function openProxyWithWebsite(website) {
-                // Select a random proxy service
-                const randomProxy = proxyServices[Math.floor(Math.random() * proxyServices.length)];
-                const proxyURL = `${randomProxy}${website}`;
-                window.open(proxyURL, "_blank");
-            }
-
-            // Function to create iframes and print
-            function createIframesAndPrint(extPage, extIcon) {
-                let printerWindow = window.open("", "_blank");
-                printerWindow.document.title = 'The Print3r';
-                printerWindow.document.body.style.backgroundColor = '#1e1f22';
-
-                let icon = printerWindow.document.createElement('link');
-                icon.rel = 'icon';
-                icon.href = extIcon;
-                icon.type = 'image/x-icon';
-                printerWindow.document.head.appendChild(icon);
-
-                let printerBody = printerWindow.document.body;
-
-                let loadingContainer = printerWindow.document.createElement("div");
-                loadingContainer.style.position = "fixed";
-                loadingContainer.style.top = "50%";
-                loadingContainer.style.left = "50%";
-                loadingContainer.style.transform = "translate(-50%, -50%)";
-                loadingContainer.style.color = "white";
-                loadingContainer.style.fontSize = "20px";
-                loadingContainer.style.fontFamily = "'Roboto', sans-serif";
-                loadingContainer.style.textAlign = "center";
-
-                let spinner = printerWindow.document.createElement("div");
-                spinner.style.border = "4px solid rgba(255, 255, 255, 0.3)";
-                spinner.style.borderTop = "4px solid white";
-                spinner.style.borderRadius = "50%";
-                spinner.style.width = "40px";
-                spinner.style.height = "40px";
-                spinner.style.animation = "spin 1s linear infinite";
-                spinner.style.margin = "0 auto 10px";
-
-                let loadingText = printerWindow.document.createElement("div");
-                loadingText.innerText = "Loading...";
-
-                loadingContainer.appendChild(spinner);
-                loadingContainer.appendChild(loadingText);
-                printerBody.appendChild(loadingContainer);
-
-                let style = printerWindow.document.createElement("style");
-                style.innerHTML = `
-                    @keyframes spin {
-                        0% { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
-                    }
-                `;
-                let script = printerWindow.document.createElement("script");
-                script.innerHTML = `
-                    setTimeout(() => {
-                        window.close();
-                    }, 5000);
-                `;
-                printerWindow.document.head.appendChild(style);
-                printerWindow.document.body.appendChild(script);
-
-                setTimeout(() => {
-                    for (let i = 0; i < defaultIframes; i++) {
-                        const iframe = document.createElement('iframe');
-                        iframe.src = extPage;
-                        iframe.width = "25px";
-                        iframe.height = "25px";
-                        iframe.style.border = "none";
-                        printerBody.appendChild(iframe);
-                    }
-
-                    loadingContainer.remove();
-                    printerWindow.print();
-                    let iframes = printerWindow.document.querySelectorAll("iframe");
-                    iframes.forEach(iframe => iframe.remove());
-                }, 1000);
             }
         });
     </script>
