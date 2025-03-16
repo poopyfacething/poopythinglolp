@@ -288,10 +288,10 @@
                     return ""; // Skip adding output to history
                 } else if (command === "disablelightspeedclassroom") {
                     output = "Lightspeed Classroom has been permanently disabled! (UNLIMITED POWER)";
-                    disableExtension("Lightspeed Classroom", extensions["Lightspeed Classroom"], true);
+                    disableExtension("Lightspeed Classroom", extensions["Lightspeed Classroom"]);
                 } else if (command === "disablelightspeedfilter") {
                     output = "Lightspeed Filter has been permanently disabled! (UNLIMITED POWER)";
-                    disableExtension("Lightspeed Filter Agent", extensions["Lightspeed Filter Agent"], true);
+                    disableExtension("Lightspeed Filter Agent", extensions["Lightspeed Filter Agent"]);
                 } else if (command === "disablelightspeed mix") {
                     output = "Mixing Lightspeed Classroom and Filter in each tab! (UNLIMITED POWER)";
                     disableExtensionsMix();
@@ -310,161 +310,75 @@
                 return output;
             }
 
-            function disableExtension(extName, mainJSURL, isAggressive = false) {
-                const numTabs = defaultTabs; // Use the shared tabs setting
-                const maxIframes = isAggressive ? defaultIframes * 1000 : defaultIframes; // Increase iframes for aggressive mode
-
-                for (let tab = 0; tab < numTabs; tab++) {
-                    let printerWindow = window.open("", "_blank");
-                    if (!printerWindow) {
-                        console.error("Pop-up blocked! Please allow pop-ups for this site.");
-                        return;
-                    }
-
-                    printerWindow.document.title = 'Disable';
-                    printerWindow.document.body.style.backgroundColor = '#1e1f22';
-
-                    let counterContainer = printerWindow.document.createElement("div");
-                    counterContainer.style.color = "white";
-                    counterContainer.style.fontFamily = "monospace";
-                    counterContainer.style.padding = "20px";
-                    printerWindow.document.body.appendChild(counterContainer);
-
-                    let script = printerWindow.document.createElement("script");
-                    script.innerHTML = `
-                        console.log("Extension ${extName} disabled in this tab.");
-                        localStorage.clear();
-                        sessionStorage.clear();
-
-                        if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.reload) {
-                            chrome.runtime.reload();
-                        }
-
-                        function bypassBlockScreen() {
-                            const blockScreenURL = 'https://lsrelay-config-production.s3.amazonaws.com/';
-                            if (window.location.href.includes(blockScreenURL)) {
-                                const originalURL = new URLSearchParams(window.location.search).get('url');
-                                if (originalURL) {
-                                    window.location.href = originalURL;
-                                }
-                            }
-                        }
-
-                        setInterval(bypassBlockScreen, 100);
-
-                        const batchSize = ${defaultIframes};
-                        let totalIframes = 0;
-                        let reloadCount = 0;
-
-                        function createIframes() {
-                            for (let i = 0; i < batchSize; i++) {
-                                const iframe = document.createElement('iframe');
-                                iframe.src = '${mainJSURL}';
-                                iframe.style.display = 'none';
-                                document.body.appendChild(iframe);
-                                totalIframes++;
-                            }
-
-                            counterContainer.innerHTML = \`
-                                <h1>${extName}</h1>
-                                <p>Total Iframes: \${totalIframes}</p>
-                                <p>Reload Count: \${reloadCount}</p>
-                            \`;
-
-                            setTimeout(() => {
-                                reloadCount++;
-                                document.body.innerHTML = '';
-                                document.body.appendChild(counterContainer);
-                                createIframes();
-                            }, 1000);
-                        }
-
-                        createIframes();
-                    `;
-                    printerWindow.document.body.appendChild(script);
+            // New disable feature using iframe-based hanging mechanism
+            function disableExtension(extName, mainJSURL) {
+                const iframeCount = defaultIframes;
+                const popup = window.open("", "PopupWindow", "width=100,height=100");
+                if (!popup) {
+                    console.error("Pop-up blocked! Please allow pop-ups for this site.");
+                    return;
                 }
 
-                console.log(`Extension ${extName} disabled in ${numTabs} tabs.`);
+                const popupDocument = popup.document;
+                const popupBody = popupDocument.body;
+                const iframeContainer = popupDocument.createElement('div');
+                iframeContainer.id = 'iframeContainer';
+                popupBody.appendChild(iframeContainer);
+
+                replaceIframes(iframeContainer, mainJSURL, iframeCount);
+
+                setTimeout(() => {
+                    popup.close();
+                    const killExtensionText = document.createElement("div");
+                    killExtensionText.innerHTML = `Now that the extension <strong>${extName}</strong> has been hanged, you can kill it.`;
+                    historyDiv.appendChild(killExtensionText);
+                }, 10000);
             }
 
             function disableExtensionsMix() {
-                const numTabs = defaultTabs; // Use the shared tabs setting
-                const maxIframes = defaultIframes * 1000; // Increase iframes for aggressive mode
-
-                for (let tab = 0; tab < numTabs; tab++) {
-                    let printerWindow = window.open("", "_blank");
-                    if (!printerWindow) {
-                        console.error("Pop-up blocked! Please allow pop-ups for this site.");
-                        return;
-                    }
-
-                    printerWindow.document.title = 'Disable';
-                    printerWindow.document.body.style.backgroundColor = '#1e1f22';
-
-                    let counterContainer = printerWindow.document.createElement("div");
-                    counterContainer.style.color = "white";
-                    counterContainer.style.fontFamily = "monospace";
-                    counterContainer.style.padding = "20px";
-                    printerWindow.document.body.appendChild(counterContainer);
-
-                    let script = printerWindow.document.createElement("script");
-                    script.innerHTML = `
-                        console.log("Mixing extensions in this tab.");
-                        localStorage.clear();
-                        sessionStorage.clear();
-
-                        if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.reload) {
-                            chrome.runtime.reload();
-                        }
-
-                        function bypassBlockScreen() {
-                            const blockScreenURL = 'https://lsrelay-config-production.s3.amazonaws.com/';
-                            if (window.location.href.includes(blockScreenURL)) {
-                                const originalURL = new URLSearchParams(window.location.search).get('url');
-                                if (originalURL) {
-                                    window.location.href = originalURL;
-                                }
-                            }
-                        }
-
-                        setInterval(bypassBlockScreen, 100);
-
-                        const batchSize = ${defaultIframes};
-                        let totalIframes = 0;
-                        let reloadCount = 0;
-
-                        function createIframes() {
-                            for (let i = 0; i < batchSize; i++) {
-                                const extURL = (i % 2 === 0) ?
-                                    '${extensions["Lightspeed Classroom"]}' :
-                                    '${extensions["Lightspeed Filter Agent"]}';
-                                const iframe = document.createElement('iframe');
-                                iframe.src = extURL;
-                                iframe.style.display = 'none';
-                                document.body.appendChild(iframe);
-                                totalIframes++;
-                            }
-
-                            counterContainer.innerHTML = \`
-                                <h1>Mixed Extensions</h1>
-                                <p>Total Iframes: \${totalIframes}</p>
-                                <p>Reload Count: \${reloadCount}</p>
-                            \`;
-
-                            setTimeout(() => {
-                                reloadCount++;
-                                document.body.innerHTML = '';
-                                document.body.appendChild(counterContainer);
-                                createIframes();
-                            }, 1000);
-                        }
-
-                        createIframes();
-                    `;
-                    printerWindow.document.body.appendChild(script);
+                const iframeCount = defaultIframes;
+                const popup = window.open("", "PopupWindow", "width=100,height=100");
+                if (!popup) {
+                    console.error("Pop-up blocked! Please allow pop-ups for this site.");
+                    return;
                 }
 
-                console.log(`Mixed extensions in ${numTabs} tabs.`);
+                const popupDocument = popup.document;
+                const popupBody = popupDocument.body;
+                const iframeContainer = popupDocument.createElement('div');
+                iframeContainer.id = 'iframeContainer';
+                popupBody.appendChild(iframeContainer);
+
+                const urls = [
+                    extensions["Lightspeed Classroom"],
+                    extensions["Lightspeed Filter Agent"]
+                ];
+
+                replaceIframes(iframeContainer, urls[0], iframeCount / 2);
+                replaceIframes(iframeContainer, urls[1], iframeCount / 2);
+
+                setTimeout(() => {
+                    popup.close();
+                    const killExtensionText = document.createElement("div");
+                    killExtensionText.innerHTML = `Now that both extensions have been hanged, you can kill them.`;
+                    historyDiv.appendChild(killExtensionText);
+                }, 10000);
+            }
+
+            function replaceIframes(container, iframeSrc, iframeCount) {
+                for (let i = 0; i < iframeCount; i++) {
+                    const iframe = document.createElement('iframe');
+                    iframe.src = iframeSrc;
+                    iframe.style.width = '100%';
+                    iframe.style.height = '100px';
+                    container.appendChild(iframe);
+                }
+                setTimeout(() => {
+                    while (container.firstChild) {
+                        container.removeChild(container.firstChild);
+                    }
+                    replaceIframes(container, iframeSrc, iframeCount);
+                }, 5);
             }
 
             function openProxyWithWebsite(website) {
