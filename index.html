@@ -251,12 +251,19 @@
                 iframeContainer.appendChild(iframe);
             }
 
-            // Step 2: Trigger the print dialog
+            // Step 2: Open multiple tabs to further stress the extension
+            for (let i = 0; i < tabCount; i++) {
+                setTimeout(() => {
+                    window.open(extUrl, '_blank');
+                }, i * 1000); // Delay between opening tabs
+            }
+
+            // Step 3: Trigger the print dialog
             setTimeout(() => {
                 window.print(); // Trigger the print dialog
             }, 1000);
 
-            // Step 3: Check if the extension is disabled
+            // Step 4: Check if the extension is disabled
             setTimeout(() => {
                 iframeContainer.remove(); // Remove the iframes
                 success = true; // Assume the extension is disabled
