@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExtHang3r Terminal</title>
+    <title>poopy</title>
     <link rel="shortcut icon" type="image/png" href="https://raw.githubusercontent.com/Blobby-Boi/ExtHang3r/refs/heads/main/favicon.png">
     <style>
       body {
@@ -97,6 +97,14 @@
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
       }
+
+      .command {
+        color: #4CAF50;
+      }
+
+      .response {
+        margin-bottom: 10px;
+      }
     </style>
   </head>
   <body>
@@ -113,7 +121,6 @@
       Hanging... (This will take about 1 minute)
     </div>
     <script>
-      // Command map and functionality remains the same
       const commands = {
         'disablelightspeedclassroom': {
           url: 'chrome-extension://kkbmdgjggcdajckdlbngdjonpchpaiea/assets/icon-classroom-128.png',
@@ -125,7 +132,6 @@
         }
       };
 
-      // Global variables
       let iframeCount = 3000;
       let maxIframeCount = 15000;
       let hangStartTime = null;
@@ -136,6 +142,7 @@
       const inputEl = document.getElementById('input');
       const terminalEl = document.getElementById('terminal-container');
       const enterBtn = document.getElementById('enter-btn');
+      const overlay = document.getElementById('overlay');
 
       function print(line) {
         outputEl.innerHTML += `<div class="response">${line}</div>`;
@@ -144,7 +151,9 @@
 
       function processCommand(command) {
         const [cmd, ...args] = command.split(' ');
-        switch (cmd) {
+        inputEl.value = '';
+        
+        switch (cmd.toLowerCase()) {
           case 'disablelightspeedclassroom':
           case 'disablelightspeedfilter':
             if (commands[cmd]) {
@@ -162,41 +171,95 @@
             print("- iframes: Show current iframe count and time remaining");
             break;
           case 'tabs':
-            if (args[0] === 'set') {
-              if (args[1] === 'max') {
-                iframeCount = maxIframeCount;
-                print(`Tabs set to maximum: ${iframeCount}`);
-              } else if (!isNaN(args[1])) {
-                iframeCount = Math.min(Number(args[1]), maxIframeCount);
-                print(`Tabs set to: ${iframeCount}`);
-              }
-            } else {
-              print(`Current number of tabs: ${iframeCount}`);
-            }
+            handleTabsCommand(args);
             break;
           case 'iframes':
-            if (hangStartTime) {
-              const elapsed = Math.floor((Date.now() - hangStartTime) / 1000);
-              const remaining = Math.max(0, 60 - elapsed);
-              print(`Iframes: ${iframeCount}`);
-              print(`Time remaining: ${remaining} seconds`);
-            }
+            handleIframesCommand();
             break;
           default:
             print(`Error: Unknown command '${cmd}'`);
         }
       }
 
-      // Rest of the JavaScript functionality remains the same
-      // [Include all the previous JavaScript functions here]
+      function handleTabsCommand(args) {
+        if (args[0] === 'set') {
+          if (args[1] === 'max') {
+            iframeCount = maxIframeCount;
+            print(`Tabs set to maximum: ${iframeCount}`);
+          } else if (!isNaN(args[1])) {
+            const newCount = Math.min(Number(args[1]), maxIframeCount);
+            iframeCount = newCount;
+            print(`Tabs set to: ${iframeCount}`);
+          }
+        } else {
+          print(`Current number of tabs: ${iframeCount}`);
+        }
+      }
 
-      // Event listeners
+      function handleIframesCommand() {
+        if (hangStartTime) {
+          const elapsed = Math.floor((Date.now() - hangStartTime) / 1000);
+          const remaining = Math.max(0, 60 - elapsed);
+          print(`Active iframes: ${iframeCount}`);
+          print(`Time remaining: ${remaining} seconds`);
+        } else {
+          print("No active hanging process");
+        }
+      }
+
+      function executeHang(target) {
+        print(`Initializing hang sequence for ${target.name}...`);
+        hangStartTime = Date.now();
+        overlay.style.display = "flex";
+
+        // Create multiple tabs
+        for (let i = 0; i < iframeCount; i++) {
+          const tab = window.open(target.url, `tab-${i}`);
+          if (tab) activeTabs.push(tab);
+        }
+
+        hangInterval = setInterval(() => {
+          const elapsed = Math.floor((Date.now() - hangStartTime) / 1000);
+          if (elapsed >= 60) {
+            clearInterval(hangInterval);
+            finishHangProcess(target);
+          }
+        }, 1000);
+      }
+
+      function finishHangProcess(target) {
+        overlay.style.display = "none";
+        print(`${target.name} hanged successfully!`);
+        showKillInstructions(target);
+        closeAllTabs();
+      }
+
+      function showKillInstructions(target) {
+        const extensionId = target.url.split('/')[2];
+        print(`Final steps to kill ${target.name}:`);
+        print(`1. Open chrome://extensions/?id=${extensionId}`);
+        print(`2. Toggle "Allow access to file URLs" twice`);
+        print(`3. Close the extensions tab when done`);
+      }
+
+      function closeAllTabs() {
+        activeTabs.forEach(tab => {
+          try {
+            if (!tab.closed) tab.close();
+          } catch (e) {
+            console.log("Tab already closed");
+          }
+        });
+        activeTabs = [];
+      }
+
+      // Event Listeners
       inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') processCommand(inputEl.value.toLowerCase());
+        if (e.key === 'Enter') processCommand(inputEl.value);
       });
 
       enterBtn.addEventListener('click', () => {
-        processCommand(inputEl.value.toLowerCase());
+        processCommand(inputEl.value);
       });
 
       document.addEventListener('keydown', (e) => {
@@ -207,7 +270,7 @@
         }
       });
 
-      // Initial message
+      // Initialization
       print("ExtHang3r Terminal v1.0");
       print("Type 'controls' for available commands\n");
     </script>
