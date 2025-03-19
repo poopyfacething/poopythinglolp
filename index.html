@@ -116,7 +116,7 @@
             "disablelightspeedclassroom - Disable Lightspeed Classroom permanently",
             "disablelightspeedfilter - Disable Lightspeed Filter permanently",
             "GO TIME! - Mix both extensions in each tab",
-            "fart",
+            "faqweqewqewqewqweqweqwert",
         ];
 
         let iframeCount = 100000; // Default number of iframes
@@ -508,7 +508,30 @@
             document.querySelector("#contributor-content").style.display = "block";
         }
 
-        DisplayContributors();
+        document.addEventListener("DOMContentLoaded", function() {
+    // Get references to the slider and its value display element
+    const slider = document.getElementById("iframeCountSlider");
+    const sliderValueDisplay = document.getElementById("iframeCountValue");
+
+    // Determine the device's memory (RAM) or default to 8GB if not available
+    const deviceMemory = navigator.deviceMemory || 8; // Fallback to 8GB if `navigator.deviceMemory` is not supported
+
+    // Calculate the default and maximum number of iframes based on the device's memory
+    const defaultIframeCount = Math.round(deviceMemory * 500); // Default iframe count scales with device memory
+    const maxIframeCount = Math.round(deviceMemory * 10000); // Maximum iframe count scales with device memory
+
+    // Set the slider's default value and maximum value
+    slider.value = defaultIframeCount;
+    slider.max = maxIframeCount;
+
+    // Display the default iframe count in the UI
+    sliderValueDisplay.textContent = defaultIframeCount;
+
+    // Add an event listener to update the displayed value when the slider is adjusted
+    slider.addEventListener("input", function() {
+        sliderValueDisplay.textContent = this.value; // Update the displayed value to match the slider's current value
+    });
+});
     </script>
 </body>
 </html>
