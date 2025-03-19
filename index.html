@@ -1,51 +1,139 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CMD Box</title>
     <style>
         body {
             margin: 0;
-            padding: 0;
-            font-family: monospace;
-            background-color: #121212;
-            color: #0f0;
+            height: 100vh;
         }
-        .cmd-box {
+
+        #terminal-container {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 300px;
-            background-color: black;
-            border: 2px solid #0f0;
-            padding: 10px;
+            width: 500px;
+            background-color: #1a1a1a;
             border-radius: 5px;
-            box-shadow: 0 0 10px #0f0;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
-        .cmd-input {
-            width: calc(100% - 60px);
-            background: black;
+
+        #output {
+            height: 300px;
+            overflow-y: auto;
+            color: #fff;
+            font-family: monospace;
+            margin-bottom: 15px;
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #input {
+            flex-grow: 1;
+            background-color: #1a1a1a;
             border: none;
-            color: #0f0;
-            padding: 5px;
-            font-size: 14px;
+            color: #fff;
+            font-family: monospace;
+            padding: 8px;
+            caret-color: #fff;
+        }
+
+        #input:focus {
             outline: none;
         }
-        .cmd-enter {
-            background: blue;
+
+        #enter-btn {
+            background-color: #2196F3;
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 8px 20px;
+            border-radius: 3px;
             cursor: pointer;
-            font-size: 14px;
+            font-family: monospace;
+        }
+
+        #enter-btn:hover {
+            background-color: #1976D2;
+        }
+
+        .command {
+            color: #4CAF50;
+        }
+
+        .response {
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="cmd-box">
-        <input type="text" class="cmd-input" placeholder="Enter command...">
-        <button class="cmd-enter">Enter</button>
+    <div id="terminal-container">
+        <div id="output"></div>
+        <div class="input-container">
+            <input type="text" id="input" placeholder="Enter command...">
+            <button id="enter-btn">ENTER</button>
+        </div>
     </div>
+
+    <script>
+        const output = document.getElementById('output');
+        const input = document.getElementById('input');
+        const enterBtn = document.getElementById('enter-btn');
+
+        function addCommand(text) {
+            const commandElement = document.createElement('div');
+            commandElement.className = 'command';
+            commandElement.textContent = `> ${text}`;
+            output.appendChild(commandElement);
+        }
+
+        function addResponse(text) {
+            const responseElement = document.createElement('div');
+            responseElement.className = 'response';
+            responseElement.textContent = text;
+            output.appendChild(responseElement);
+        }
+
+        function processCommand() {
+            const command = input.value.trim();
+            if (!command) return;
+
+            addCommand(command);
+            
+            // Simple command processing
+            switch(command.toLowerCase()) {
+                case 'help':
+                    addResponse('Available commands: help, hello, date, clear');
+                    break;
+                case 'hello':
+                    addResponse('Hello there!');
+                    break;
+                case 'date':
+                    addResponse(new Date().toString());
+                    break;
+                case 'clear':
+                    output.innerHTML = '';
+                    break;
+                default:
+                    addResponse(`Command not recognized: ${command}`);
+            }
+
+            input.value = '';
+            output.scrollTop = output.scrollHeight;
+        }
+
+        enterBtn.addEventListener('click', processCommand);
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                processCommand();
+            }
+        });
+
+        // Focus the input field on page load
+        input.focus();
+    </script>
 </body>
 </html>
