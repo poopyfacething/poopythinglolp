@@ -90,12 +90,81 @@
         .cmd-history div:last-child {
             border-bottom: none; /* Remove separator for the last item */
         }
+
+        /* Container for the slider and value display */
+.slider-container {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Style for the slider */
+#iframeCountSlider {
+    -webkit-appearance: none; /* Remove default styling */
+    appearance: none;
+    width: 100%; /* Full width */
+    height: 8px; /* Slider height */
+    background: #444; /* Slider track color */
+    border-radius: 5px; /* Rounded corners */
+    outline: none; /* Remove outline */
+    opacity: 0.7; /* Slightly transparent */
+    transition: opacity 0.2s; /* Smooth transition */
+}
+
+/* Slider thumb (the draggable circle) */
+#iframeCountSlider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Remove default styling */
+    appearance: none;
+    width: 20px; /* Thumb width */
+    height: 20px; /* Thumb height */
+    background: #007BFF; /* Thumb color */
+    border-radius: 50%; /* Circular thumb */
+    cursor: pointer; /* Pointer cursor */
+    transition: background 0.2s; /* Smooth transition */
+}
+
+#iframeCountSlider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #007BFF;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+/* Hover effect for the slider */
+#iframeCountSlider:hover {
+    opacity: 1; /* Fully opaque on hover */
+}
+
+#iframeCountSlider::-webkit-slider-thumb:hover {
+    background: #0056b3; /* Darker thumb color on hover */
+}
+
+#iframeCountSlider::-moz-range-thumb:hover {
+    background: #0056b3;
+}
+
+/* Style for the value display */
+#iframeCountValue {
+    font-size: 16px;
+    font-family: "Roboto", sans-serif;
+    color: #fff; /* White text */
+    background: #007BFF; /* Blue background */
+    padding: 5px 10px;
+    border-radius: 5px; /* Rounded corners */
+    min-width: 60px; /* Minimum width to prevent resizing */
+    text-align: center;
+}
     </style>
 </head>
 <body>
 
-    <input type="range" id="iframeCountSlider" min="1" max="10000" value="500">
-    <span id="iframeCountValue"></span>
+    <div class="slider-container">
+        <input type="range" id="iframeCountSlider" min="1" max="10000" value="500">
+        <span id="iframeCountValue"></span>
+    </div>
 
     <!-- Command Box -->
     <div class="cmd-box" id="cmd-box">
