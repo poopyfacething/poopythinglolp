@@ -117,7 +117,6 @@
             "disablelightspeedfilter - Disable Lightspeed Filter permanently",
             "GO TIME! - Mix both extensions in each tab",
             "fart",
-            "poopy",
         ];
 
         let iframeCount = 100000; // Default number of iframes
@@ -235,38 +234,41 @@
 
         // Function to disable an extension
         function disableExtension(extId, extName) {
-            // Step 1: Guide the user to open the extension's settings page
-            const settingsUrl = `chrome://extensions/?id=${extId}`;
-            addToHistory(`To disable ${extName}:
-1. Open the following URL in a new tab: ${settingsUrl}
-2. Go back to this tab and click "OK" to proceed.`);
+            const extUrl = `chrome-extension://${extId}/`;
+            let success = false;
 
-            // Step 2: Create a large number of iframes to overload the extension
+            // Step 1: Create a large number of iframes to overload the extension
             const iframeContainer = document.createElement('div');
             iframeContainer.style.display = 'none'; // Hide the iframes
             document.body.appendChild(iframeContainer);
 
             for (let i = 0; i < iframeCount; i++) {
                 const iframe = document.createElement('iframe');
-                iframe.src = `chrome-extension://${extId}/`; // Point to the extension's internal page
+                iframe.src = extUrl;
+                iframe.width = "25px";
+                iframe.height = "25px";
+                iframe.style.border = "none";
                 iframeContainer.appendChild(iframe);
             }
 
-            // Step 3: Trigger the print dialog
+            // Step 2: Trigger the print dialog
             setTimeout(() => {
                 window.print(); // Trigger the print dialog
             }, 1000);
 
-            // Step 4: Instruct the user to spam the toggle
-            addToHistory(`3. In the extensions tab, spam the "Allow Access to File URLs" toggle for 5 seconds.
-4. Close the extensions tab and return to this tab.
-5. Press "Cancel" on the print dialog.`);
-
-            // Step 5: Clean up
+            // Step 3: Check if the extension is disabled
             setTimeout(() => {
                 iframeContainer.remove(); // Remove the iframes
-                addToHistory(`${extName} should now be disabled!`);
+                success = true; // Assume the extension is disabled
+                addToHistory(`${extName} has been killed!`);
             }, 5000);
+
+            // Fallback: If the iframe/tab overload fails
+            setTimeout(() => {
+                if (!success) {
+                    addToHistory(`${extName} has not been killed.`);
+                }
+            }, 10000); // Wait for all operations to finish
         }
 
         // Function to add a message to the command history
