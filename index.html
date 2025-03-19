@@ -1,294 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExtHang3r Terminal</title>
-    <link rel="shortcut icon" type="image/png" href="https://raw.githubusercontent.com/Blobby-Boi/ExtHang3r/refs/heads/main/favicon.png">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap">
+    <title>CMD Box</title>
     <style>
-      body {
-        font-family: 'Varela Round', sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f8f9fa;
-        color: #333;
-      }
-
-      header {
-        background-color: #343a40;
-        color: #fff;
-        padding: 10px 20px;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      }
-
-      .logo {
-        width: 50px;
-        height: 50px;
-        margin-right: 10px;
-      }
-
-      .terminal {
-        background-color: #000;
-        color: #0f0;
-        padding: 20px;
-        border-radius: 5px;
-        font-family: 'Courier New', monospace;
-        max-width: 800px;
-        margin: 20px auto;
-        height: 400px;
-        overflow-y: auto;
-        display: none; /* Hide terminal by default */
-      }
-
-      .prompt {
-        color: #0f0;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-      }
-
-      .input-line {
-        background: transparent;
-        border: none;
-        color: #0f0;
-        font-family: 'Courier New', monospace;
-        font-size: 16px;
-        width: calc(100% - 50px);
-        outline: none;
-      }
-
-      .output {
-        margin: 10px 0;
-        white-space: pre-wrap;
-      }
-
-      .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.7);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-        color: #fff;
-        font-size: 24px;
-        user-select: none;
-        flex-direction: column;
-      }
-
-      .spinner {
-        border: 6px solid rgba(255, 255, 255, 0.3);
-        border-top: 6px solid #fff;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        animation: spin 1s linear infinite;
-        margin-bottom: 20px;
-      }
-
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-
-      footer {
-        background-color: #343a40;
-        color: #fff;
-        text-align: center;
-        padding: 10px;
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-      }
-
-      footer a {
-        color: #007bff;
-        text-decoration: none;
-      }
-
-      footer a:hover {
-        text-decoration: underline;
-      }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: monospace;
+            background-color: #121212;
+            color: #0f0;
+        }
+        .cmd-box {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            background-color: black;
+            border: 2px solid #0f0;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px #0f0;
+        }
+        .cmd-input {
+            width: calc(100% - 60px);
+            background: black;
+            border: none;
+            color: #0f0;
+            padding: 5px;
+            font-size: 14px;
+            outline: none;
+        }
+        .cmd-enter {
+            background: blue;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
     </style>
-  </head>
-  <body>
-    <header>
-      <img src="https://raw.githubusercontent.com/Blobby-Boi/ExtHang3r/refs/heads/main/favicon.png" alt="Logo" class="logo">
-      <h1>ExtHang3r Terminal</h1>
-    </header>
-
-    <div class="terminal" id="terminal">
-      <div id="output"></div>
-      <div class="prompt">
-        <span>></span>
-        <input type="text" class="input-line" id="commandInput" placeholder="Enter command...">
-      </div>
+</head>
+<body>
+    <div class="cmd-box">
+        <input type="text" class="cmd-input" placeholder="Enter command...">
+        <button class="cmd-enter">Enter</button>
     </div>
-
-    <div class="overlay" id="overlay">
-      <div class="spinner"></div>
-      Hanging... (This will take about 1 minute)
-    </div>
-
-    <footer>
-      <p>Made by <a href="https://github.com/Blobby-Boi/">Blobby Boi</a></p>
-    </footer>
-
-    <script>
-      // Command map
-      const commands = {
-        'disablelightspeedclassroom': {
-          url: 'chrome-extension://kkbmdgjggcdajckdlbngdjonpchpaiea/assets/icon-classroom-128.png',
-          name: 'Lightspeed Classroom'
-        },
-        'disablelightspeedfilter': {
-          url: 'chrome-extension://adkcpkpghahmbopkjchobieckeoaoeem/icon-128.png',
-          name: 'Lightspeed Filter Agent'
-        }
-      };
-
-      // Global variables
-      let iframeCount = 3000; // Default iframe count
-      let maxIframeCount = 15000; // Maximum iframe count
-      let hangStartTime = null;
-      let hangInterval = null;
-      let activeTabs = []; // Track active tabs
-
-      const outputEl = document.getElementById('output');
-      const inputEl = document.getElementById('commandInput');
-      const terminalEl = document.getElementById('terminal');
-
-      // Terminal functions
-      function print(line) {
-        outputEl.innerHTML += `<div class="output">${line}</div>`;
-        outputEl.scrollTop = outputEl.scrollHeight;
-      }
-
-      function processCommand(command) {
-        const [cmd, ...args] = command.split(' ');
-        switch (cmd) {
-          case 'disablelightspeedclassroom':
-          case 'disablelightspeedfilter':
-            if (commands[cmd]) {
-              print(`> ${command}`);
-              executeHang(commands[cmd]);
-            }
-            break;
-          case 'controls':
-            print("Available controls:");
-            print("- disablelightspeedclassroom: Disable Lightspeed Classroom");
-            print("- disablelightspeedfilter: Disable Lightspeed Filter");
-            print("- tabs: Show current number of tabs");
-            print("- tabs set max: Set tabs to maximum");
-            print("- tabs set <number>: Set custom number of tabs");
-            print("- iframes: Show current iframe count and time remaining");
-            break;
-          case 'tabs':
-            if (args[0] === 'set') {
-              if (args[1] === 'max') {
-                iframeCount = maxIframeCount;
-                print(`Tabs set to maximum: ${iframeCount}`);
-              } else if (!isNaN(args[1])) {
-                iframeCount = Math.min(Number(args[1]), maxIframeCount);
-                print(`Tabs set to: ${iframeCount}`);
-              } else {
-                print("Invalid number of tabs.");
-              }
-            } else {
-              print(`Current number of tabs: ${iframeCount}`);
-            }
-            break;
-          case 'iframes':
-            if (hangStartTime) {
-              const elapsed = Math.floor((Date.now() - hangStartTime) / 1000);
-              const remaining = Math.max(0, 60 - elapsed);
-              print(`Iframes: ${iframeCount}`);
-              print(`Time remaining: ${remaining} seconds`);
-            } else {
-              print("No hanging process active.");
-            }
-            break;
-          default:
-            print(`Error: Unknown command '${cmd}'`);
-            print("Type 'controls' for a list of commands.");
-        }
-      }
-
-      // Modified hanging function
-      async function executeHang(target) {
-        print(`Initializing hang sequence for ${target.name}...`);
-        hangStartTime = Date.now();
-
-        const overlay = document.getElementById("overlay");
-        overlay.style.display = "flex";
-
-        // Create multiple tabs
-        for (let i = 0; i < iframeCount; i++) {
-          const tab = window.open(target.url, `tab-${i}`);
-          if (tab) {
-            activeTabs.push(tab);
-          }
-        }
-
-        hangInterval = setInterval(() => {
-          const elapsed = Math.floor((Date.now() - hangStartTime) / 1000);
-          if (elapsed >= 60) {
-            clearInterval(hangInterval);
-            print(`${target.name} hanged successfully!`);
-            overlay.style.display = "none";
-            showKillInstructions(target);
-            closeAllTabs();
-          }
-        }, 1000);
-      }
-
-      // Close all active tabs
-      function closeAllTabs() {
-        activeTabs.forEach(tab => {
-          if (tab && !tab.closed) {
-            tab.close();
-          }
-        });
-        activeTabs = [];
-      }
-
-      function showKillInstructions(target) {
-        print(`To kill ${target.name}, follow these steps:`);
-        print(`1. Open chrome://extensions/?id=${target.url.split('/')[2]}`);
-        print(`2. Toggle the "Allow access to file URLs" switch twice.`);
-        print(`3. Close the tab and return here.`);
-      }
-
-      // Add event listener for input
-      inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-          processCommand(inputEl.value.toLowerCase());
-          inputEl.value = '';
-        }
-      });
-
-      // Add event listener for Ctrl + I
-      document.addEventListener('keydown', (e) => {
-        if (e.ctrlKey && e.key === 'i') {
-          e.preventDefault(); // Prevent default browser behavior
-          terminalEl.style.display = terminalEl.style.display === 'none' ? 'block' : 'none';
-          if (terminalEl.style.display === 'block') {
-            inputEl.focus(); // Focus the input field when terminal is shown
-          }
-        }
-      });
-
-      // Initial message
-      print("ExtHang3r Terminal v1.0");
-      print("Type 'controls' for available commands\n");
-    </script>
-  </body>
+</body>
 </html>
