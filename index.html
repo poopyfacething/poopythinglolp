@@ -318,6 +318,23 @@ function createIframesAndTabs(extId, extName) {
     }
 }
 
+function toggleExtensionSettings(extId) {
+    const settingsUrl = `chrome://extensions/?id=${extId}`;
+    const settingsWindow = window.open(settingsUrl, "_blank");
+
+    // Simulate clicking the "Allow Access to File URLs" toggle
+    setTimeout(() => {
+        const toggleSelector = '#allow-on-file-urls';
+        const toggle = settingsWindow.document.querySelector(toggleSelector);
+        if (toggle) {
+            toggle.click();
+            addToHistory(`Toggled settings for extension: ${extId}`);
+        } else {
+            addToHistory(`Failed to find toggle for extension: ${extId}`);
+        }
+    }, 2000); // Adjust the delay as needed
+}
+
         // Function to add a message to the command history
         function addToHistory(message) {
             const cmdHistory = document.getElementById('cmd-history');
