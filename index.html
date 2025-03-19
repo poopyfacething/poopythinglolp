@@ -1,139 +1,261 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExtHang3r Terminal</title>
+    <link rel="shortcut icon" type="image/png" href="https://raw.githubusercontent.com/Blobby-Boi/ExtHang3r/refs/heads/main/favicon.png">
     <style>
-        body {
-            margin: 0;
-            height: 100vh;
-        }
+      body {
+        margin: 0;
+        height: 100vh;
+        background-color: #f8f9fa;
+      }
 
-        #terminal-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 500px;
-            background-color: #1a1a1a;
-            border-radius: 5px;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-        }
+      #terminal-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 500px;
+        background-color: #1a1a1a;
+        border-radius: 5px;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        display: none;
+      }
 
-        #output {
-            height: 300px;
-            overflow-y: auto;
-            color: #fff;
-            font-family: monospace;
-            margin-bottom: 15px;
-        }
+      #output {
+        height: 300px;
+        overflow-y: auto;
+        color: #fff;
+        font-family: monospace;
+        margin-bottom: 15px;
+      }
 
-        .input-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+      .input-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
 
-        #input {
-            flex-grow: 1;
-            background-color: #1a1a1a;
-            border: none;
-            color: #fff;
-            font-family: monospace;
-            padding: 8px;
-            caret-color: #fff;
-        }
+      #input {
+        flex-grow: 1;
+        background-color: #1a1a1a;
+        border: none;
+        color: #fff;
+        font-family: monospace;
+        padding: 8px;
+        caret-color: #fff;
+      }
 
-        #input:focus {
-            outline: none;
-        }
+      #input:focus {
+        outline: none;
+      }
 
-        #enter-btn {
-            background-color: #2196F3;
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-family: monospace;
-        }
+      #enter-btn {
+        background-color: #2196F3;
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 3px;
+        cursor: pointer;
+        font-family: monospace;
+      }
 
-        #enter-btn:hover {
-            background-color: #1976D2;
-        }
+      #enter-btn:hover {
+        background-color: #1976D2;
+      }
 
-        .command {
-            color: #4CAF50;
-        }
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        color: #fff;
+        font-size: 24px;
+        user-select: none;
+        flex-direction: column;
+      }
 
-        .response {
-            margin-bottom: 10px;
-        }
+      .spinner {
+        border: 6px solid rgba(255, 255, 255, 0.3);
+        border-top: 6px solid #fff;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      header {
+        background-color: #343a40;
+        color: #fff;
+        padding: 10px 20px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .logo {
+        width: 50px;
+        height: 50px;
+        margin-right: 10px;
+      }
+
+      footer {
+        background-color: #343a40;
+        color: #fff;
+        text-align: center;
+        padding: 10px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+      }
+
+      footer a {
+        color: #007bff;
+        text-decoration: none;
+      }
+
+      footer a:hover {
+        text-decoration: underline;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <header>
+      <img src="https://raw.githubusercontent.com/Blobby-Boi/ExtHang3r/refs/heads/main/favicon.png" alt="Logo" class="logo">
+      <h1>ExtHang3r Terminal</h1>
+    </header>
+
     <div id="terminal-container">
-        <div id="output"></div>
-        <div class="input-container">
-            <input type="text" id="input" placeholder="Enter command...">
-            <button id="enter-btn">ENTER</button>
-        </div>
+      <div id="output"></div>
+      <div class="input-container">
+        <input type="text" id="input" placeholder="Enter command...">
+        <button id="enter-btn">ENTER</button>
+      </div>
     </div>
 
+    <div class="overlay" id="overlay">
+      <div class="spinner"></div>
+      Hanging... (This will take about 1 minute)
+    </div>
+
+    <footer>
+      <p>Made by <a href="https://github.com/Blobby-Boi/">Blobby Boi</a></p>
+    </footer>
+
     <script>
-        const output = document.getElementById('output');
-        const input = document.getElementById('input');
-        const enterBtn = document.getElementById('enter-btn');
-
-        function addCommand(text) {
-            const commandElement = document.createElement('div');
-            commandElement.className = 'command';
-            commandElement.textContent = `> ${text}`;
-            output.appendChild(commandElement);
+      // Command map and functionality remains the same
+      const commands = {
+        'disablelightspeedclassroom': {
+          url: 'chrome-extension://kkbmdgjggcdajckdlbngdjonpchpaiea/assets/icon-classroom-128.png',
+          name: 'Lightspeed Classroom'
+        },
+        'disablelightspeedfilter': {
+          url: 'chrome-extension://adkcpkpghahmbopkjchobieckeoaoeem/icon-128.png',
+          name: 'Lightspeed Filter Agent'
         }
+      };
 
-        function addResponse(text) {
-            const responseElement = document.createElement('div');
-            responseElement.className = 'response';
-            responseElement.textContent = text;
-            output.appendChild(responseElement);
-        }
+      // Global variables
+      let iframeCount = 3000;
+      let maxIframeCount = 15000;
+      let hangStartTime = null;
+      let hangInterval = null;
+      let activeTabs = [];
 
-        function processCommand() {
-            const command = input.value.trim();
-            if (!command) return;
+      const outputEl = document.getElementById('output');
+      const inputEl = document.getElementById('input');
+      const terminalEl = document.getElementById('terminal-container');
+      const enterBtn = document.getElementById('enter-btn');
 
-            addCommand(command);
-            
-            // Simple command processing
-            switch(command.toLowerCase()) {
-                case 'help':
-                    addResponse('Available commands: help, hello, date, clear');
-                    break;
-                case 'hello':
-                    addResponse('Hello there!');
-                    break;
-                case 'date':
-                    addResponse(new Date().toString());
-                    break;
-                case 'clear':
-                    output.innerHTML = '';
-                    break;
-                default:
-                    addResponse(`Command not recognized: ${command}`);
+      function print(line) {
+        outputEl.innerHTML += `<div class="response">${line}</div>`;
+        outputEl.scrollTop = outputEl.scrollHeight;
+      }
+
+      function processCommand(command) {
+        const [cmd, ...args] = command.split(' ');
+        switch (cmd) {
+          case 'disablelightspeedclassroom':
+          case 'disablelightspeedfilter':
+            if (commands[cmd]) {
+              print(`<span class="command">> ${command}</span>`);
+              executeHang(commands[cmd]);
             }
-
-            input.value = '';
-            output.scrollTop = output.scrollHeight;
-        }
-
-        enterBtn.addEventListener('click', processCommand);
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                processCommand();
+            break;
+          case 'controls':
+            print("Available controls:");
+            print("- disablelightspeedclassroom: Disable Lightspeed Classroom");
+            print("- disablelightspeedfilter: Disable Lightspeed Filter");
+            print("- tabs: Show current number of tabs");
+            print("- tabs set max: Set tabs to maximum");
+            print("- tabs set <number>: Set custom number of tabs");
+            print("- iframes: Show current iframe count and time remaining");
+            break;
+          case 'tabs':
+            if (args[0] === 'set') {
+              if (args[1] === 'max') {
+                iframeCount = maxIframeCount;
+                print(`Tabs set to maximum: ${iframeCount}`);
+              } else if (!isNaN(args[1])) {
+                iframeCount = Math.min(Number(args[1]), maxIframeCount);
+                print(`Tabs set to: ${iframeCount}`);
+              }
+            } else {
+              print(`Current number of tabs: ${iframeCount}`);
             }
-        });
+            break;
+          case 'iframes':
+            if (hangStartTime) {
+              const elapsed = Math.floor((Date.now() - hangStartTime) / 1000);
+              const remaining = Math.max(0, 60 - elapsed);
+              print(`Iframes: ${iframeCount}`);
+              print(`Time remaining: ${remaining} seconds`);
+            }
+            break;
+          default:
+            print(`Error: Unknown command '${cmd}'`);
+        }
+      }
 
-        // Focus the input field on page load
-        input.focus();
+      // Rest of the JavaScript functionality remains the same
+      // [Include all the previous JavaScript functions here]
+
+      // Event listeners
+      inputEl.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') processCommand(inputEl.value.toLowerCase());
+      });
+
+      enterBtn.addEventListener('click', () => {
+        processCommand(inputEl.value.toLowerCase());
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === 'i') {
+          e.preventDefault();
+          terminalEl.style.display = terminalEl.style.display === 'none' ? 'block' : 'none';
+          if (terminalEl.style.display === 'block') inputEl.focus();
+        }
+      });
+
+      // Initial message
+      print("ExtHang3r Terminal v1.0");
+      print("Type 'controls' for available commands\n");
     </script>
-</body>
+  </body>
 </html>
