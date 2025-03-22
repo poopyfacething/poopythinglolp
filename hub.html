@@ -1,58 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chromebook Un-enrollment</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .container {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      text-align: center;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      color: #fff;
-      background-color: #d9534f;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #c9302c;
-    }
-    .warning {
-      color: #d9534f;
-      font-weight: bold;
-      margin-top: 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Never Function</title>
 </head>
 <body>
-  <div class="container">
-    <h1>Chromebook Un-enrollment</h1>
-    <p>Click the button below to un-enroll your Chromebook.</p>
-    <button onclick="redirectToYouTube()">Un-enroll Chromebook</button>
-    <p class="warning">Warning: This will erase all local data on the device.</p>
-  </div>
+    <script>
+        function timeout(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
 
-  <script>
-    function redirectToYouTube() {
-      // Redirect to the specified YouTube link
-      window.location.href = "https://www.youtube.com/watch?v=xvFZjo5PgG0";
-    }
-  </script>
+        async function Never() {
+            await timeout(75);
+            console.clear();
+            console.log("=====");
+
+            // Functions
+            var getLoaderPolicy = function () { }    // no-op function;
+            var loadES6 = function () { }    // no-op function;
+            var isYoutube = function () { }    // no-op function;
+            var checkCurrentSite = function () { }    // no-op function;
+            var getHardBlockPolicy = function () { }    // no-op function;
+            var hardBlock = function () { }    // no-op function;
+            var stopVideo = function () { }    // no-op function;
+            var updateLocation = function () { }    // no-op function;
+
+            // Variables
+            var hardBlockPolicy = null;
+            var prevURL = null;
+
+            console.log("=====");
+
+            // re-assign
+            window.isYoutube = function () { }    // no-op function
+            window.loadES6 = function () { }    // no-op function
+            window.checkCurrentSite = function () { }    // no-op function
+            window.getHardBlockPolicy = function () { }    // no-op function
+            window.hardBlock = function () { }    // no-op function
+            window.stopVideo = function () { }    // no-op function
+            window.updateLocation = function () { }    // no-op function
+            window.initFlagScanning = function () { }    // no-op function
+            window.getLoaderPolicy = function () { }    // no-op function
+            window.loaderPolicy = function () { }    // no-op function
+
+            console.log("Just incase, Functions deleted again. This is not needed, but we Bypassed the filter agent. =)");
+
+            console.log("=====");
+        }
+
+        Never();
+    </script>
 </body>
 </html>
